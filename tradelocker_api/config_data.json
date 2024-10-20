@@ -1,0 +1,456 @@
+{
+    "s": "ok",
+    "d": {
+        "customerAccess": {
+            "orders": true,
+            "ordersHistory": true,
+            "filledOrders": true,
+            "positions": true,
+            "symbolInfo": true,
+            "marketDepth": true
+        },
+        "positionsConfig": {
+            "id": "positions",
+            "title": "Positions",
+            "columns": [
+                {
+                    "id": "id"
+                },
+                {
+                    "id": "tradableInstrumentId"
+                },
+                {
+                    "id": "routeId"
+                },
+                {
+                    "id": "side"
+                },
+                {
+                    "id": "qty"
+                },
+                {
+                    "id": "avgPrice"
+                },
+                {
+                    "id": "stopLossId"
+                },
+                {
+                    "id": "takeProfitId"
+                },
+                {
+                    "id": "openDate"
+                },
+                {
+                    "id": "unrealizedPl"
+                },
+                {
+                    "id": "strategyId"
+                }
+            ]
+        },
+        "ordersConfig": {
+            "id": "orders",
+            "title": "Orders",
+            "columns": [
+                {
+                    "id": "id"
+                },
+                {
+                    "id": "tradableInstrumentId"
+                },
+                {
+                    "id": "routeId"
+                },
+                {
+                    "id": "qty"
+                },
+                {
+                    "id": "side"
+                },
+                {
+                    "id": "type"
+                },
+                {
+                    "id": "status"
+                },
+                {
+                    "id": "filledQty"
+                },
+                {
+                    "id": "avgPrice"
+                },
+                {
+                    "id": "price"
+                },
+                {
+                    "id": "stopPrice"
+                },
+                {
+                    "id": "validity"
+                },
+                {
+                    "id": "expireDate"
+                },
+                {
+                    "id": "createdDate"
+                },
+                {
+                    "id": "lastModified"
+                },
+                {
+                    "id": "isOpen"
+                },
+                {
+                    "id": "positionId"
+                },
+                {
+                    "id": "stopLoss"
+                },
+                {
+                    "id": "stopLossType"
+                },
+                {
+                    "id": "takeProfit"
+                },
+                {
+                    "id": "takeProfitType"
+                },
+                {
+                    "id": "strategyId"
+                }
+            ]
+        },
+        "ordersHistoryConfig": {
+            "id": "ordersHistory",
+            "title": "Orders history",
+            "columns": [
+                {
+                    "id": "id"
+                },
+                {
+                    "id": "tradableInstrumentId"
+                },
+                {
+                    "id": "routeId"
+                },
+                {
+                    "id": "qty"
+                },
+                {
+                    "id": "side"
+                },
+                {
+                    "id": "type"
+                },
+                {
+                    "id": "status"
+                },
+                {
+                    "id": "filledQty"
+                },
+                {
+                    "id": "avgPrice"
+                },
+                {
+                    "id": "price"
+                },
+                {
+                    "id": "stopPrice"
+                },
+                {
+                    "id": "validity"
+                },
+                {
+                    "id": "expireDate"
+                },
+                {
+                    "id": "createdDate"
+                },
+                {
+                    "id": "lastModified"
+                },
+                {
+                    "id": "isOpen"
+                },
+                {
+                    "id": "positionId"
+                },
+                {
+                    "id": "stopLoss"
+                },
+                {
+                    "id": "stopLossType"
+                },
+                {
+                    "id": "takeProfit"
+                },
+                {
+                    "id": "takeProfitType"
+                },
+                {
+                    "id": "strategyId"
+                }
+            ]
+        },
+        "filledOrdersConfig": {
+            "id": "filledOrders",
+            "title": "Filled orders",
+            "columns": [
+                {
+                    "id": "id"
+                },
+                {
+                    "id": "price"
+                },
+                {
+                    "id": "side"
+                },
+                {
+                    "id": "createdDate"
+                },
+                {
+                    "id": "qty"
+                },
+                {
+                    "id": "orderId"
+                },
+                {
+                    "id": "positionId"
+                },
+                {
+                    "id": "tradableInstrumentId"
+                }
+            ]
+        },
+        "accountDetailsConfig": {
+            "id": "accountDetails",
+            "title": "Account details",
+            "columns": [
+                {
+                    "id": "balance",
+                    "description": "A current realized balance of an account."
+                },
+                {
+                    "id": "projectedBalance",
+                    "description": "A future balance which includes all accrued and not accrued profit/loss."
+                },
+                {
+                    "id": "availableFunds",
+                    "description": "Amount of funds which can be used for trading."
+                },
+                {
+                    "id": "blockedBalance",
+                    "description": "Balance blocked by a broker or by a user for withdrawal/transfer."
+                },
+                {
+                    "id": "cashBalance",
+                    "description": "A current cash position for an account with taken into account unsettled profit/loss."
+                },
+                {
+                    "id": "unsettledCash",
+                    "description": "Cash sum of unsettled account operations, which have not been delivered to an account yet and will be delivered in accordance with T+n settlement system."
+                },
+                {
+                    "id": "withdrawalAvailable",
+                    "description": "Shows an amount of cash that you can withdraw immediately from your account."
+                },
+                {
+                    "id": "stocksValue",
+                    "description": "A total cost of assets, traded with Stock pre-paid margin type, positions of which are open on a selected account."
+                },
+                {
+                    "id": "optionValue",
+                    "description": "Current option value in portfolio. Can be positive for a long Net position, or negative for a short Net position. Option value is calculated only for Options with Option trading style 'Premium-style' or 'Market-to-market'. Option trading style is set up by a broker."
+                },
+                {
+                    "id": "initialMarginReq",
+                    "description": "Amount of initial margin blocked for all positions and orders taking into account a margin crossing."
+                },
+                {
+                    "id": "maintMarginReq",
+                    "description": "Total margin used for maintenance of a current portfolio in account currency."
+                },
+                {
+                    "id": "marginWarningLevel",
+                    "description": "Shows Maintenance margin level."
+                },
+                {
+                    "id": "blockedForStocks",
+                    "description": "Amount of funds debited from a balance in case of trading with symbols with Stocks pre-paid margin type. After closing such position, funds will be returned to an account. Stock operations can be pending."
+                },
+                {
+                    "id": "stockOrdersReq",
+                    "description": "Total margin blocked for orders with Stock pre-paid margin type."
+                },
+                {
+                    "id": "stopOutLevel",
+                    "description": "Maintenance margin level value needed for the stop out to occur."
+                },
+                {
+                    "id": "warningMarginReq",
+                    "description": "Warning margin requirement for positions and orders."
+                },
+                {
+                    "id": "marginBeforeWarning",
+                    "description": "Margin available before warning triggering."
+                },
+                {
+                    "id": "todayGross",
+                    "description": "A gross profit for today."
+                },
+                {
+                    "id": "todayNet",
+                    "description": "A total profit or loss realized from positions today."
+                },
+                {
+                    "id": "todayFees",
+                    "description": "Fees paid today."
+                },
+                {
+                    "id": "todayVolume",
+                    "description": "A total volume traded for today."
+                },
+                {
+                    "id": "todayTradesCount",
+                    "description": "A number of trades done for today."
+                },
+                {
+                    "id": "openGrossPnL",
+                    "description": "A profit or loss on all currently opened positions and currency, recalculated in real-time based on the most recent quotes"
+                },
+                {
+                    "id": "openNetPnL",
+                    "description": "A net profit or loss on open positions."
+                },
+                {
+                    "id": "positionsCount",
+                    "description": "A number of currently opened positions."
+                },
+                {
+                    "id": "ordersCount",
+                    "description": "A number of currently placed pending orders."
+                }
+            ]
+        },
+        "rateLimits": [
+            {
+                "rateLimitType": "GET_ACCOUNTS",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 2
+            },
+            {
+                "rateLimitType": "GET_EXECUTIONS",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 2
+            },
+            {
+                "rateLimitType": "GET_INSTRUMENTS",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 2
+            },
+            {
+                "rateLimitType": "GET_ORDERS",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 1
+            },
+            {
+                "rateLimitType": "GET_ORDERS_HISTORY",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 1
+            },
+            {
+                "rateLimitType": "GET_POSITIONS",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 1
+            },
+            {
+                "rateLimitType": "GET_ACCOUNTS_STATE",
+                "measure": "SECONDS",
+                "intervalNum": 2,
+                "limit": 4
+            },
+            {
+                "rateLimitType": "GET_INSTRUMENT_DETAILS",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 2
+            },
+            {
+                "rateLimitType": "GET_TRADE_SESSIONS",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 2
+            },
+            {
+                "rateLimitType": "GET_SESSION_STATUSES",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 2
+            },
+            {
+                "rateLimitType": "PLACE_ORDER",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 5
+            },
+            {
+                "rateLimitType": "MODIFY_ORDER",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 5
+            },
+            {
+                "rateLimitType": "MODIFY_POSITION",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 5
+            },
+            {
+                "rateLimitType": "DAILY_BAR",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 5
+            },
+            {
+                "rateLimitType": "QUOTES",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 10
+            },
+            {
+                "rateLimitType": "DEPTH",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 10
+            },
+            {
+                "rateLimitType": "TRADES",
+                "measure": "SECONDS",
+                "intervalNum": 1,
+                "limit": 5
+            },
+            {
+                "rateLimitType": "QUOTES_HISTORY",
+                "measure": "MINUTES",
+                "intervalNum": 1,
+                "limit": 60
+            }
+        ],
+        "limits": [
+            {
+                "limitType": "QUOTES_HISTORY_BARS",
+                "limit": 50000
+            },
+            {
+                "limitType": "MAX_ORDERS_COUNT_IN_HISTORY",
+                "limit": 10000
+            }
+        ]
+    }
+}
