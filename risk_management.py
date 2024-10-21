@@ -62,10 +62,10 @@ def determine_risk_percentage(account_balance: float, instrument: dict) -> float
     # Define account tiers and corresponding risk percentages for FOREX and XAUUSD
     tiers = {
         5000: 0.02,  # Risk 2% for 5k accounts
-        10000: 0.015,  # Risk 1.5% for 10k accounts
-        25000: 0.015,  # Risk 1% for 25k accounts
-        50000: 0.015,  # Risk 1% for 50k accounts
-        100000: 0.015  # Risk 1% for 100k accounts
+        10000: 0.02,  # Risk 2% for 10k accounts
+        25000: 0.02,  # Risk 2 for 25k accounts
+        50000: 0.02,  # Risk 2% for 50k accounts
+        100000: 0.02  # Risk 2% for 100k accounts
     }
 
     # Special handling for XAUUSD, which should follow the same risk as FOREX
@@ -79,7 +79,7 @@ def determine_risk_percentage(account_balance: float, instrument: dict) -> float
 
     # If the instrument type is EQUITY_CFD but not XAUUSD, set a fixed risk percentage of 0.5%
     if instrument["type"] == "EQUITY_CFD":
-        return 1.5  # 0.5%
+        return 2  # 0.5%
 
     # Determine the closest tier based on account balance for other instruments
     closest_tier = max(tier for tier in tiers if account_balance >= tier)

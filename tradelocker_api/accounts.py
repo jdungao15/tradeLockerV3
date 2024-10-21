@@ -84,18 +84,40 @@ class TradeLockerAccounts:
     def get_current_position(self, account_id: int, acc_num: int):
         """
         Retrieve the current open positions for the specified account.
+        If the token is expired (401 error), refresh the token and retry.
         """
         url = f"{self.base_url}/trade/accounts/{account_id}/positions"
         headers = {
             "Authorization": f"Bearer {self.auth.get_access_token()}",
             "accNum": str(acc_num)  # Required by the API
         }
+
         try:
             response = requests.get(url, headers=headers)
             response.raise_for_status()
             positions = response.json()
-            print(f"Open positions for account ID {account_id}: {positions}")
             return positions
+        except requests.exceptions.HTTPError as e:
+            # Check if the error is due to an expired token (401 Unauthorized)
+            if response.status_code == 401:
+                print("Token expired. Refreshing token...")
+
+                # Call refresh token method
+                refresh_token = self.auth.refresh_auth_token()
+
+                # Retry the request with the new token
+                headers["Authorization"] = f"Bearer {refresh_token}"
+                try:
+                    response = requests.get(url, headers=headers)
+                    response.raise_for_status()
+                    positions = response.json()
+                    return positions
+                except requests.exceptions.RequestException as retry_error:
+                    print(f"Failed to fetch positions after token refresh: {retry_error}")
+                    return None
+            else:
+                print(f"Failed to fetch open positions: {e}")
+                return None
         except requests.exceptions.RequestException as e:
             print(f"Failed to fetch open positions: {e}")
             return None

@@ -1,27 +1,49 @@
 import requests
 from tradelocker_api.auth import TradeLockerAuth
+from tradelocker_api.instruments import TradeLockerInstruments
 
 
 class TradeLockerQuotes:
     def __init__(self, auth: TradeLockerAuth):
         self.auth = auth
         self.base_url = auth.base_url
+        self.instrument_client = TradeLockerInstruments(auth)
 
-    def get_quote(self, acc_num: int, route_id: int, tradable_instrument_id: int):
+    def get_quote(self, account: dict, instrument_name: str):
         """
-        Fetch the current price (quote) of the instrument using the specified parameters.
-        :param acc_num: Account number (required header)
-        :param route_id: Route identifier (required query parameter)
-        :param tradable_instrument_id: Tradable instrument identifier (required query parameter)
+        Fetch the current price (quote) of the instrument using the account and instrument name.
+        :param account: Account details (includes account ID, account number, etc.)
+        :param instrument_name: Name of the instrument (e.g., 'XAUUSD')
         :return: JSON response with the quote details or None in case of failure.
         """
+        acc_num = account['accNum']
+        account_id = account['id']
+
+        # Get instrument details by name
+        instrument_data = self.instrument_client.get_instrument_by_name(account_id=account_id, acc_num=acc_num,
+                                                                        name=instrument_name)
+
+        if not instrument_data:
+            print(f"Instrument {instrument_name} not found.")
+            return None
+
+        # Find the INFO route (instead of TRADE route)
+        info_route = next((route['id'] for route in instrument_data['routes'] if route['type'] == 'INFO'), None)
+
+        if not info_route:
+            print(f"INFO route not found for instrument {instrument_name}.")
+            return None
+
+        tradable_instrument_id = instrument_data['tradableInstrumentId']  # Instrument id
+
+        # Prepare API request
         url = f"{self.base_url}/trade/quotes"
         headers = {
             "Authorization": f"Bearer {self.auth.get_access_token()}",
             "accNum": str(acc_num)
         }
         params = {
-            "routeId": route_id,
+            "routeId": info_route,  # Use the INFO route ID here
             "tradableInstrumentId": tradable_instrument_id
         }
 
@@ -47,3 +69,4 @@ class TradeLockerQuotes:
         except requests.exceptions.RequestException as e:
             print(f"Error while fetching quote: {e}")
             return None
+

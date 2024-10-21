@@ -35,7 +35,7 @@ def parse_signal(message: str):
                         2. If the entry point is a range, use the first value.
                         3. If the stop loss is a range, use the first value.
                         4. take_profits should always be an array, even if there's only one value.
-                        4.1 Only takes the first 2 take profits.
+                        4.1 Only takes the first 3 take profits.
                         4.2 if its index like DJI30, US30 NDX100 or NAS100 take all profits
                         5. Convert instrument names as follows:
                            - US30 to DJI30

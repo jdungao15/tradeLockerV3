@@ -31,7 +31,6 @@ class TradeLockerInstruments:
             return instruments
 
         except requests.exceptions.HTTPError as e:
-            # Check if the error is due to token expiration (e.g., 401 Unauthorized)
             if response.status_code == 401:
                 print("Token expired, from Instrument.py")
                 print("Token expired, refreshing token...")
@@ -43,13 +42,12 @@ class TradeLockerInstruments:
                     response = requests.get(url, headers=headers)
                     response.raise_for_status()
 
-                    # Access the instruments data under 'd' key
                     instruments = response.json().get("d", {}).get("instruments", [])
 
                     if not instruments:
                         print("No instruments found after retry.")
                         return None
-                    print("Succesfully, fetched instruments with new token refresh.")
+                    print("Successfully fetched instruments with new token refresh.")
                     return instruments
                 except requests.exceptions.RequestException as retry_error:
                     print(f"Failed to fetch instruments after token refresh: {retry_error}")
@@ -70,4 +68,25 @@ class TradeLockerInstruments:
             print(f"Instrument '{name}' not found.")
         return None
 
+    def get_instrument_by_id(self, account_id: int, acc_num: int, instrument_id: int):
+        """
+        Find an instrument by its ID and return the full instrument data.
+        """
+        instruments = self.get_instruments(account_id, acc_num)
+
+        if instruments is None:
+            print(f"Failed to retrieve instruments for account {account_id}, account number {acc_num}.")
+            return None
+
+
+
+        # Log all instrument IDs to verify if the correct one exists
+        for instrument in instruments:
+            # Explicitly cast both sides to int for comparison to avoid type mismatches
+            current_instrument_id = int(instrument.get('tradableInstrumentId', -1))
+            if current_instrument_id == int(instrument_id):
+                return instrument  # Return the entire instrument data
+
+        print(f"Instrument with ID {instrument_id} not found in the retrieved instruments.")
+        return None
 

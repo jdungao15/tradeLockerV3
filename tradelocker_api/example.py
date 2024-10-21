@@ -38,14 +38,9 @@ print(f"Account ID: {account_id}")
 instruments_api = TradeLockerInstruments(auth)
 
 instrument_name = instruments_api.get_instrument_by_name(account_id, account_num,"XAUUSD")
-print(instrument_name)
-instrument_id = instrument_name['tradableInstrumentId']
-print(f"Instrument ID: {instrument_id}")
-instrument_route = instrument_name['routes'][1]['id']
-print(f"Instrument Route: {instrument_route}")
-instrument_quote = quotes_api.get_quote(50,instrument_route,instrument_id )
-print(instrument_quote)
 
+pos = accounts_api.get_current_position(879550, 50)
+print(pos)
 
 
 # Assuming `config` is an instance of TradeLockerConfig and `auth` is already set up
