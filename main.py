@@ -2,25 +2,29 @@ import asyncio
 import logging
 import os
 import pytz
+import platform
+import signal
+import sys
 from colorama import init, Fore, Style
 from tabulate import tabulate
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 
-from signal_parser import parse_signal
-from risk_management import calculate_position_size
-from tradelocker_api.accounts import TradeLockerAccounts
-from tradelocker_api.auth import TradeLockerAuth
-from tradelocker_api.instruments import TradeLockerInstruments
-from tradelocker_api.orders import TradeLockerOrders
-from tradelocker_api.quotes import TradeLockerQuotes
-from drawdown_manager import (
+# Import our modules
+from core.signal_parser import parse_signal_async
+from core.risk_management import calculate_position_size
+from tradelocker_api.endpoints.auth import TradeLockerAuth
+from tradelocker_api.endpoints.accounts import TradeLockerAccounts
+from tradelocker_api.endpoints.instruments import TradeLockerInstruments
+from tradelocker_api.endpoints.orders import TradeLockerOrders
+from tradelocker_api.endpoints.quotes import TradeLockerQuotes
+from services.drawdown_manager import (
     load_drawdown_data,
     schedule_daily_reset,
     max_drawdown_balance
 )
-from order_handler import place_order
-from pos_monitor import monitor_existing_position
+from services.order_handler import place_orders_with_risk_check
+from services.pos_monitor import monitor_existing_position
 
 
 class TradingBot:
@@ -42,6 +46,10 @@ class TradingBot:
         self.orders_client = None
         self.quotes_client = None
         self.selected_account = None
+
+        # Tasks tracking
+        self._tasks = set()
+        self._shutdown_flag = False
 
     def _setup_logging(self):
         """Configure logging for the application"""
@@ -75,19 +83,24 @@ class TradingBot:
         self.channel_ids = [-1002153475473, -1001151289381, -1002486712356]
         self.local_timezone = pytz.timezone('America/New_York')
 
+        # Additional configurable parameters
+        self.polling_interval = int(os.getenv('POLLING_INTERVAL', '5'))  # seconds
+        self.enable_monitor = os.getenv('ENABLE_POSITION_MONITOR', 'true').lower() == 'true'
+        self.enable_signals = os.getenv('ENABLE_SIGNAL_PROCESSING', 'true').lower() == 'true'
+
     async def initialize(self):
         """Initialize and connect to all required services"""
         try:
             # Initialize Telegram client
             self.logger.info("Connecting to Telegram...")
-            self.client = TelegramClient('my_session', int(self.api_id), self.api_hash)
+            self.client = TelegramClient('./my_session', int(self.api_id), self.api_hash)
             await self.client.start()
 
             # Authenticate with TradeLocker API
             self.auth = TradeLockerAuth()
-            self.auth.authenticate()
+            await self.auth.authenticate_async()
 
-            if not self.auth.get_access_token():
+            if not await self.auth.get_access_token_async():
                 self.logger.error("Failed to authenticate with TradeLocker API")
                 return False
 
@@ -99,13 +112,13 @@ class TradingBot:
 
             return True
         except Exception as e:
-            self.logger.error(f"Initialization error: {e}")
+            self.logger.error(f"Initialization error: {e}", exc_info=True)
             return False
 
-    def display_accounts(self):
+    async def display_accounts(self):
         """Fetch and display all available accounts"""
         try:
-            accounts_data = self.accounts_client.get_accounts()
+            accounts_data = await self.accounts_client.get_accounts_async()
 
             if not accounts_data or not accounts_data.get('accounts'):
                 self.logger.info("No accounts available.")
@@ -121,10 +134,10 @@ class TradingBot:
                 tabulate(account_table, headers=["ID", "Account Number", "Currency", "Amount"], tablefmt="fancy_grid"))
             return accounts_data
         except Exception as e:
-            self.logger.error(f"Error fetching accounts: {e}")
+            self.logger.error(f"Error fetching accounts: {e}", exc_info=True)
             return None
 
-    def select_account(self, accounts_data):
+    async def select_account(self, accounts_data):
         """Prompt user to select an account to use for trading"""
         try:
             account_id = input("Please enter the Account Number you want to use for trading: ").strip()
@@ -146,14 +159,20 @@ class TradingBot:
                 self.logger.error(f"Account ID {account_id} is not valid.")
                 return False
         except Exception as e:
-            self.logger.error(f"Error selecting account: {e}")
+            self.logger.error(f"Error selecting account: {e}", exc_info=True)
             return False
 
     async def setup_telegram_handler(self):
         """Set up the Telegram message handler"""
+        if not self.enable_signals:
+            self.logger.info("Signal processing is disabled. Skipping Telegram handler setup.")
+            return
 
         @self.client.on(events.NewMessage(chats=self.channel_ids))
         async def handler(event):
+            if self._shutdown_flag:
+                return
+
             message_text = event.message.message
             message_time_utc = event.message.date
 
@@ -162,13 +181,16 @@ class TradingBot:
             formatted_time = message_time_local.strftime('%Y-%m-%d %H:%M:%S')
             colored_time = f"{Fore.CYAN}[{formatted_time}]{Style.RESET_ALL}"
 
-            await self.process_message(message_text, colored_time)
+            # Process the message in a new task to avoid blocking
+            task = asyncio.create_task(self.process_message(message_text, colored_time))
+            self._tasks.add(task)
+            task.add_done_callback(self._tasks.discard)
 
     async def process_message(self, message_text, colored_time):
         """Process a received Telegram message"""
         try:
             # Parse signal from Telegram message
-            parsed_signal = parse_signal(message_text)
+            parsed_signal = await parse_signal_async(message_text)
             if parsed_signal is None:
                 self.logger.info(f"{colored_time} Received invalid signal: {message_text}")
                 return
@@ -177,11 +199,11 @@ class TradingBot:
             self.logger.info(f"Using account ID: {self.selected_account['id']}")
 
             # Refresh account data to get latest balance
-            self.selected_account = self.accounts_client.get_selected_account()
+            self.selected_account = await self.accounts_client.refresh_account_balance_async() or self.selected_account
             latest_balance = float(self.selected_account['accountBalance'])
 
             # Get instrument details
-            instrument_data = self.instruments_client.get_instrument_by_name(
+            instrument_data = await self.instruments_client.get_instrument_by_name_async(
                 self.selected_account['id'],
                 self.selected_account['accNum'],
                 parsed_signal['instrument']
@@ -204,33 +226,33 @@ class TradingBot:
 
             self.logger.info(f"{colored_time}: Position sizes: {position_sizes}")
 
-            # Check drawdown limits
-            if latest_balance - risk_amount < max_drawdown_balance:
-                self.logger.warning(
-                    f"{colored_time}: Balance {latest_balance} has reached or exceeded "
-                    f"max draw down balance {max_drawdown_balance}. Skipping further trades."
-                )
-                return
-
-            # Place the order
-            place_order(
+            # Place the order with risk checks
+            await place_orders_with_risk_check(
                 self.orders_client,
+                self.accounts_client,
                 self.selected_account,
                 instrument_data,
                 parsed_signal,
                 position_sizes,
+                risk_amount,
+                max_drawdown_balance,
                 colored_time
             )
 
         except KeyError as e:
             self.logger.error(f"{colored_time}: Error processing signal: Missing key {e}. Skipping this signal.")
         except Exception as e:
-            self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.")
+            self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.", exc_info=True)
 
     async def start_position_monitoring(self):
         """Start monitoring existing positions in the background"""
-        auth_token = self.auth.get_access_token()
-        return asyncio.create_task(
+        if not self.enable_monitor:
+            self.logger.info("Position monitoring is disabled. Skipping monitor start.")
+            return None
+
+        self.logger.info("Starting position monitoring...")
+        auth_token = await self.auth.get_access_token_async()
+        monitor_task = asyncio.create_task(
             monitor_existing_position(
                 self.accounts_client,
                 self.instruments_client,
@@ -240,46 +262,123 @@ class TradingBot:
                 auth_token
             )
         )
+        self._tasks.add(monitor_task)
+        return monitor_task
+
+    async def cleanup(self):
+        """Cleanup resources on shutdown"""
+        self.logger.info("Performing cleanup...")
+
+        # Set shutdown flag
+        self._shutdown_flag = True
+
+        # Cancel all tasks
+        for task in self._tasks:
+            if not task.done():
+                task.cancel()
+
+        # Wait for tasks to complete cancellation
+        if self._tasks:
+            await asyncio.gather(*self._tasks, return_exceptions=True)
+
+        # Close API clients
+        if self.auth:
+            await self.auth.close()
+
+        if hasattr(self.accounts_client, 'close') and self.accounts_client:
+            await self.accounts_client.close()
+
+        if hasattr(self.instruments_client, 'close') and self.instruments_client:
+            await self.instruments_client.close()
+
+        if hasattr(self.orders_client, 'close') and self.orders_client:
+            await self.orders_client.close()
+
+        if hasattr(self.quotes_client, 'close') and self.quotes_client:
+            await self.quotes_client.close()
+
+        # Disconnect Telegram client
+        if self.client:
+            await self.client.disconnect()
+
+        self.logger.info("Cleanup completed.")
 
     async def run(self):
         """Main execution method"""
-        # Initialize connections and authenticate
-        if not await self.initialize():
-            self.logger.error("Initialization failed. Exiting.")
-            return
+        try:
+            # Initialize connections and authenticate
+            if not await self.initialize():
+                self.logger.error("Initialization failed. Exiting.")
+                return
 
-        # Display and select account
-        accounts_data = self.display_accounts()
-        if not accounts_data:
-            self.logger.error("No accounts found. Exiting.")
-            return
+            # Display and select account
+            accounts_data = await self.display_accounts()
+            if not accounts_data:
+                self.logger.error("No accounts found. Exiting.")
+                return
 
-        if not self.select_account(accounts_data):
-            self.logger.error("Account selection failed. Exiting.")
-            return
+            if not await self.select_account(accounts_data):
+                self.logger.error("Account selection failed. Exiting.")
+                return
 
-        # Load drawdown data and schedule daily reset
-        load_drawdown_data(self.selected_account)
-        schedule_daily_reset(self.selected_account)
+            # Load drawdown data and schedule daily reset
+            load_drawdown_data(self.selected_account)
+            schedule_daily_reset(self.selected_account)
 
-        # Set up message handler
-        await self.setup_telegram_handler()
+            # Set up message handler
+            await self.setup_telegram_handler()
 
-        # Start monitoring existing positions
-        monitoring_task = await self.start_position_monitoring()
+            # Start monitoring existing positions
+            monitoring_task = await self.start_position_monitoring()
+            if monitoring_task:
+                self._tasks.add(monitoring_task)
 
-        # Run until disconnected
-        self.logger.info("Bot is now running. Press Ctrl+C to stop.")
-        await self.client.run_until_disconnected()
+            # Run until disconnected or interrupted
+            self.logger.info("Bot is now running. Press Ctrl+C to stop.")
+            await self.client.run_until_disconnected()
 
-        # Cleanup when disconnected
-        monitoring_task.cancel()
+        except KeyboardInterrupt:
+            self.logger.info("Received keyboard interrupt. Shutting down...")
+        except Exception as e:
+            self.logger.error(f"Unexpected error in main loop: {e}", exc_info=True)
+        finally:
+            await self.cleanup()
+
+
+async def shutdown(loop):
+    """Handle graceful shutdown when CTRL+C is pressed"""
+    logging.info("Shutdown signal received. Closing all connections...")
+
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+
+    for task in tasks:
+        task.cancel()
+
+    await asyncio.gather(*tasks, return_exceptions=True)
+    loop.stop()
+    logging.info("Shutdown complete.")
 
 
 async def main():
+    """Main entry point with Windows-compatible signal handling"""
     bot = TradingBot()
+
+    # Set up signal handlers for systems that support them (Unix/Linux/Mac)
+    if platform.system() != "Windows":
+        loop = asyncio.get_running_loop()
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(loop)))
+
+    # Run the bot
     await bot.run()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        # On Windows, we rely on KeyboardInterrupt exception instead of signals
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Bot stopped manually.")
+    except Exception as e:
+        logging.error(f"Critical error: {e}", exc_info=True)
+        sys.exit(1)

@@ -1,5 +1,5 @@
 import requests
-from tradelocker_api.auth import TradeLockerAuth
+from tradelocker_api.endpoints.auth import TradeLockerAuth
 
 class TradeLockerConfig:
     def __init__(self, auth: TradeLockerAuth):
