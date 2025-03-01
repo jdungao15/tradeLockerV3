@@ -8,7 +8,7 @@ load_dotenv()
 class TradeLockerAuth:
     def __init__(self):
         self.base_url = os.getenv("TRADELOCKER_API_URL")
-        self.username = os.getenv("TRADELOCKER_USERNAME")
+        self.email = os.getenv("TRADELOCKER_EMAIL")
         self.password = os.getenv("TRADELOCKER_PASSWORD")
         self.server = os.getenv("TRADELOCKER_SERVER")
         self.access_token = None
@@ -22,7 +22,7 @@ class TradeLockerAuth:
         try:
             url = f"{self.base_url}/auth/jwt/token"
             payload = {
-                "email": self.username,
+                "email": self.email,
                 "password": self.password,
                 "server": self.server
             }

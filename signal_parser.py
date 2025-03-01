@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = os.getenv("API_KEY")
-api_url = os.getenv("API_URL")
+api_key = os.getenv("OPENAI_API_KEY")
+api_url = "https://api.openai.com/v1/chat/completions"
 
 def parse_signal(message: str):
     try:
@@ -53,7 +53,6 @@ def parse_signal(message: str):
                 ]
             }
         )
-
         content = response.json()["choices"][0]["message"]["content"].strip()
         print(f"Content from signal_paser.py {content}")
 
@@ -74,7 +73,6 @@ def parse_signal(message: str):
             result["stop_loss"] += 46
             result["entry_point"] += 46
             result["take_profits"] = [tp + 46 for tp in result["take_profits"]]
-        print(f"Result from signal_parser.py {result}")
         return result
 
     except Exception as e:
