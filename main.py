@@ -5,11 +5,11 @@ import pytz
 import platform
 import signal
 import sys
-import argparse
 from colorama import init, Fore, Style
 from tabulate import tabulate
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
+from datetime import datetime
 
 # Import our modules
 from core.signal_parser import parse_signal_async
@@ -26,6 +26,7 @@ from services.drawdown_manager import (
 )
 from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
+from services.news_filter import NewsEventFilter
 
 
 class TradingBot:
@@ -38,6 +39,10 @@ class TradingBot:
 
         # Load configuration
         self._load_config()
+
+        # Initialize news filter
+        self.news_filter = NewsEventFilter(timezone=self.local_timezone.zone)
+        self.enable_news_filter = os.getenv('ENABLE_NEWS_FILTER', 'true').lower() == 'true'
 
         # Initialize clients as None
         self.client = None
@@ -54,8 +59,14 @@ class TradingBot:
 
     def _setup_logging(self):
         """Configure logging for the application"""
-        from logging_config import setup_logging
-        setup_logging()
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            handlers=[
+                logging.FileHandler("trading_bot.log"),
+                logging.StreamHandler()
+            ]
+        )
         self.logger = logging.getLogger("trading_bot")
 
     def _load_config(self):
@@ -83,16 +94,13 @@ class TradingBot:
         self.enable_monitor = os.getenv('ENABLE_POSITION_MONITOR', 'true').lower() == 'true'
         self.enable_signals = os.getenv('ENABLE_SIGNAL_PROCESSING', 'true').lower() == 'true'
 
-    async def initialize(self, telegram_only=False):
+    async def initialize(self):
         """Initialize and connect to all required services"""
         try:
             # Initialize Telegram client
             self.logger.info("Connecting to Telegram...")
             self.client = TelegramClient('./my_session', int(self.api_id), self.api_hash)
             await self.client.start()
-
-            if telegram_only:
-                return True
 
             # Authenticate with TradeLocker API
             self.auth = TradeLockerAuth()
@@ -108,100 +116,35 @@ class TradingBot:
             self.orders_client = TradeLockerOrders(self.auth)
             self.quotes_client = TradeLockerQuotes(self.auth)
 
+            # Initialize news filter
+            if self.enable_news_filter:
+                self.logger.info("Initializing economic calendar for news filtering...")
+                await self.news_filter.initialize()
+                # Schedule regular updates
+                self._schedule_news_calendar_updates()
+
             return True
         except Exception as e:
             self.logger.error(f"Initialization error: {e}", exc_info=True)
             return False
 
-    async def get_telegram_channel_info(self):
-        """
-        Lists all dialogs (channels, groups, chats) that the client is part of,
-        along with their IDs.
-        """
-        if not self.client:
-            self.logger.error("Telegram client is not initialized")
-            return False
+    def _schedule_news_calendar_updates(self):
+        """Schedule regular updates for the economic calendar"""
 
-        try:
-            self.logger.info("Fetching Telegram channels and groups...")
-            dialogs = await self.client.get_dialogs()
+        async def update_calendar_task():
+            while not self._shutdown_flag:
+                try:
+                    await asyncio.sleep(6 * 3600)  # Update every 6 hours
+                    await self.news_filter.update_calendar()
+                except asyncio.CancelledError:
+                    break
+                except Exception as e:
+                    self.logger.error(f"Error updating economic calendar: {e}")
+                    await asyncio.sleep(1800)  # Retry in 30 minutes
 
-            # Prepare the data for tabular output
-            channel_data = []
-            for dialog in dialogs:
-                entity_type = "Channel" if dialog.is_channel else "Group" if dialog.is_group else "Chat"
-                channel_data.append([
-                    dialog.id,
-                    entity_type,
-                    dialog.title or dialog.name,
-                    f"{dialog.unread_count} unread" if dialog.unread_count else "No unread",
-                    "✓" if dialog.id in self.channel_ids else ""
-                ])
-
-            # Sort by entity type and name
-            channel_data.sort(key=lambda x: (x[1], x[2]))
-
-            # Use tabulate to create a nice table
-            headers = ["ID", "Type", "Name", "Status", "Monitored"]
-            table = tabulate(channel_data, headers=headers, tablefmt="fancy_grid")
-
-            print("\nTelegram Channels and Groups:\n")
-            print(table)
-            print("\nNote: Channels marked with ✓ are currently being monitored for signals.\n")
-
-            return True
-        except Exception as e:
-            self.logger.error(f"Error fetching Telegram channels: {e}", exc_info=True)
-            return False
-
-    async def add_channel_to_monitoring(self, channel_id):
-        """Add a channel ID to the monitoring list"""
-        try:
-            # Check if channel exists
-            dialogs = await self.client.get_dialogs()
-            channel_exists = any(dialog.id == channel_id for dialog in dialogs)
-
-            if not channel_exists:
-                self.logger.error(f"Channel ID {channel_id} does not exist or is not accessible")
-                return False
-
-            # Check if already in list
-            if channel_id in self.channel_ids:
-                self.logger.info(f"Channel ID {channel_id} is already in the monitoring list")
-                return True
-
-            # Add to list
-            self.channel_ids.append(channel_id)
-            self.logger.info(f"Added channel ID {channel_id} to monitoring list")
-
-            # Save to config (This is a simplified implementation)
-            # In a real implementation, you would save this to a config file
-            print(f"Channel ID {channel_id} added to monitoring list.")
-            print(f"Updated monitoring list: {self.channel_ids}")
-
-            return True
-        except Exception as e:
-            self.logger.error(f"Error adding channel to monitoring list: {e}", exc_info=True)
-            return False
-
-    async def remove_channel_from_monitoring(self, channel_id):
-        """Remove a channel ID from the monitoring list"""
-        try:
-            if channel_id not in self.channel_ids:
-                self.logger.info(f"Channel ID {channel_id} is not in the monitoring list")
-                return True
-
-            self.channel_ids.remove(channel_id)
-            self.logger.info(f"Removed channel ID {channel_id} from monitoring list")
-
-            # Save to config (This is a simplified implementation)
-            print(f"Channel ID {channel_id} removed from monitoring list.")
-            print(f"Updated monitoring list: {self.channel_ids}")
-
-            return True
-        except Exception as e:
-            self.logger.error(f"Error removing channel from monitoring list: {e}", exc_info=True)
-            return False
+        task = asyncio.create_task(update_calendar_task())
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     async def display_accounts(self):
         """Fetch and display all available accounts"""
@@ -269,15 +212,6 @@ class TradingBot:
             formatted_time = message_time_local.strftime('%Y-%m-%d %H:%M:%S')
             colored_time = f"{Fore.CYAN}[{formatted_time}]{Style.RESET_ALL}"
 
-            # Log channel information
-            chat_id = event.chat_id
-            try:
-                chat_entity = await event.get_chat()
-                chat_name = chat_entity.title if hasattr(chat_entity, 'title') else str(chat_id)
-                self.logger.info(f"Message received from {chat_name} (ID: {chat_id})")
-            except Exception as e:
-                self.logger.warning(f"Could not get chat info: {e}")
-
             # Process the message in a new task to avoid blocking
             task = asyncio.create_task(self.process_message(message_text, colored_time))
             self._tasks.add(task)
@@ -294,6 +228,16 @@ class TradingBot:
 
             self.logger.info(f"{colored_time} Received message: {message_text}")
             self.logger.info(f"Using account ID: {self.selected_account['id']}")
+
+            # Check news restrictions if enabled
+            if self.enable_news_filter:
+                current_time = datetime.now(pytz.UTC)
+                can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+
+                if not can_trade:
+                    self.logger.warning(
+                        f"{colored_time}: Cannot place trade for {parsed_signal['instrument']}: {reason}")
+                    return
 
             # Refresh account data to get latest balance
             self.selected_account = await self.accounts_client.refresh_account_balance_async() or self.selected_account
@@ -362,6 +306,24 @@ class TradingBot:
         self._tasks.add(monitor_task)
         return monitor_task
 
+    async def display_upcoming_news(self):
+        """Display upcoming high-impact news events"""
+        if not self.enable_news_filter:
+            self.logger.info("News filter is disabled.")
+            return
+
+        upcoming_events = self.news_filter.get_upcoming_high_impact_events(hours=24)
+
+        if not upcoming_events:
+            self.logger.info("No upcoming high-impact news events in the next 24 hours.")
+            return
+
+        self.logger.info("Upcoming high-impact news events (next 24 hours):")
+        for event in upcoming_events:
+            event_time = event['datetime']
+            local_time = event_time.astimezone(self.local_timezone)
+            self.logger.info(f"[{local_time.strftime('%Y-%m-%d %H:%M')}] {event['currency']} - {event['event']}")
+
     async def cleanup(self):
         """Cleanup resources on shutdown"""
         self.logger.info("Performing cleanup...")
@@ -425,6 +387,10 @@ class TradingBot:
             # Set up message handler
             await self.setup_telegram_handler()
 
+            # Display upcoming news events
+            if self.enable_news_filter:
+                await self.display_upcoming_news()
+
             # Start monitoring existing positions
             monitoring_task = await self.start_position_monitoring()
             if monitoring_task:
@@ -457,38 +423,8 @@ async def shutdown(loop):
 
 
 async def main():
-    """Main entry point with command line arguments"""
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Trading Bot with Telegram Signal Processing')
-    parser.add_argument('--list-channels', action='store_true',
-                        help='List all Telegram channels and their IDs')
-    parser.add_argument('--add-channel', type=int,
-                        help='Add a channel ID to monitoring list')
-    parser.add_argument('--remove-channel', type=int,
-                        help='Remove a channel ID from monitoring list')
-    parser.add_argument('--parser-stats', action='store_true',
-                        help='Display signal parser performance statistics')
-    args = parser.parse_args()
-
+    """Main entry point with Windows-compatible signal handling"""
     bot = TradingBot()
-
-    # Handle special commands
-    if args.list_channels or args.add_channel is not None or args.remove_channel is not None or args.parser_stats:
-        # For channel-related operations, we only need Telegram
-        telegram_only = not args.parser_stats
-        if await bot.initialize(telegram_only=telegram_only):
-            if args.list_channels:
-                await bot.get_telegram_channel_info()
-
-            if args.add_channel is not None:
-                await bot.add_channel_to_monitoring(args.add_channel)
-
-            if args.remove_channel is not None:
-                await bot.remove_channel_from_monitoring(args.remove_channel)
-
-
-            await bot.cleanup()
-        return
 
     # Set up signal handlers for systems that support them (Unix/Linux/Mac)
     if platform.system() != "Windows":
@@ -496,7 +432,7 @@ async def main():
         for sig in (signal.SIGINT, signal.SIGTERM):
             loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(loop)))
 
-    # Run the bot normally
+    # Run the bot
     await bot.run()
 
 
