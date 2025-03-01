@@ -1,0 +1,626 @@
+2025-03-01 15:41:50 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 15:41:50 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 15:41:50 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:41:53 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:41:53 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 15:41:53 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 15:41:53 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-01 18:00:00 EST
+2025-03-01 15:41:54 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 15:41:54 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 15:41:54 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 15:42:10 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-01 15:42:12 - core.signal_parser             - DEBUG    - Content from signal_parser.py: null
+2025-03-01 15:42:12 - core.signal_parser             - INFO     - Not a valid trading signal
+2025-03-01 15:42:12 - trading_bot                    - INFO     - [36m[2025-03-01 15:18:01][0m Received invalid signal: fadfas
+2025-03-01 15:42:14 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43840,
+  "stop_loss": 43890,
+  "take_profits": [43800, 43740, 43700]
+}
+2025-03-01 15:42:14 - trading_bot                    - INFO     - [36m[2025-03-01 15:42:09][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-01 15:42:14 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 15:42:14 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:42:14 - core.risk_management           - INFO     - Calculated position sizes: [0.68, 0.68, 0.68], Risk amount: 506.83
+2025-03-01 15:42:14 - trading_bot                    - INFO     - [36m[2025-03-01 15:42:09][0m: Position sizes: [0.68, 0.68, 0.68]
+2025-03-01 15:42:15 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:42:15 - services.order_handler         - INFO     - [36m[2025-03-01 15:42:09][0m: Placing 3 orders in parallel...
+2025-03-01 15:42:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:42:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:42:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:42:15 - services.order_handler         - INFO     - [36m[2025-03-01 15:42:09][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:42:15 - services.order_handler         - INFO     - [36m[2025-03-01 15:42:09][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:42:15 - services.order_handler         - INFO     - [36m[2025-03-01 15:42:09][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:43:29 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 15:47:11 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 15:51:24 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 15:51:24 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 15:51:24 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:51:27 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:51:27 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 15:51:27 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 15:51:27 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-01 18:00:00 EST
+2025-03-01 15:51:27 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 15:51:27 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 15:51:27 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 15:52:30 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 15:52:30 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 15:52:30 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:52:31 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 15:52:31 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-01 15:52:31 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:52:31 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-01 15:52:47 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 15:52:47 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 15:52:47 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:52:47 - trading_bot                    - INFO     - Fetching Telegram channels and groups...
+2025-03-01 15:52:48 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 15:52:48 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-01 15:52:48 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:52:48 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-01 15:54:11 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-01 15:54:11 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:54:11 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 15:54:11 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-01 15:54:11 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-01 15:54:15 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 15:54:15 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 15:54:15 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 15:54:17 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:54:17 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 15:54:17 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 15:54:17 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-01 18:00:00 EST
+2025-03-01 15:54:17 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 15:54:17 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 15:54:17 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 15:54:19 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 15:54:19 - core.signal_parser             - DEBUG    - Regex parsing failed: 'NoneType' object is not subscriptable
+2025-03-01 15:54:19 - core.signal_parser             - INFO     - Regex parsing failed, using OpenAI API
+2025-03-01 15:54:20 - trading_bot                    - INFO     - [36m[2025-03-01 15:54:19][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-01 15:54:20 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 15:54:20 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:54:21 - core.risk_management           - INFO     - Calculated position sizes: [0.51, 0.51, 0.51, 0.51], Risk amount: 506.83
+2025-03-01 15:54:21 - trading_bot                    - INFO     - [36m[2025-03-01 15:54:19][0m: Position sizes: [0.51, 0.51, 0.51, 0.51]
+2025-03-01 15:54:21 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:54:21 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:19][0m: Placing 4 orders in parallel...
+2025-03-01 15:54:21 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:21 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:21 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:21 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:21 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:19][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:21 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:19][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:21 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:19][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:21 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:19][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:32 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 15:54:55 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 15:54:55 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 15:54:55 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-01 15:54:55 - trading_bot                    - INFO     - [36m[2025-03-01 15:54:55][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-01 15:54:55 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 15:54:55 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:54:55 - core.risk_management           - INFO     - Calculated position sizes: [0.51, 0.51, 0.51, 0.51], Risk amount: 506.83
+2025-03-01 15:54:55 - trading_bot                    - INFO     - [36m[2025-03-01 15:54:55][0m: Position sizes: [0.51, 0.51, 0.51, 0.51]
+2025-03-01 15:54:56 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:54:56 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:55][0m: Placing 4 orders in parallel...
+2025-03-01 15:54:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:56 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:55][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:56 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:55][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:56 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:55][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:54:56 - services.order_handler         - INFO     - [36m[2025-03-01 15:54:55][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 15:55:05 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 15:55:05 - core.signal_parser             - DEBUG    - Regex parsing failed: 'NoneType' object is not subscriptable
+2025-03-01 15:55:05 - core.signal_parser             - INFO     - Regex parsing failed, using OpenAI API
+2025-03-01 15:55:06 - trading_bot                    - INFO     - [36m[2025-03-01 15:55:05][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 15:55:06 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 15:55:06 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 15:55:06 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 15:55:06 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 15:55:06 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 15:55:06 - trading_bot                    - ERROR    - [36m[2025-03-01 15:55:05][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 16:00:37 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-01 16:00:37 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-01 16:00:37 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 16:00:37 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-01 16:00:37 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-01 16:00:39 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 16:00:39 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 16:00:39 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 16:00:42 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:00:42 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 16:00:42 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 16:00:42 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-01 18:00:00 EST
+2025-03-01 16:00:42 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 16:00:42 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 16:00:42 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 16:00:47 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-01 16:00:47 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:00:47 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:00:47 - core.signal_parser             - DEBUG    - Regex parsing failed: 'NoneType' object is not subscriptable
+2025-03-01 16:00:47 - core.signal_parser             - INFO     - Regex parsing failed, using OpenAI API
+2025-03-01 16:00:47 - core.signal_parser             - DEBUG    - Regex parsing failed: 'NoneType' object is not subscriptable
+2025-03-01 16:00:47 - core.signal_parser             - INFO     - Regex parsing failed, using OpenAI API
+2025-03-01 16:00:48 - trading_bot                    - INFO     - [36m[2025-03-01 16:00:46][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 16:00:48 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:00:48 - trading_bot                    - INFO     - [36m[2025-03-01 15:55:05][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 16:00:48 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:00:48 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:00:49 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:00:49 - core.risk_management           - ERROR    - Invalid entry_point type: <class 'dict'>
+2025-03-01 16:00:49 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 16:00:49 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.0, 0.0, 0.0], Risk amount: 506.83
+2025-03-01 16:00:49 - trading_bot                    - INFO     - [36m[2025-03-01 15:55:05][0m: Position sizes: [0.0, 0.0, 0.0, 0.0]
+2025-03-01 16:00:49 - core.risk_management           - ERROR    - Invalid entry_point type: <class 'dict'>
+2025-03-01 16:00:49 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 16:00:49 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.0, 0.0, 0.0], Risk amount: 506.83
+2025-03-01 16:00:49 - trading_bot                    - INFO     - [36m[2025-03-01 16:00:46][0m: Position sizes: [0.0, 0.0, 0.0, 0.0]
+2025-03-01 16:00:49 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:00:49 - services.order_handler         - INFO     - [36m[2025-03-01 15:55:05][0m: Placing 4 orders in parallel...
+2025-03-01 16:00:49 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:49 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:49 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:00:49 - services.order_handler         - INFO     - [36m[2025-03-01 16:00:46][0m: Placing 4 orders in parallel...
+2025-03-01 16:00:49 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:49 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:49 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:50 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - WARNING  - Circuit OPEN for trade/accounts/1011989/orders after 5 failures
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 15:55:05][0m: Order placed successfully: None
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 15:55:05][0m: Order placed successfully: None
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 15:55:05][0m: Order placed successfully: None
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 15:55:05][0m: Order placed successfully: None
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 16:00:46][0m: Order placed successfully: None
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 16:00:46][0m: Order placed successfully: None
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 16:00:46][0m: Order placed successfully: None
+2025-03-01 16:00:52 - services.order_handler         - INFO     - [36m[2025-03-01 16:00:46][0m: Order placed successfully: None
+2025-03-01 16:02:12 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 16:02:12 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 16:02:12 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 16:02:14 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:02:14 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 16:02:14 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 16:02:14 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-01 18:00:00 EST
+2025-03-01 16:02:14 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 16:02:14 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 16:02:14 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 16:02:33 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-01 16:02:33 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:02:33 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:02:33 - core.signal_parser             - DEBUG    - Regex parsing failed: 'NoneType' object is not subscriptable
+2025-03-01 16:02:33 - core.signal_parser             - INFO     - Regex parsing failed, using OpenAI API
+2025-03-01 16:02:33 - core.signal_parser             - DEBUG    - Regex parsing failed: 'NoneType' object is not subscriptable
+2025-03-01 16:02:33 - core.signal_parser             - INFO     - Regex parsing failed, using OpenAI API
+2025-03-01 16:02:34 - trading_bot                    - INFO     - [36m[2025-03-01 16:00:46][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 16:02:34 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:02:34 - trading_bot                    - INFO     - [36m[2025-03-01 16:02:32][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 16:02:34 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:02:34 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:02:34 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:02:34 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - trading_bot                    - ERROR    - [36m[2025-03-01 16:00:46][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 16:02:34 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - trading_bot                    - ERROR    - [36m[2025-03-01 16:02:32][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 16:04:23 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-01 16:04:23 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-01 16:04:23 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 16:04:23 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-01 16:04:23 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-01 16:05:17 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 16:05:17 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 16:05:17 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 16:05:30 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:05:30 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 16:05:30 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 16:05:30 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-01 18:00:00 EST
+2025-03-01 16:05:30 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 16:05:30 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 16:05:30 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 16:05:37 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-01 16:05:37 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:05:37 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:05:39 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "buy",
+  "entry_point": 2834,
+  "stop_loss": 2830,
+  "take_profits": [
+    2840,
+    2850,
+    2860
+  ]
+}
+2025-03-01 16:05:39 - trading_bot                    - INFO     - [36m[2025-03-01 16:02:32][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 16:05:39 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:05:39 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:05:40 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "buy",
+  "entry_point": 2834,
+  "stop_loss": 2830,
+  "take_profits": [2840, 2850, 2860]
+}
+2025-03-01 16:05:40 - trading_bot                    - INFO     - [36m[2025-03-01 16:05:36][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 16:05:40 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:05:40 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 16:05:40 - core.risk_management           - INFO     - Calculated position sizes: [0.42, 0.42, 0.42], Risk amount: 506.83
+2025-03-01 16:05:40 - trading_bot                    - INFO     - [36m[2025-03-01 16:02:32][0m: Position sizes: [0.42, 0.42, 0.42]
+2025-03-01 16:05:40 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:05:40 - services.order_handler         - INFO     - [36m[2025-03-01 16:02:32][0m: Placing 3 orders in parallel...
+2025-03-01 16:05:40 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:05:40 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 16:05:40 - core.risk_management           - INFO     - Calculated position sizes: [0.42, 0.42, 0.42], Risk amount: 506.83
+2025-03-01 16:05:40 - trading_bot                    - INFO     - [36m[2025-03-01 16:05:36][0m: Position sizes: [0.42, 0.42, 0.42]
+2025-03-01 16:05:40 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:05:40 - services.order_handler         - INFO     - [36m[2025-03-01 16:05:36][0m: Placing 3 orders in parallel...
+2025-03-01 16:05:40 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - services.order_handler         - INFO     - [36m[2025-03-01 16:02:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - services.order_handler         - INFO     - [36m[2025-03-01 16:02:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - services.order_handler         - INFO     - [36m[2025-03-01 16:02:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - services.order_handler         - INFO     - [36m[2025-03-01 16:05:36][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - services.order_handler         - INFO     - [36m[2025-03-01 16:05:36][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:05:41 - services.order_handler         - INFO     - [36m[2025-03-01 16:05:36][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:07:43 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:07:44 - core.signal_parser             - DEBUG    - Content from signal_parser.py: null
+2025-03-01 16:07:44 - core.signal_parser             - INFO     - Not a valid trading signal
+2025-03-01 16:07:44 - trading_bot                    - INFO     - [36m[2025-03-01 16:07:43][0m Received invalid signal: dfafas
+2025-03-01 16:07:54 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 16:09:15 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:09:15 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-01 16:09:15 - trading_bot                    - INFO     - [36m[2025-03-01 16:09:15][0m Received message: Buy limit  XAUUSD 2834-2831
+
+
+TP 2840
+TP 2850
+TP 2860
+TP 2870
+TP OPEN 
+
+SL 2830
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-01 16:09:15 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:09:15 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:09:15 - core.risk_management           - INFO     - Account balance: 25341.5, Closest tier: 25000, Risk percentage for XAUUSD: 2.0%
+2025-03-01 16:09:15 - core.risk_management           - INFO     - Calculated position sizes: [0.42, 0.42, 0.42], Risk amount: 506.83
+2025-03-01 16:09:15 - trading_bot                    - INFO     - [36m[2025-03-01 16:09:15][0m: Position sizes: [0.42, 0.42, 0.42]
+2025-03-01 16:09:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:09:16 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:15][0m: Placing 3 orders in parallel...
+2025-03-01 16:09:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:16 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:15][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:16 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:15][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:16 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:15][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:32 - trading_bot                    - INFO     - Message received from Cooking Lab (ID: -1002486712356)
+2025-03-01 16:09:35 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+"instrument": "DJI30",
+"order_type": "sell",
+"entry_point": 43840,
+"stop_loss": 43890,
+"take_profits": [43800, 43740, 43700]
+}
+2025-03-01 16:09:35 - trading_bot                    - INFO     - [36m[2025-03-01 16:09:32][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-01 16:09:35 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-01 16:09:35 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:09:35 - core.risk_management           - INFO     - Calculated position sizes: [0.68, 0.68, 0.68], Risk amount: 506.83
+2025-03-01 16:09:35 - trading_bot                    - INFO     - [36m[2025-03-01 16:09:32][0m: Position sizes: [0.68, 0.68, 0.68]
+2025-03-01 16:09:35 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 16:09:35 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:32][0m: Placing 3 orders in parallel...
+2025-03-01 16:09:35 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:35 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:36 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:36 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:36 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:09:36 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-01 16:22:54 - telethon.client.updates        - INFO     - Got difference for account updates

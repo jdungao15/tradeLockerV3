@@ -1,0 +1,171 @@
+2025-03-01 15:55:06 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 15:55:06 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 15:55:06 - trading_bot                    - ERROR    - [36m[2025-03-01 15:55:05][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 16:00:49 - core.risk_management           - ERROR    - Invalid entry_point type: <class 'dict'>
+2025-03-01 16:00:49 - core.risk_management           - ERROR    - Invalid entry_point type: <class 'dict'>
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - trading_bot                    - ERROR    - [36m[2025-03-01 16:00:46][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - trading_bot                    - ERROR    - [36m[2025-03-01 16:02:32][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
