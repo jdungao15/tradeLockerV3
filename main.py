@@ -210,6 +210,8 @@ class TradingBot:
             self._tasks.add(task)
             task.add_done_callback(self._tasks.discard)
 
+    # In main.py, update the process_message method to properly handle news filtering
+
     async def process_message(self, message_text, colored_time):
         """Process a received Telegram message"""
         try:
@@ -225,11 +227,16 @@ class TradingBot:
             # Check news restrictions if enabled
             if self.enable_news_filter:
                 current_time = datetime.now(pytz.UTC)
-                can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+                try:
+                    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
 
-                if not can_trade:
-                    self.logger.warning(
-                        f"{colored_time}: Cannot place trade for {parsed_signal['instrument']}: {reason}")
+                    if not can_trade:
+                        self.logger.warning(
+                            f"{colored_time}: Cannot place trade for {parsed_signal['instrument']}: {reason}")
+                        return
+                except AttributeError as e:
+                    # Handle the case where the method might not be available
+                    self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.")
                     return
 
             # Refresh account data to get latest balance
@@ -277,7 +284,6 @@ class TradingBot:
             self.logger.error(f"{colored_time}: Error processing signal: Missing key {e}. Skipping this signal.")
         except Exception as e:
             self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.", exc_info=True)
-
     async def start_position_monitoring(self):
         """Start monitoring existing positions in the background"""
         if not self.enable_monitor:
@@ -300,12 +306,22 @@ class TradingBot:
         return monitor_task
 
     async def display_upcoming_news(self):
-        """Display upcoming high-impact news events"""
+        """Display upcoming high-impact news events for major currencies"""
         if not self.enable_news_filter:
             self.logger.info("News filter is disabled.")
             return
 
-        upcoming_events = self.news_filter.get_upcoming_high_impact_events(hours=24)
+        # Focus on major currencies typically traded
+        major_currencies = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "NZD"]
+
+        try:
+            # Use our new method to get high-impact events for major currencies
+            upcoming_events = self.news_filter.get_high_impact_events_for_currencies(
+                major_currencies, hours=24
+            )
+        except AttributeError:
+            # Fall back to the old method if the new one isn't available
+            upcoming_events = self.news_filter.get_upcoming_high_impact_events(hours=24)
 
         if not upcoming_events:
             self.logger.info("No upcoming high-impact news events in the next 24 hours.")
@@ -315,7 +331,9 @@ class TradingBot:
         for event in upcoming_events:
             event_time = event['datetime']
             local_time = event_time.astimezone(self.local_timezone)
-            self.logger.info(f"[{local_time.strftime('%Y-%m-%d %H:%M')}] {event['currency']} - {event['event']}")
+            self.logger.info(
+                f"[{local_time.strftime('%Y-%m-%d %H:%M')}] {event['currency']} - {event['event']}"
+            )
 
     async def cleanup(self):
         """Cleanup resources on shutdown"""

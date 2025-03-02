@@ -3,9 +3,9 @@
 News Event Filter Testing Tool
 
 Usage:
-    python news_check.py list --today --impact  # List today's events sorted by impact
-    python news_check.py list --week --summary  # List all events this week (Country & Impact only)
-    python news_check.py list --hours 48        # List events in the next 48 hours
+    python news_check.py list --today --impact high     # List today's high-impact events only
+    python news_check.py list --week --impact all       # List all events this week
+    python news_check.py list --hours 168 --sort-impact # List events for next 7 days sorted by impact
 """
 
 import os
@@ -37,41 +37,76 @@ logger = logging.getLogger('news_check')
 
 def colorize_impact(impact):
     """Returns a colorized version of the impact level"""
-    if impact.lower() == "high":
-        return Fore.RED + impact.capitalize() + Style.RESET_ALL
-    elif impact.lower() == "medium":
-        return Fore.YELLOW + impact.capitalize() + Style.RESET_ALL
-    elif impact.lower() == "low":
-        return Fore.GREEN + impact.capitalize() + Style.RESET_ALL
-    return impact.capitalize()
+    impact_lower = impact.lower() if impact else ""
+    if impact_lower == "high":
+        return Fore.RED + "High" + Style.RESET_ALL
+    elif impact_lower == "medium":
+        return Fore.YELLOW + "Medium" + Style.RESET_ALL
+    elif impact_lower == "low":
+        return Fore.GREEN + "Low" + Style.RESET_ALL
+    return impact.capitalize() if impact else "N/A"
 
 
-def sort_events(events, sort_by_impact=False):
-    """Sort events by impact level if specified"""
-    impact_priority = {"High": 1, "Medium": 2, "Low": 3}
-    if sort_by_impact:
-        return sorted(events, key=lambda e: impact_priority.get(e.get('impact', 'Low'), 3))
-    return events
+def filter_by_impact(events, impact_level=None):
+    """Filter events by impact level"""
+    if not impact_level or impact_level.lower() == 'all':
+        return events
+
+    # Convert to lowercase for case-insensitive comparison
+    impact_level = impact_level.lower()
+    return [event for event in events if event.get('impact', '').lower() == impact_level]
 
 
-async def display_events(news_filter, time_filter, summary=False, sort_by_impact=False):
-    """Display economic events based on time filter with optional sorting"""
+def sort_events_by_impact(events):
+    """Sort events by impact level (High > Medium > Low)"""
+    impact_priority = {"high": 1, "medium": 2, "low": 3}
+    return sorted(events, key=lambda e: impact_priority.get(e.get('impact', '').lower(), 4))
+
+
+def sort_events_by_datetime(events):
+    """Sort events by datetime"""
+    return sorted(events, key=lambda e: e['datetime'])
+
+
+async def display_events(news_filter, time_filter, summary=False, impact_level=None, sort_by_impact=False):
+    """Display economic events based on time filter with optional filtering and sorting"""
+    # Get all events for the time period
     upcoming_events = news_filter.get_events_by_filter(time_filter)
 
     if not upcoming_events:
         print(f"{Fore.YELLOW}No economic events found for {time_filter}.{Style.RESET_ALL}")
         return
 
-    # Sort events if --impact flag is used
-    upcoming_events = sort_events(upcoming_events, sort_by_impact)
+    # Filter by impact level if specified
+    if impact_level and impact_level.lower() != 'all':
+        filtered_events = filter_by_impact(upcoming_events, impact_level)
+        if not filtered_events:
+            print(f"{Fore.YELLOW}No {impact_level.upper()} impact events found for {time_filter}.{Style.RESET_ALL}")
+            return
+        upcoming_events = filtered_events
 
-    print(f"\n{Fore.CYAN}=== Economic Events: {time_filter} ==={Style.RESET_ALL}\n")
+    # Sort events
+    if sort_by_impact:
+        upcoming_events = sort_events_by_impact(upcoming_events)
+    else:
+        upcoming_events = sort_events_by_datetime(upcoming_events)
+
+    # Display title with impact level if filtered
+    title = f"Economic Events: {time_filter}"
+    if impact_level and impact_level.lower() != 'all':
+        title += f" ({impact_level.upper()} Impact Only)"
+
+    print(f"\n{Fore.CYAN}=== {title} ==={Style.RESET_ALL}\n")
+    print(f"Total events: {len(upcoming_events)}\n")
 
     if summary:
         headers = ["Country", "Impact"]
         table_data = []
         for event in upcoming_events:
-            table_data.append([event['currency'], colorize_impact(event.get('impact', 'N/A'))])
+            table_data.append([
+                event['currency'],
+                colorize_impact(event.get('impact', 'N/A'))
+            ])
     else:
         headers = ["Title", "Country", "Date", "Time", "Impact", "Forecast", "Previous"]
         table_data = []
@@ -100,20 +135,55 @@ async def main():
     parser.add_argument('--week', action='store_true', help='List all events this week')
     parser.add_argument('--hours', type=int, default=24, help='Hours to look ahead for news events')
     parser.add_argument('--summary', action='store_true', help='Show only Country & Impact')
-    parser.add_argument('--impact', action='store_true', help='Sort events by impact level')
+    parser.add_argument('--sort-impact', action='store_true', help='Sort events by impact level')
+    parser.add_argument('--impact', choices=['high', 'medium', 'low', 'all'],
+                        help='Filter by impact level (high, medium, low, or all)')
+    parser.add_argument('--debug', action='store_true', help='Show debug information')
 
     args = parser.parse_args()
+
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
 
     # Initialize the news filter
     news_filter = NewsEventFilter()
     await news_filter.initialize()
 
+    # Determine the time filter
     if args.today:
-        await display_events(news_filter, "today", args.summary, args.impact)
+        time_filter = "today"
     elif args.week:
-        await display_events(news_filter, "week", args.summary, args.impact)
+        time_filter = "week"
     else:
-        await display_events(news_filter, f"next {args.hours} hours", args.summary, args.impact)
+        time_filter = f"next {args.hours} hours"
+
+    # Impact level - if not specified but using the old --impact flag, default to sorting by impact
+    impact_level = args.impact
+    if impact_level is None and args.sort_impact:
+        impact_level = 'all'
+
+    # Display events with the appropriate filters
+    await display_events(
+        news_filter=news_filter,
+        time_filter=time_filter,
+        summary=args.summary,
+        impact_level=impact_level,
+        sort_by_impact=args.sort_impact
+    )
+
+    if args.debug:
+        # Show some debug information about the filter results
+        all_events = news_filter.get_events_by_filter(time_filter)
+        high_events = [e for e in all_events if e.get('impact', '').lower() == 'high']
+        medium_events = [e for e in all_events if e.get('impact', '').lower() == 'medium']
+        low_events = [e for e in all_events if e.get('impact', '').lower() == 'low']
+
+        print(f"\n{Fore.CYAN}=== Debug Information ==={Style.RESET_ALL}")
+        print(f"Total events: {len(all_events)}")
+        print(f"High impact: {len(high_events)}")
+        print(f"Medium impact: {len(medium_events)}")
+        print(f"Low impact: {len(low_events)}")
+        print(f"Other/Unknown impact: {len(all_events) - len(high_events) - len(medium_events) - len(low_events)}")
 
 
 if __name__ == "__main__":

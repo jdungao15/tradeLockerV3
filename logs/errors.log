@@ -232,3 +232,141 @@ client_session: <aiohttp.client.ClientSession object at 0x000001C554E08690>
 2025-03-01 23:28:55 - asyncio                        - ERROR    - Unclosed client session
 client_session: <aiohttp.client.ClientSession object at 0x000001C554D8BE00>
 2025-03-02 04:01:46 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo-maintenance.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 10:41:44 - trading_bot                    - ERROR    - Account ID 90 is not valid.
+2025-03-02 10:41:44 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-02 10:46:32 - trading_bot                    - ERROR    - [36m[2025-03-01 18:13:05][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:46:32 - trading_bot                    - ERROR    - [36m[2025-03-02 10:46:29][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:56:58 - trading_bot                    - ERROR    - [36m[2025-03-02 10:52:43][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    if self.enable_news_filter:
+                            ^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:56:59 - trading_bot                    - ERROR    - [36m[2025-03-02 10:46:29][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    if self.enable_news_filter:
+                            ^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 11:07:33 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:39 - asyncio                        - ERROR    - Task exception was never retrieved
+future: <Task finished name='Task-52' coro=<TelegramBaseClient._disconnect_coro() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py:707> exception=OperationalError('database is locked')>
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:39 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:44 - trading_bot                    - ERROR    - Unexpected error in main loop: database is locked
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 38, in _run_until_disconnected
+    raise self._updates_error
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 308, in _update_loop
+    diff = await self(get_diff)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 30, in __call__
+    return await self._call(self._sender, request, ordered=ordered)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 93, in _call
+    self.session.process_entities(result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 414, in run
+    await self.client.run_until_disconnected()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 43, in _run_until_disconnected
+    await self.disconnect()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:44 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:50 - root                           - ERROR    - Critical error: database is locked
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 468, in <module>
+    asyncio.run(main())
+    ~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 460, in main
+    await bot.run()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 421, in run
+    await self.cleanup()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 372, in cleanup
+    await self.client.disconnect()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked

@@ -746,3 +746,446 @@ client_session: <aiohttp.client.ClientSession object at 0x000001C554D8BE00>
 2025-03-02 04:01:47 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
 2025-03-02 04:01:47 - telethon.network.mtprotostate  - WARNING  - Server resent the older message 7477134798602546177, ignoring
 2025-03-02 04:01:47 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-02 10:41:41 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-02 10:41:41 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-02 10:41:41 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-02 10:41:42 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-02 10:41:42 - services.news_filter           - INFO     - Loaded economic calendar from cache with 114 events
+2025-03-02 10:41:44 - trading_bot                    - ERROR    - Account ID 90 is not valid.
+2025-03-02 10:41:44 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-02 10:41:44 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-02 10:41:44 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-02 10:41:44 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-02 10:41:44 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-02 10:41:55 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-02 10:41:55 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-02 10:41:55 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-02 10:41:55 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-02 10:41:55 - services.news_filter           - INFO     - Loaded economic calendar from cache with 114 events
+2025-03-02 10:41:56 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 10:41:56 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-02 10:41:56 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-02 10:41:56 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-02 18:00:00 EST
+2025-03-02 10:41:56 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-02 16:45] NZD - Overseas Trade Index q/q
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-02 19:00] AUD - MI Inflation Gauge m/m
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-02 19:30] AUD - ANZ Job Advertisements m/m
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-02 19:30] AUD - Company Operating Profits q/q
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-02 19:30] JPY - Final Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-02 20:45] CNY - Caixin Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 00:05] USD - FOMC Member Musalem Speaks
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 00:30] AUD - Commodity Prices y/y
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 03:15] EUR - Spanish Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 03:30] CHF - Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 03:45] EUR - Italian Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 03:50] EUR - French Final Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 03:55] EUR - German Final Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 04:00] EUR - Final Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Final Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - M4 Money Supply m/m
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Mortgage Approvals
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Net Lending to Individuals m/m
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 05:00] EUR - Core CPI Flash Estimate y/y
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 05:00] EUR - CPI Flash Estimate y/y
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 09:30] CAD - Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 09:45] USD - Final Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing PMI
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing Prices
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - Construction Spending m/m
+2025-03-02 10:41:56 - trading_bot                    - INFO     - [2025-03-03 10:15] USD - Wards Total Vehicle Sales
+2025-03-02 10:41:56 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-02 10:41:56 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-02 10:41:56 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-02 10:44:34 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-02 10:44:34 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-02 10:44:34 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-02 10:44:35 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-02 10:44:40 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 10:44:40 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-02 10:44:40 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-02 10:44:40 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-02 18:00:00 EST
+2025-03-02 10:44:40 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-02 16:45] NZD - Overseas Trade Index q/q
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-02 19:00] AUD - MI Inflation Gauge m/m
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-02 19:30] AUD - ANZ Job Advertisements m/m
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-02 19:30] AUD - Company Operating Profits q/q
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-02 19:30] JPY - Final Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-02 20:45] CNY - Caixin Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 00:05] USD - FOMC Member Musalem Speaks
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 00:30] AUD - Commodity Prices y/y
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 03:15] EUR - Spanish Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 03:30] CHF - Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 03:45] EUR - Italian Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 03:50] EUR - French Final Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 03:55] EUR - German Final Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 04:00] EUR - Final Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Final Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - M4 Money Supply m/m
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Mortgage Approvals
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Net Lending to Individuals m/m
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 05:00] EUR - Core CPI Flash Estimate y/y
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 05:00] EUR - CPI Flash Estimate y/y
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 09:30] CAD - Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 09:45] USD - Final Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing PMI
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing Prices
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - Construction Spending m/m
+2025-03-02 10:44:40 - trading_bot                    - INFO     - [2025-03-03 10:15] USD - Wards Total Vehicle Sales
+2025-03-02 10:44:40 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-02 10:44:40 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-02 10:44:40 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-02 10:44:40 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/positions'
+2025-03-02 10:44:41 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/positions'
+2025-03-02 10:45:33 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-02 10:45:33 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-02 10:45:33 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-02 10:45:34 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-02 10:45:34 - services.news_filter           - INFO     - Loaded economic calendar from cache with 114 events
+2025-03-02 10:45:36 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 10:45:36 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-02 10:45:36 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-02 10:45:36 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-02 18:00:00 EST
+2025-03-02 10:45:36 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-02 16:45] NZD - Overseas Trade Index q/q
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-02 19:00] AUD - MI Inflation Gauge m/m
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-02 19:30] AUD - ANZ Job Advertisements m/m
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-02 19:30] AUD - Company Operating Profits q/q
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-02 19:30] JPY - Final Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-02 20:45] CNY - Caixin Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 00:05] USD - FOMC Member Musalem Speaks
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 00:30] AUD - Commodity Prices y/y
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 03:15] EUR - Spanish Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 03:30] CHF - Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 03:45] EUR - Italian Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 03:50] EUR - French Final Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 03:55] EUR - German Final Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 04:00] EUR - Final Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Final Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - M4 Money Supply m/m
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Mortgage Approvals
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 04:30] GBP - Net Lending to Individuals m/m
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 05:00] EUR - Core CPI Flash Estimate y/y
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 05:00] EUR - CPI Flash Estimate y/y
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 09:30] CAD - Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 09:45] USD - Final Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing PMI
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing Prices
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - Construction Spending m/m
+2025-03-02 10:45:36 - trading_bot                    - INFO     - [2025-03-03 10:15] USD - Wards Total Vehicle Sales
+2025-03-02 10:45:36 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-02 10:45:36 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-02 10:45:36 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-02 10:46:29 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-02 10:46:32 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43840,
+  "stop_loss": 43890,
+  "take_profits": [43800, 43740, 43700]
+}
+2025-03-02 10:46:32 - trading_bot                    - INFO     - [36m[2025-03-01 18:13:05][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-02 10:46:32 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-02 10:46:32 - trading_bot                    - ERROR    - [36m[2025-03-01 18:13:05][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:46:32 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43840,
+  "stop_loss": 43890,
+  "take_profits": [43800, 43740, 43700]
+}
+2025-03-02 10:46:32 - trading_bot                    - INFO     - [36m[2025-03-02 10:46:29][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-02 10:46:32 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-02 10:46:32 - trading_bot                    - ERROR    - [36m[2025-03-02 10:46:29][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:49:36 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/positions'
+2025-03-02 10:50:38 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/positions'
+2025-03-02 10:51:09 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/positions'
+2025-03-02 10:51:40 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/positions'
+2025-03-02 10:52:27 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-02 10:52:27 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-02 10:52:27 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-02 10:52:29 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-02 10:52:29 - services.news_filter           - INFO     - Loaded economic calendar from cache with 114 events
+2025-03-02 10:52:35 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 10:52:35 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-02 10:52:35 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-02 10:52:35 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-02 18:00:00 EST
+2025-03-02 10:52:35 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-02 10:52:35 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing PMI
+2025-03-02 10:52:35 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-02 10:52:35 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-02 10:52:35 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-02 10:52:46 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+"order_type": "sell",
+"instrument": "DJI30",
+"entry_point": 43840,
+"stop_loss": 43890,
+"take_profits": [43800, 43740, 43700]
+}
+2025-03-02 10:52:46 - trading_bot                    - INFO     - [36m[2025-03-02 10:52:43][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-02 10:52:46 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-02 10:52:46 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 10:52:46 - core.risk_management           - INFO     - Calculated position sizes: [0.68, 0.68, 0.68], Risk amount: 506.83
+2025-03-02 10:52:46 - trading_bot                    - INFO     - [36m[2025-03-02 10:52:43][0m: Position sizes: [0.68, 0.68, 0.68]
+2025-03-02 10:52:47 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 10:52:47 - services.order_handler         - INFO     - [36m[2025-03-02 10:52:43][0m: Placing 3 orders in parallel...
+2025-03-02 10:52:47 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 10:52:47 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 10:52:47 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 10:52:47 - services.order_handler         - INFO     - [36m[2025-03-02 10:52:43][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 10:52:47 - services.order_handler         - INFO     - [36m[2025-03-02 10:52:43][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 10:52:47 - services.order_handler         - INFO     - [36m[2025-03-02 10:52:43][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 10:56:55 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-02 10:56:58 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43840,
+  "stop_loss": 43890,
+  "take_profits": [
+    43800,
+    43740,
+    43700
+  ]
+}
+2025-03-02 10:56:58 - trading_bot                    - INFO     - [36m[2025-03-02 10:52:43][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-02 10:56:58 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-02 10:56:58 - trading_bot                    - ERROR    - [36m[2025-03-02 10:52:43][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    if self.enable_news_filter:
+                            ^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:56:59 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43840,
+  "stop_loss": 43890,
+  "take_profits": [
+    43800,
+    43740,
+    43700
+  ]
+}
+2025-03-02 10:56:59 - trading_bot                    - INFO     - [36m[2025-03-02 10:46:29][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-02 10:56:59 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-02 10:56:59 - trading_bot                    - ERROR    - [36m[2025-03-02 10:46:29][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    if self.enable_news_filter:
+                            ^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 11:07:33 - telethon.client.updates        - WARNING  - Cannot get difference since the account is likely misusing the session: database is locked
+2025-03-02 11:07:33 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-02 11:07:33 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-02 11:07:33 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:39 - asyncio                        - ERROR    - Task exception was never retrieved
+future: <Task finished name='Task-52' coro=<TelegramBaseClient._disconnect_coro() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py:707> exception=OperationalError('database is locked')>
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:39 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-02 11:07:39 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:44 - trading_bot                    - ERROR    - Unexpected error in main loop: database is locked
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 38, in _run_until_disconnected
+    raise self._updates_error
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 308, in _update_loop
+    diff = await self(get_diff)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 30, in __call__
+    return await self._call(self._sender, request, ordered=ordered)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 93, in _call
+    self.session.process_entities(result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 414, in run
+    await self.client.run_until_disconnected()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 43, in _run_until_disconnected
+    await self.disconnect()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:44 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-02 11:07:44 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-02 11:07:44 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:50 - root                           - ERROR    - Critical error: database is locked
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 468, in <module>
+    asyncio.run(main())
+    ~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 460, in main
+    await bot.run()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 421, in run
+    await self.cleanup()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 372, in cleanup
+    await self.client.disconnect()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 13:55:25 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-02 13:55:25 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-02 13:55:25 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-02 13:55:26 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-02 13:55:26 - services.news_filter           - INFO     - Loaded economic calendar from cache with 114 events
+2025-03-02 13:55:28 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 13:55:28 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-02 13:55:28 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-02 13:55:28 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-02 18:00:00 EST
+2025-03-02 13:55:28 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-02 13:55:28 - trading_bot                    - INFO     - [2025-03-03 10:00] USD - ISM Manufacturing PMI
+2025-03-02 13:55:28 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-02 13:55:28 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-02 13:55:28 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-02 13:55:50 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43840,
+  "stop_loss": 43890,
+  "take_profits": [43800, 43740, 43700]
+}
+2025-03-02 13:55:50 - trading_bot                    - INFO     - [36m[2025-03-02 13:55:48][0m Received message: Sell us30
+
+43840
+TP 43800
+TP 43740
+TP 43700
+TP 4350p
+TP OPEN 
+
+SL 43890
+2025-03-02 13:55:50 - trading_bot                    - INFO     - Using account ID: 1011989
+2025-03-02 13:55:51 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 13:55:51 - core.risk_management           - INFO     - Calculated position sizes: [0.68, 0.68, 0.68], Risk amount: 506.83
+2025-03-02 13:55:51 - trading_bot                    - INFO     - [36m[2025-03-02 13:55:48][0m: Position sizes: [0.68, 0.68, 0.68]
+2025-03-02 13:55:51 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-02 13:55:51 - services.order_handler         - INFO     - [36m[2025-03-02 13:55:48][0m: Placing 3 orders in parallel...
+2025-03-02 13:55:51 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 13:55:52 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 13:55:52 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 13:55:52 - services.order_handler         - INFO     - [36m[2025-03-02 13:55:48][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 13:55:52 - services.order_handler         - INFO     - [36m[2025-03-02 13:55:48][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
+2025-03-02 13:55:52 - services.order_handler         - INFO     - [36m[2025-03-02 13:55:48][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
