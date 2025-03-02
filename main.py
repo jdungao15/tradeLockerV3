@@ -10,7 +10,8 @@ from tabulate import tabulate
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 from datetime import datetime
-
+from cli.banner import display_banner
+from cli.display_menu import display_menu
 # Import our modules
 from core.signal_parser import parse_signal_async
 from core.risk_management import calculate_position_size
@@ -27,8 +28,6 @@ from services.drawdown_manager import (
 from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
-
-
 class TradingBot:
     def __init__(self):
         # Initialize colorama
@@ -358,7 +357,9 @@ class TradingBot:
 
     async def run(self):
         """Main execution method"""
+
         try:
+
             # Initialize connections and authenticate
             if not await self.initialize():
                 self.logger.error("Initialization failed. Exiting.")
@@ -418,17 +419,30 @@ async def shutdown(loop):
 
 async def main():
     """Main entry point with Windows-compatible signal handling"""
-    bot = TradingBot()
+    # Display banner first
+    display_banner()
 
-    # Set up signal handlers for systems that support them (Unix/Linux/Mac)
-    if platform.system() != "Windows":
-        loop = asyncio.get_running_loop()
-        for sig in (signal.SIGINT, signal.SIGTERM):
-            loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(loop)))
+    # Show menu and get choice
+    choice = display_menu()
 
-    # Run the bot
-    await bot.run()
+    if choice == '2':
+        print(f"{Fore.YELLOW}Exiting program. Goodbye!{Style.RESET_ALL}")
+        return
 
+    elif choice == '1':
+        bot = TradingBot()
+
+        # Set up signal handlers for systems that support them (Unix/Linux/Mac)
+        if platform.system() != "Windows":
+            loop = asyncio.get_running_loop()
+            for sig in (signal.SIGINT, signal.SIGTERM):
+                loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(loop)))
+
+        # Run the bot
+        await bot.run()
+
+    else:
+        print(f"{Fore.RED}Invalid choice. Exiting.{Style.RESET_ALL}")
 
 if __name__ == "__main__":
     try:

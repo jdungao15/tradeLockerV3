@@ -637,3 +637,112 @@ SL 43890
 2025-03-01 19:19:46 - trading_bot                    - INFO     - Starting position monitoring...
 2025-03-01 19:19:46 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
 2025-03-01 19:19:46 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 22:59:29 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 22:59:29 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 22:59:30 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 22:59:30 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-01 22:59:30 - services.news_filter           - INFO     - Loaded economic calendar from cache with 95 events
+2025-03-01 22:59:32 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 22:59:32 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 22:59:32 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 22:59:32 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-02 18:00:00 EST
+2025-03-01 22:59:32 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-03-01 22:59:32 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 22:59:32 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 22:59:32 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-01 23:14:30 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 23:17:51 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 23:17:51 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 23:17:51 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 23:17:52 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-01 23:17:52 - services.news_filter           - INFO     - Loaded economic calendar from cache with 95 events
+2025-03-01 23:20:38 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 166, in select_account
+    try:
+    
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:20:38 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-01 23:20:38 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 23:20:38 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013F2F6F4690>
+2025-03-01 23:20:38 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013F2F6F86E0>
+2025-03-01 23:22:24 - root                           - ERROR    - Critical error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 461, in <module>
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 455, in main
+    sys.exit(1)
+    ~~~~~~~~^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 381, in run
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 381, in run
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 381, in run
+  [Previous line repeated 3 more times]
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 365, in run
+    self.logger.error("Initialization failed. Exiting.")
+     ^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\cli\display_menu.py", line 11, in display_menu
+    choice = input(f"{Fore.GREEN}Enter your choice (1-2): {Style.RESET_ALL}")
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:22:28 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 23:22:28 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 23:22:28 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 23:22:29 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-01 23:22:29 - services.news_filter           - INFO     - Loaded economic calendar from cache with 95 events
+2025-03-01 23:22:53 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 167, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:22:53 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-01 23:22:53 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 23:22:53 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013FED7B8690>
+2025-03-01 23:22:53 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013FED73BE00>
+2025-03-01 23:23:42 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 23:23:42 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 23:23:42 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 23:23:43 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-01 23:23:43 - services.news_filter           - INFO     - Loaded economic calendar from cache with 95 events
+2025-03-01 23:28:55 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 167, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:28:55 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-01 23:28:55 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-01 23:28:55 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001C554E08690>
+2025-03-01 23:28:55 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001C554D8BE00>
+2025-03-01 23:29:30 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 23:29:58 - telethon.client.updates        - INFO     - Got difference for channel 2026354916 updates
+2025-03-01 23:30:09 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 23:32:46 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 23:33:06 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 23:48:06 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-02 04:01:46 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo-maintenance.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 04:01:47 - telethon.network.connection.connection - WARNING  - Server closed the connection: [WinError 64] The specified network name is no longer available
+2025-03-02 04:01:47 - telethon.network.mtprotosender - INFO     - Connection closed while receiving data: [WinError 64] The specified network name is no longer available
+2025-03-02 04:01:47 - telethon.network.mtprotosender - INFO     - Closing current connection to begin reconnect...
+2025-03-02 04:01:47 - telethon.network.connection.connection - INFO     - <class 'ConnectionResetError'> during disconnect: [WinError 64] The specified network name is no longer available
+2025-03-02 04:01:47 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-02 04:01:47 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-02 04:01:47 - telethon.network.mtprotostate  - WARNING  - Server resent the older message 7477134798602546177, ignoring
+2025-03-02 04:01:47 - telethon.client.updates        - INFO     - Got difference for account updates
