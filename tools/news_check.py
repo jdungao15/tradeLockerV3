@@ -2,14 +2,10 @@
 """
 News Event Filter Testing Tool
 
-This script allows you to check upcoming high-impact economic events
-and test if trading is allowed for specific instruments.
-
 Usage:
-    python news_check.py list              # List upcoming high-impact news events
-    python news_check.py check EURUSD      # Check if trading is allowed for EURUSD
-    python news_check.py check XAUUSD      # Check if trading is allowed for Gold
-    python news_check.py check all         # Check all major instruments
+    python news_check.py list --today --impact  # List today's events sorted by impact
+    python news_check.py list --week --summary  # List all events this week (Country & Impact only)
+    python news_check.py list --hours 48        # List events in the next 48 hours
 """
 
 import os
@@ -20,6 +16,7 @@ import argparse
 from datetime import datetime, timedelta
 import pytz
 from colorama import init, Fore, Style
+from tabulate import tabulate
 
 # Add the parent directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -37,68 +34,73 @@ logging.basicConfig(
 )
 logger = logging.getLogger('news_check')
 
-# List of major instruments to check
-MAJOR_INSTRUMENTS = [
-    "EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "USDCHF", "NZDUSD",
-    "EURJPY", "EURGBP", "GBPJPY", "XAUUSD", "DJI30", "NDX100"
-]
+
+def colorize_impact(impact):
+    """Returns a colorized version of the impact level"""
+    if impact.lower() == "high":
+        return Fore.RED + impact.capitalize() + Style.RESET_ALL
+    elif impact.lower() == "medium":
+        return Fore.YELLOW + impact.capitalize() + Style.RESET_ALL
+    elif impact.lower() == "low":
+        return Fore.GREEN + impact.capitalize() + Style.RESET_ALL
+    return impact.capitalize()
 
 
-async def display_upcoming_events(news_filter, hours=24):
-    """Display upcoming high-impact news events"""
-    upcoming_events = news_filter.get_upcoming_high_impact_events(hours=hours)
+def sort_events(events, sort_by_impact=False):
+    """Sort events by impact level if specified"""
+    impact_priority = {"High": 1, "Medium": 2, "Low": 3}
+    if sort_by_impact:
+        return sorted(events, key=lambda e: impact_priority.get(e.get('impact', 'Low'), 3))
+    return events
+
+
+async def display_events(news_filter, time_filter, summary=False, sort_by_impact=False):
+    """Display economic events based on time filter with optional sorting"""
+    upcoming_events = news_filter.get_events_by_filter(time_filter)
 
     if not upcoming_events:
-        print(f"{Fore.YELLOW}No upcoming high-impact news events in the next {hours} hours.{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}No economic events found for {time_filter}.{Style.RESET_ALL}")
         return
 
-    print(f"\n{Fore.CYAN}=== Upcoming High-Impact News Events (next {hours} hours) ==={Style.RESET_ALL}")
-    print(f"{'Time (UTC)':^20} | {'Currency':^8} | {'Event':^50}")
-    print("-" * 82)
+    # Sort events if --impact flag is used
+    upcoming_events = sort_events(upcoming_events, sort_by_impact)
 
-    for event in upcoming_events:
-        event_time = event['datetime']
-        time_str = event_time.strftime('%Y-%m-%d %H:%M')
-        print(f"{time_str:^20} | {event['currency']:^8} | {event['event'][:50]}")
+    print(f"\n{Fore.CYAN}=== Economic Events: {time_filter} ==={Style.RESET_ALL}\n")
 
-
-async def check_instrument(news_filter, instrument, current_time=None):
-    """Check if trading is allowed for a specific instrument"""
-    if not current_time:
-        current_time = datetime.now(pytz.UTC)
-
-    is_restricted, event_info = news_filter.is_trading_restricted(instrument, current_time)
-
-    if is_restricted:
-        event = event_info['event']
-        event_time = event['datetime']
-        time_diff = event_time - current_time if event_time > current_time else current_time - event_time
-        time_diff_minutes = abs(time_diff.total_seconds() / 60)
-
-        print(f"{Fore.RED}✘ {instrument}: Trading restricted{Style.RESET_ALL}")
-        print(f"  Reason: {event['currency']} high-impact news event: {event['event']}")
-        print(f"  Time: {event_time.strftime('%Y-%m-%d %H:%M UTC')}")
-        print(
-            f"  {Fore.YELLOW}{'Upcoming' if event_time > current_time else 'Recent'} event, {time_diff_minutes:.1f} minutes {('until' if event_time > current_time else 'ago')}{Style.RESET_ALL}")
+    if summary:
+        headers = ["Country", "Impact"]
+        table_data = []
+        for event in upcoming_events:
+            table_data.append([event['currency'], colorize_impact(event.get('impact', 'N/A'))])
     else:
-        print(f"{Fore.GREEN}✓ {instrument}: Trading allowed{Style.RESET_ALL}")
+        headers = ["Title", "Country", "Date", "Time", "Impact", "Forecast", "Previous"]
+        table_data = []
+        for event in upcoming_events:
+            event_time = event['datetime']
+            date_str = event_time.strftime('%m-%d-%Y')
+            time_str = event_time.strftime('%I:%M%p')
 
+            table_data.append([
+                event['event'][:50],
+                event['currency'],
+                date_str,
+                time_str,
+                colorize_impact(event.get('impact', 'N/A')),
+                event.get('forecast', 'N/A'),
+                event.get('previous', 'N/A')
+            ])
 
-async def check_all_instruments(news_filter):
-    """Check trading status for all major instruments"""
-    current_time = datetime.now(pytz.UTC)
-
-    print(f"\n{Fore.CYAN}=== Trading Status for Major Instruments ==={Style.RESET_ALL}")
-    for instrument in MAJOR_INSTRUMENTS:
-        await check_instrument(news_filter, instrument, current_time)
-        await asyncio.sleep(0.1)  # Small delay for better readability
+    print(tabulate(table_data, headers=headers, tablefmt="github"))
 
 
 async def main():
     parser = argparse.ArgumentParser(description="Economic News Event Filter Tool")
-    parser.add_argument('action', choices=['list', 'check'], help='Action to perform')
-    parser.add_argument('instrument', nargs='?', default='all', help='Instrument to check (or "all")')
+    parser.add_argument('action', choices=['list'], help='Action to perform')
+    parser.add_argument('--today', action='store_true', help='List events happening today')
+    parser.add_argument('--week', action='store_true', help='List all events this week')
     parser.add_argument('--hours', type=int, default=24, help='Hours to look ahead for news events')
+    parser.add_argument('--summary', action='store_true', help='Show only Country & Impact')
+    parser.add_argument('--impact', action='store_true', help='Sort events by impact level')
 
     args = parser.parse_args()
 
@@ -106,15 +108,12 @@ async def main():
     news_filter = NewsEventFilter()
     await news_filter.initialize()
 
-    if args.action == 'list':
-        await display_upcoming_events(news_filter, hours=args.hours)
-    elif args.action == 'check':
-        if args.instrument.lower() == 'all':
-            await check_all_instruments(news_filter)
-        else:
-            instrument = args.instrument.upper()
-            print(f"\n{Fore.CYAN}=== Trading Status for {instrument} ==={Style.RESET_ALL}")
-            await check_instrument(news_filter, instrument)
+    if args.today:
+        await display_events(news_filter, "today", args.summary, args.impact)
+    elif args.week:
+        await display_events(news_filter, "week", args.summary, args.impact)
+    else:
+        await display_events(news_filter, f"next {args.hours} hours", args.summary, args.impact)
 
 
 if __name__ == "__main__":

@@ -584,3 +584,16 @@ SL 43890
 2025-03-01 16:09:36 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
 2025-03-01 16:09:36 - services.order_handler         - INFO     - [36m[2025-03-01 16:09:32][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since trading out of session is forbidden.'}
 2025-03-01 16:22:54 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-01 19:19:43 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-01 19:19:43 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-01 19:19:43 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-01 19:19:44 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-01 19:19:44 - services.news_filter           - INFO     - Loaded economic calendar from cache with 95 events
+2025-03-01 19:19:46 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1011989 saved to selected_account.json
+2025-03-01 19:19:46 - trading_bot                    - INFO     - Selected account: ID: 1011989, Account Number: 60, Balance: 25341.50
+2025-03-01 19:19:46 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-01 19:19:46 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-02 18:00:00 EST
+2025-03-01 19:19:46 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-03-01 19:19:46 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-01 19:19:46 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-01 19:19:46 - services.pos_monitor           - INFO     - Starting position monitoring service
