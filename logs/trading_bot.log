@@ -3781,3 +3781,151 @@ SL 43000
 2025-03-04 09:46:25 - trading_bot                    - INFO     - Performing cleanup...
 2025-03-04 09:46:25 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
 2025-03-04 09:46:25 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 14:47:57 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 14:47:57 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 14:47:57 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 14:49:19 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 14:49:19 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 14:49:19 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 14:49:36 - telethon.client.users          - WARNING  - Telegram is having internal issues AuthRestartError: Restart the authorization process (caused by SendCodeRequest)
+2025-03-04 14:57:12 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 14:57:12 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.167.51:443/TcpFull...
+2025-03-04 14:57:14 - telethon.network.mtprotosender - INFO     - Connection to 149.154.167.51:443/TcpFull complete!
+2025-03-04 14:57:52 - trading_bot                    - ERROR    - Initialization error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 165, in _start
+    value = phone()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 22, in <lambda>
+    phone: typing.Union[typing.Callable[[], str], str] = lambda: input('Please enter your phone (or bot token): '),
+                                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 14:57:52 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 14:57:52 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 14:57:52 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.167.51:443/TcpFull...
+2025-03-04 14:57:52 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.167.51:443/TcpFull complete!
+2025-03-04 14:57:56 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 14:57:56 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.167.51:443/TcpFull...
+2025-03-04 14:57:56 - telethon.network.mtprotosender - INFO     - Connection to 149.154.167.51:443/TcpFull complete!
+2025-03-04 14:59:24 - trading_bot                    - ERROR    - Initialization error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 165, in _start
+    value = phone()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 22, in <lambda>
+    phone: typing.Union[typing.Callable[[], str], str] = lambda: input('Please enter your phone (or bot token): '),
+                                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 14:59:24 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 14:59:24 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 14:59:24 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.167.51:443/TcpFull...
+2025-03-04 14:59:24 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.167.51:443/TcpFull complete!
+2025-03-04 14:59:28 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 14:59:28 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.167.51:443/TcpFull...
+2025-03-04 14:59:28 - telethon.network.mtprotosender - INFO     - Connection to 149.154.167.51:443/TcpFull complete!
+2025-03-04 15:00:14 - trading_bot                    - ERROR    - Initialization error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 165, in _start
+    value = phone()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 22, in <lambda>
+    phone: typing.Union[typing.Callable[[], str], str] = lambda: input('Please enter your phone (or bot token): '),
+                                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 15:00:14 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 15:00:14 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 15:00:14 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.167.51:443/TcpFull...
+2025-03-04 15:00:14 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.167.51:443/TcpFull complete!
+2025-03-04 15:00:24 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:00:24 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.167.51:443/TcpFull...
+2025-03-04 15:00:26 - telethon.network.mtprotosender - INFO     - Connection to 149.154.167.51:443/TcpFull complete!
+2025-03-04 15:00:35 - trading_bot                    - ERROR    - Initialization error: The phone number is invalid (caused by SendCodeRequest)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 184, in _start
+    await self.send_code_request(phone, force_sms=force_sms)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 434, in send_code_request
+    result = await self(functions.auth.SendCodeRequest(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        phone, self.api_id, self.api_hash, types.CodeSettings()))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 30, in __call__
+    return await self._call(self._sender, request, ordered=ordered)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 92, in _call
+    result = await future
+             ^^^^^^^^^^^^
+telethon.errors.rpcerrorlist.PhoneNumberInvalidError: The phone number is invalid (caused by SendCodeRequest)
+2025-03-04 15:00:35 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 15:00:35 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 15:00:35 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.167.51:443/TcpFull...
+2025-03-04 15:00:35 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.167.51:443/TcpFull complete!
+2025-03-04 15:00:35 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 15:00:47 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:00:47 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.167.51:443/TcpFull...
+2025-03-04 15:00:47 - telethon.network.mtprotosender - INFO     - Connection to 149.154.167.51:443/TcpFull complete!
+2025-03-04 15:00:49 - telethon.client.users          - INFO     - Phone migrated to 1
+2025-03-04 15:00:49 - telethon.client.telegrambaseclient - INFO     - Reconnecting to new data center 1
+2025-03-04 15:00:50 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.167.51:443/TcpFull...
+2025-03-04 15:00:50 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.167.51:443/TcpFull complete!
+2025-03-04 15:00:50 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 15:00:51 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:05:58 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:05:58 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 15:05:58 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:05:59 - trading_bot                    - INFO     - Telegram authentication required
+2025-03-04 15:06:04 - telethon.client.users          - WARNING  - Telegram is having internal issues AuthRestartError: Restart the authorization process (caused by SendCodeRequest)
+2025-03-04 15:06:16 - trading_bot                    - ERROR    - Initialization error: Two-steps verification is enabled and a password is required (caused by SignInRequest)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 106, in initialize
+    await self.client.sign_in(phone, code)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 357, in sign_in
+    result = await self(request)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 30, in __call__
+    return await self._call(self._sender, request, ordered=ordered)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 92, in _call
+    result = await future
+             ^^^^^^^^^^^^
+telethon.errors.rpcerrorlist.SessionPasswordNeededError: Two-steps verification is enabled and a password is required (caused by SignInRequest)
+2025-03-04 15:06:16 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 15:06:16 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 15:06:16 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 15:06:16 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:06:16 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 15:08:51 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:08:51 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 15:08:51 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:08:52 - trading_bot                    - INFO     - Telegram authentication required
+2025-03-04 15:08:54 - telethon.client.users          - WARNING  - Telegram is having internal issues AuthRestartError: Restart the authorization process (caused by SendCodeRequest)
+2025-03-04 15:09:02 - trading_bot                    - INFO     - Two-step verification enabled. Password required.
+2025-03-04 15:09:06 - trading_bot                    - INFO     - Telegram authentication successful
+2025-03-04 15:09:08 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 15:09:08 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 15:10:46 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 191, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 15:10:46 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 15:10:46 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 15:10:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000027F203DD550>
+2025-03-04 15:10:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000027F203D9E50>
+2025-03-04 15:10:49 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:10:49 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 15:10:49 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:10:49 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 15:10:50 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 15:10:50 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events

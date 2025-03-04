@@ -5,10 +5,13 @@ import pytz
 import platform
 import signal
 import sys
+import getpass
+import telethon
 from colorama import init, Fore, Style
 from tabulate import tabulate
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
+from telethon.errors import SessionPasswordNeededError
 from datetime import datetime
 from cli.banner import display_banner
 from cli.display_menu import display_menu
@@ -90,10 +93,31 @@ class TradingBot:
     async def initialize(self):
         """Initialize and connect to all required services"""
         try:
-            # Initialize Telegram client
+            # Initialize Telegram client with explicit authentication flow
             self.logger.info("Connecting to Telegram...")
             self.client = TelegramClient('./my_session', int(self.api_id), self.api_hash)
-            await self.client.start()
+
+            # Connect first
+            await self.client.connect()
+
+            # Check if already authorized
+            if not await self.client.is_user_authorized():
+                self.logger.info("Telegram authentication required")
+                phone = input("Please enter your phone (or bot token): ")
+                await self.client.send_code_request(phone)
+                code = input("Please enter the code you received: ")
+
+                try:
+                    await self.client.sign_in(phone, code)
+                except SessionPasswordNeededError:
+                    # Handle two-step verification with masked password input
+                    self.logger.info("Two-step verification enabled. Password required.")
+                    password = getpass.getpass("Please enter your two-step verification password: ")
+                    await self.client.sign_in(password=password)
+
+                self.logger.info("Telegram authentication successful")
+            else:
+                self.logger.info("Already authenticated with Telegram")
 
             # Authenticate with TradeLocker API
             self.auth = TradeLockerAuth()
@@ -267,10 +291,11 @@ class TradingBot:
 
             self.logger.info(f"{colored_time}: Position sizes: {position_sizes}")
 
-            # Place the order with risk checks
+            # Place the order with risk checks - now including quotes_client for market order logic
             await place_orders_with_risk_check(
                 self.orders_client,
                 self.accounts_client,
+                self.quotes_client,  # Added quotes_client for price checks
                 self.selected_account,
                 instrument_data,
                 parsed_signal,
@@ -284,27 +309,6 @@ class TradingBot:
             self.logger.error(f"{colored_time}: Error processing signal: Missing key {e}. Skipping this signal.")
         except Exception as e:
             self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.", exc_info=True)
-    async def start_position_monitoring(self):
-        """Start monitoring existing positions in the background"""
-        if not self.enable_monitor:
-            self.logger.info("Position monitoring is disabled. Skipping monitor start.")
-            return None
-
-        self.logger.info("Starting position monitoring...")
-        auth_token = await self.auth.get_access_token_async()
-        monitor_task = asyncio.create_task(
-            monitor_existing_position(
-                self.accounts_client,
-                self.instruments_client,
-                self.quotes_client,
-                self.selected_account,
-                self.base_url,
-                auth_token
-            )
-        )
-        self._tasks.add(monitor_task)
-        return monitor_task
-
     async def display_upcoming_news(self):
         """Display upcoming high-impact news events for major currencies"""
         if not self.enable_news_filter:
