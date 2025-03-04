@@ -370,3 +370,268 @@ Traceback (most recent call last):
         'insert or replace into entities values (?,?,?,?,?,?)', rows)
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 sqlite3.OperationalError: database is locked
+2025-03-02 15:31:49 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:31:49 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:00 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:00 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:23 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:23 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:34 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:34 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:33:18 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: 
+2025-03-02 15:33:18 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: 
+2025-03-02 15:33:28 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:33:38 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:33:48 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:33:58 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:34:08 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:34:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: 
+2025-03-02 15:34:52 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: 
+2025-03-02 15:35:02 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:35:12 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:41:01 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 
+2025-03-02 15:41:01 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 
+2025-03-02 15:41:01 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 
+2025-03-02 15:41:01 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 
+2025-03-02 15:41:01 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 
+2025-03-02 15:41:01 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 
+2025-03-02 16:48:02 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 16:48:02 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 18:01:24 - trading_bot                    - ERROR    - [36m[2025-03-02 18:01:23][0m: Error processing signal: Missing key 'instrument'. Skipping this signal.
+2025-03-02 18:04:53 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-02 18:06:30 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-02 18:12:35 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'NoneType' and 'int'
+2025-03-02 18:12:35 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+2025-03-02 18:12:35 - trading_bot                    - ERROR    - [36m[2025-03-02 18:12:33][0m: Unexpected error: 'NoneType' object is not iterable. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 260, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 359, in calculate_position_size
+    position_sizes = [min_position for _ in take_profits]
+                                            ^^^^^^^^^^^^
+TypeError: 'NoneType' object is not iterable
+2025-03-02 18:12:49 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+2025-03-02 18:12:49 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+2025-03-02 18:12:49 - trading_bot                    - ERROR    - [36m[2025-03-02 18:12:47][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 260, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-02 18:23:24 - core.risk_management           - ERROR    - Error calculating position size: float division by zero
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 342, in calculate_position_size
+    position_per_tp = total_pos_in_lots / len(take_profits)
+                      ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: float division by zero
+2025-03-02 18:23:24 - trading_bot                    - ERROR    - [36m[2025-03-02 18:23:22][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 342, in calculate_position_size
+    position_per_tp = total_pos_in_lots / len(take_profits)
+                      ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: float division by zero
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 260, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-02 22:24:34 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 22:24:36 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 22:24:36 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 08:49:41 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 08:49:41 - services.news_filter           - ERROR    - Error updating calendar: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\services\news_filter.py", line 60, in update_calendar
+    async with session.get(self.calendar_url) as response:
+               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+2025-03-03 08:51:09 - trading_bot                    - ERROR    - Account ID 6060 is not valid.
+2025-03-03 08:51:09 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 11:10:03 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445099'
+2025-03-03 11:10:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445098'
+2025-03-03 11:10:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445100'
+2025-03-03 11:10:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445100'
+2025-03-03 11:10:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445098'
+2025-03-03 11:10:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445099'
+2025-03-03 11:11:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445099'
+2025-03-03 11:11:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445098'
+2025-03-03 11:11:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445100'
+2025-03-03 12:26:46 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 167, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-03 12:26:46 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 12:26:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002804EB6C690>
+2025-03-03 12:26:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002804EAF3E00>
+2025-03-03 12:26:52 - trading_bot                    - ERROR    - Account ID 669 is not valid.
+2025-03-03 12:26:52 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 15:29:18 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 15:29:18 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 16:08:41 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 19:34:53 - trading_bot                    - ERROR    - Error setting up Telegram client: TelegramBaseClient.__init__() got an unexpected keyword argument 'sqlite_auto_vacuum'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 110, in setup_telegram_client
+    self.client = TelegramClient(
+                  ~~~~~~~~~~~~~~^
+        './my_session',
+        ^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        sqlite_auto_vacuum=True  # Helps prevent DB locks
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: TelegramBaseClient.__init__() got an unexpected keyword argument 'sqlite_auto_vacuum'
+2025-03-03 19:34:53 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-03 19:37:10 - trading_bot                    - ERROR    - Account ID 660 is not valid.
+2025-03-03 19:37:10 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 20:56:07 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]

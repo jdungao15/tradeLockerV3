@@ -4,6 +4,7 @@ import json
 import os
 import logging
 import asyncio
+import re
 from dotenv import load_dotenv
 from functools import lru_cache
 
@@ -17,6 +18,40 @@ api_url = "https://api.openai.com/v1/chat/completions"
 parsed_signal_cache = {}
 
 
+def is_potential_trading_signal(message: str) -> bool:
+    """
+    Pre-filter to determine if a message might be a trading signal
+    before sending to OpenAI API.
+    """
+    # Normalize message for analysis
+    message_lower = message.lower()
+
+    # Check for specific trading terms like buy, sell, entry, etc.
+    trading_terms = ['buy', 'sell', 'entry', 'stop', 'sl', 'tp', 'target', 'take profit', 'long', 'short']
+    has_trading_terms = any(term in message_lower for term in trading_terms)
+
+    # Check for trading instruments
+    instruments = ['xauusd', 'gold', 'eurusd', 'gbpusd', 'usdjpy', 'us30', 'dji30', 'nas100', 'ndx100']
+    has_instrument = any(instrument in message_lower for instrument in instruments)
+
+    # Check for price patterns (numbers that might be price points)
+    has_prices = bool(re.search(r'\d+\.\d+|\d+', message))
+
+    # Check for excess emojis (often in announcement messages, not signals)
+    emoji_count = len(re.findall(r'[\U00010000-\U0010ffff]|[\u2600-\u26FF\u2700-\u27BF]', message))
+    too_many_emojis = emoji_count > 10  # Adjust threshold as needed
+
+    # Check message length (real signals are typically longer than a few words)
+    too_short = len(message.split()) < 3
+
+    # Special case: Check for "PIPS" announcements (often not actionable signals)
+    is_pips_announcement = 'pips' in message_lower and any(x in message_lower for x in ['hit', 'reached', 'secured'])
+
+    # Return True if it looks like a signal, False otherwise
+    return (has_trading_terms and has_instrument and has_prices and
+            not too_many_emojis and not too_short and not is_pips_announcement)
+
+
 def parse_signal(message: str):
     """
     Parse a trading signal using OpenAI API - synchronous version.
@@ -26,6 +61,12 @@ def parse_signal(message: str):
     if message in parsed_signal_cache:
         logger.info("Using cached parsed signal")
         return parsed_signal_cache[message]
+
+    # Pre-filter to avoid unnecessary API calls
+    if not is_potential_trading_signal(message):
+        logger.info("Message doesn't appear to be a valid trading signal, skipping API call")
+        parsed_signal_cache[message] = None  # Cache the negative result
+        return None
 
     try:
         response = requests.post(
@@ -76,12 +117,46 @@ def parse_signal(message: str):
 
         if content.lower() == "null":
             logger.info("Not a valid trading signal")
+            parsed_signal_cache[message] = None
             return None
 
         try:
             result = json.loads(content)
+
+            # Validate that required fields are present
+            required_fields = ['instrument', 'order_type', 'entry_point', 'stop_loss', 'take_profits']
+            if not all(field in result for field in required_fields):
+                logger.warning(f"Parsed signal is missing required fields: {result}")
+                parsed_signal_cache[message] = None
+                return None
+
+            # Ensure take_profits is a list
+            if not isinstance(result.get('take_profits', []), list):
+                logger.warning("take_profits is not a list, converting to list")
+                result['take_profits'] = [result['take_profits']]
+
+            # Ensure numeric values are actually numbers
+            for field in ['entry_point', 'stop_loss']:
+                if not isinstance(result.get(field), (int, float)):
+                    logger.warning(f"Field {field} is not numeric: {result.get(field)}")
+                    parsed_signal_cache[message] = None
+                    return None
+
+            # Ensure take_profits contains numeric values
+            if not all(isinstance(tp, (int, float)) for tp in result.get('take_profits', [])):
+                logger.warning(f"take_profits contains non-numeric values: {result.get('take_profits')}")
+                parsed_signal_cache[message] = None
+                return None
+
+            # Ensure order_type is valid
+            if result.get('order_type') not in ['buy', 'sell']:
+                logger.warning(f"Invalid order_type: {result.get('order_type')}")
+                parsed_signal_cache[message] = None
+                return None
+
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing OpenAI response: {e}")
+            parsed_signal_cache[message] = None
             return None
 
         # Adjust prices for different brokers
@@ -96,6 +171,7 @@ def parse_signal(message: str):
 
     except Exception as e:
         logger.error(f"Error parsing signal: {e}", exc_info=True)
+        parsed_signal_cache[message] = None
         return None
 
 
@@ -108,6 +184,12 @@ async def parse_signal_async(message: str):
     if message in parsed_signal_cache:
         logger.info("Using cached parsed signal")
         return parsed_signal_cache[message]
+
+    # Pre-filter to avoid unnecessary API calls
+    if not is_potential_trading_signal(message):
+        logger.info("Message doesn't appear to be a valid trading signal, skipping API call")
+        parsed_signal_cache[message] = None  # Cache the negative result
+        return None
 
     try:
         headers = {
@@ -161,19 +243,60 @@ async def parse_signal_async(message: str):
 
                 if content.lower() == "null":
                     logger.info("Not a valid trading signal")
+                    parsed_signal_cache[message] = None
                     return None
 
                 try:
                     result = json.loads(content)
+
+                    # Validate that required fields are present
+                    required_fields = ['instrument', 'order_type', 'entry_point', 'stop_loss', 'take_profits']
+                    if not all(field in result for field in required_fields):
+                        logger.warning(f"Parsed signal is missing required fields: {result}")
+                        parsed_signal_cache[message] = None
+                        return None
+
+                    # Ensure take_profits is a list
+                    if not isinstance(result.get('take_profits', []), list):
+                        logger.warning("take_profits is not a list, converting to list")
+                        result['take_profits'] = [result['take_profits']]
+
+                    # Ensure numeric values are actually numbers
+                    for field in ['entry_point', 'stop_loss']:
+                        if not isinstance(result.get(field), (int, float)):
+                            logger.warning(f"Field {field} is not numeric: {result.get(field)}")
+                            parsed_signal_cache[message] = None
+                            return None
+
+                    # Ensure take_profits contains numeric values
+                    if not all(isinstance(tp, (int, float)) for tp in result.get('take_profits', [])):
+                        logger.warning(f"take_profits contains non-numeric values: {result.get('take_profits')}")
+                        parsed_signal_cache[message] = None
+                        return None
+
+                    # Ensure order_type is valid
+                    if result.get('order_type') not in ['buy', 'sell']:
+                        logger.warning(f"Invalid order_type: {result.get('order_type')}")
+                        parsed_signal_cache[message] = None
+                        return None
+
                 except json.JSONDecodeError as e:
                     logger.error(f"Error parsing OpenAI response: {e}")
+                    parsed_signal_cache[message] = None
                     return None
 
-                # Adjust prices for different brokers
+                # Adjust prices for different brokers based on order type
                 if result.get("instrument") == "DJI30":
-                    result["stop_loss"] += 46
-                    result["entry_point"] += 46
-                    result["take_profits"] = [tp + 46 for tp in result["take_profits"]]
+                    # For buy orders, add the adjustment to match broker pricing
+                    if result.get("order_type") == "buy":
+                        result["stop_loss"] += 5
+                        #result["entry_point"] += 5
+                        result["take_profits"] = [tp + 5 for tp in result["take_profits"]]
+                    # For sell orders, subtract the adjustment to match broker pricing
+                    elif result.get("order_type") == "sell":
+                        result["stop_loss"] -= 5
+                        #result["entry_point"] -= 5
+                        result["take_profits"] = [tp - 5 for tp in result["take_profits"]]
 
                 # Cache the result
                 parsed_signal_cache[message] = result
@@ -181,6 +304,7 @@ async def parse_signal_async(message: str):
 
     except Exception as e:
         logger.error(f"Error parsing signal: {e}", exc_info=True)
+        parsed_signal_cache[message] = None
         return None
 
 

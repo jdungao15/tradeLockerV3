@@ -251,11 +251,11 @@ def determine_risk_percentage(account_balance: float, instrument: dict) -> float
     try:
         # Define account tiers and corresponding risk percentages
         tiers = {
-            5000: 0.02,  # Risk 2% for 5k accounts
-            10000: 0.02,  # Risk 2% for 10k accounts
-            25000: 0.02,  # Risk 2% for 25k accounts
-            50000: 0.02,  # Risk 2% for 50k accounts
-            100000: 0.02  # Risk 2% for 100k accounts
+            5000: 0.015,  # Risk 2% for 5k accounts
+            10000: 0.015,  # Risk 2% for 10k accounts
+            25000: 0.015,  # Risk 2% for 25k accounts
+            50000: 0.015,  # Risk 2% for 50k accounts
+            100000: 0.015  # Risk 2% for 100k accounts
         }
 
         # Special handling for XAUUSD, which should follow the same risk as FOREX
