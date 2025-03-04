@@ -4298,3 +4298,1251 @@ client_session: <aiohttp.client.ClientSession object at 0x0000027F203D9E50>
 2025-03-04 15:10:49 - trading_bot                    - INFO     - Already authenticated with Telegram
 2025-03-04 15:10:50 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
 2025-03-04 15:10:50 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 15:25:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:25:16 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26452.00
+2025-03-04 15:25:16 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 15:25:16 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 15:25:16 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 15:25:16 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 15:25:16 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 15:25:16 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 15:25:16 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 15:25:16 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 15:25:16 - trading_bot                    - ERROR    - Unexpected error in main loop: 'TradingBot' object has no attribute 'start_position_monitoring'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 412, in run
+    monitoring_task = await self.start_position_monitoring()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradingBot' object has no attribute 'start_position_monitoring'
+2025-03-04 15:25:16 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 15:25:16 - telethon.network.mtprotostate  - WARNING  - Server sent a very old message with ID 7478049816999823361, ignoring (see FAQ for details)
+2025-03-04 15:25:16 - telethon.network.mtprotostate  - WARNING  - Server sent a very old message with ID 7478049817118675969, ignoring (see FAQ for details)
+2025-03-04 15:25:16 - telethon.network.mtprotostate  - WARNING  - Server sent a very old message with ID 7478050208851280897, ignoring (see FAQ for details)
+2025-03-04 15:25:16 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 15:25:16 - telethon.network.mtprotostate  - WARNING  - Server sent a very old message with ID 7478050226605562881, ignoring (see FAQ for details)
+2025-03-04 15:25:16 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:25:16 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 15:47:03 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:47:03 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 15:47:04 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:47:04 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 15:47:04 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 15:47:04 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 15:47:07 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:47:07 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26452.00
+2025-03-04 15:47:07 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 15:47:07 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 15:47:07 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 15:47:07 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 15:47:07 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 15:47:07 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 15:47:07 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 15:47:07 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 15:47:07 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 15:47:07 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 15:47:07 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 15:47:25 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-04 15:47:28 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 15:47:28 - trading_bot                    - INFO     - [36m[2025-03-04 15:26:17][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 15:47:28 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 15:47:28 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:47:28 - core.risk_management           - INFO     - Calculated position sizes: [0.64, 0.64, 0.64], Risk amount: 529.04
+2025-03-04 15:47:28 - trading_bot                    - INFO     - [36m[2025-03-04 15:26:17][0m: Position sizes: [0.64, 0.64, 0.64]
+2025-03-04 15:47:29 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 15:47:29 - trading_bot                    - INFO     - [36m[2025-03-04 15:47:25][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 15:47:29 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 15:47:29 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:47:29 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:47:29 - core.risk_management           - INFO     - Calculated position sizes: [0.64, 0.64, 0.64], Risk amount: 529.04
+2025-03-04 15:47:29 - trading_bot                    - INFO     - [36m[2025-03-04 15:47:25][0m: Position sizes: [0.64, 0.64, 0.64]
+2025-03-04 15:47:29 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:47:30 - services.order_handler         - INFO     - [36m[2025-03-04 15:26:17][0m: Placing 3 limit orders in parallel...
+2025-03-04 15:47:30 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653262'}}
+2025-03-04 15:47:30 - services.order_handler         - INFO     - [36m[2025-03-04 15:47:25][0m: Placing 3 limit orders in parallel...
+2025-03-04 15:47:30 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653264'}}
+2025-03-04 15:47:30 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653266'}}
+2025-03-04 15:47:30 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653268 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:47:30 - services.order_handler         - INFO     - [36m[2025-03-04 15:26:17][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653264'}}
+2025-03-04 15:47:30 - services.order_handler         - INFO     - [36m[2025-03-04 15:26:17][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653262'}}
+2025-03-04 15:47:30 - services.order_handler         - INFO     - [36m[2025-03-04 15:26:17][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653268 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:47:30 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653269 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:47:31 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653270 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:47:31 - services.order_handler         - INFO     - [36m[2025-03-04 15:47:25][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653266'}}
+2025-03-04 15:47:31 - services.order_handler         - INFO     - [36m[2025-03-04 15:47:25][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653270 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:47:31 - services.order_handler         - INFO     - [36m[2025-03-04 15:47:25][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653269 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:48:37 - services.pos_monitor           - INFO     - Position 7349874591875469956 (DJI30): Updating stop loss at 73400 pips
+2025-03-04 15:48:37 - services.pos_monitor           - INFO     - Stop loss updated for position 7349874591875469956 to 42650.31
+2025-03-04 15:48:49 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 15:48:49 - trading_bot                    - INFO     - [36m[2025-03-04 15:48:50][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 15:48:49 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 15:48:49 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 15:48:49 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:48:49 - core.risk_management           - INFO     - Calculated position sizes: [0.64, 0.64, 0.64], Risk amount: 529.04
+2025-03-04 15:48:49 - trading_bot                    - INFO     - [36m[2025-03-04 15:48:50][0m: Position sizes: [0.64, 0.64, 0.64]
+2025-03-04 15:48:49 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:48:49 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Placing 3 limit orders in parallel...
+2025-03-04 15:48:50 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653360'}}
+2025-03-04 15:48:50 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653362'}}
+2025-03-04 15:48:50 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653364 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:48:50 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653360'}}
+2025-03-04 15:48:50 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7349874591913653364 Sell   0.64  Price 43020.00 '}
+2025-03-04 15:48:50 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653362'}}
+2025-03-04 15:51:16 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:51:16 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 15:51:16 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:51:16 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 15:51:16 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 15:51:16 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 15:51:17 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:51:17 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 15:51:17 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 15:51:17 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 15:51:17 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 15:51:17 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 15:51:17 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 15:51:17 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 15:51:17 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 15:51:17 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 15:51:17 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 15:51:17 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 15:51:17 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 15:51:21 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-04 15:51:24 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+"instrument": "DJI30",
+"order_type": "sell",
+"entry_point": 43020,
+"stop_loss": 43080,
+"take_profits": [42990, 42960, 42920]
+}
+2025-03-04 15:51:24 - trading_bot                    - INFO     - [36m[2025-03-04 15:48:50][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 15:51:24 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 15:51:24 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:51:24 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920, 42820]
+}
+2025-03-04 15:51:24 - trading_bot                    - INFO     - [36m[2025-03-04 15:51:22][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 15:51:24 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 15:51:24 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 15:51:24 - trading_bot                    - INFO     - [36m[2025-03-04 15:48:50][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 15:51:24 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:51:24 - core.risk_management           - INFO     - Calculated position sizes: [0.24, 0.24, 0.24, 0.24], Risk amount: 264.5185
+2025-03-04 15:51:24 - trading_bot                    - INFO     - [36m[2025-03-04 15:51:22][0m: Position sizes: [0.24, 0.24, 0.24, 0.24]
+2025-03-04 15:51:24 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:51:25 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:51:25 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Placing 3 limit orders in parallel...
+2025-03-04 15:51:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653491'}}
+2025-03-04 15:51:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653493'}}
+2025-03-04 15:51:25 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:22][0m: Placing 4 limit orders in parallel...
+2025-03-04 15:51:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653495'}}
+2025-03-04 15:51:25 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653493'}}
+2025-03-04 15:51:25 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653495'}}
+2025-03-04 15:51:25 - services.order_handler         - INFO     - [36m[2025-03-04 15:48:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653491'}}
+2025-03-04 15:51:26 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653497'}}
+2025-03-04 15:51:26 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653499'}}
+2025-03-04 15:51:26 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653501'}}
+2025-03-04 15:51:26 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1017072/orders'
+2025-03-04 15:51:27 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653505'}}
+2025-03-04 15:51:27 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:22][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653497'}}
+2025-03-04 15:51:27 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:22][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653499'}}
+2025-03-04 15:51:27 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:22][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653501'}}
+2025-03-04 15:51:27 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:22][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653505'}}
+2025-03-04 15:51:47 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 15:51:47 - trading_bot                    - INFO     - [36m[2025-03-04 15:51:48][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 15:51:47 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 15:51:47 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:51:47 - core.risk_management           - INFO     - Calculated position sizes: [0.24, 0.24, 0.24, 0.24], Risk amount: 264.5185
+2025-03-04 15:51:47 - trading_bot                    - INFO     - [36m[2025-03-04 15:51:48][0m: Position sizes: [0.24, 0.24, 0.24, 0.24]
+2025-03-04 15:51:47 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 15:51:48 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:51:48 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:48][0m: Placing 4 limit orders in parallel...
+2025-03-04 15:51:48 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653522'}}
+2025-03-04 15:51:48 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653524'}}
+2025-03-04 15:51:48 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653526'}}
+2025-03-04 15:51:48 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653528'}}
+2025-03-04 15:51:48 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:48][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653522'}}
+2025-03-04 15:51:48 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:48][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653524'}}
+2025-03-04 15:51:48 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:48][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653526'}}
+2025-03-04 15:51:48 - services.order_handler         - INFO     - [36m[2025-03-04 15:51:48][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653528'}}
+2025-03-04 15:54:27 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 15:54:27 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 15:54:27 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 15:54:28 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 15:54:28 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 15:54:28 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 15:54:30 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:54:30 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 15:54:30 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 15:54:30 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 15:54:30 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 15:54:30 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 15:54:30 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 15:54:30 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 15:54:30 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 15:54:30 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 15:54:30 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 15:54:30 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 15:54:30 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 15:54:40 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 15:54:40 - trading_bot                    - INFO     - [36m[2025-03-04 15:54:36][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 15:54:40 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 15:54:40 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:54:41 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 2 take profits
+2025-03-04 15:54:41 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.48, 0.48], Risk amount: 264.5185
+2025-03-04 15:54:41 - trading_bot                    - INFO     - [36m[2025-03-04 15:54:36][0m: Position sizes: [0.0, 0.48, 0.48]
+2025-03-04 15:54:41 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 15:54:52 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-04 15:54:53 - services.order_handler         - INFO     - [36m[2025-03-04 15:54:36][0m: Placing 3 limit orders in parallel...
+2025-03-04 15:54:53 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653666'}}
+2025-03-04 15:54:53 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': '{qty=[must be greater than 0]}'}
+2025-03-04 15:54:53 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653668'}}
+2025-03-04 15:54:53 - services.order_handler         - INFO     - [36m[2025-03-04 15:54:36][0m: Order placed successfully: {'s': 'error', 'errmsg': '{qty=[must be greater than 0]}'}
+2025-03-04 15:54:53 - services.order_handler         - INFO     - [36m[2025-03-04 15:54:36][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653668'}}
+2025-03-04 15:54:53 - services.order_handler         - INFO     - [36m[2025-03-04 15:54:36][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913653666'}}
+2025-03-04 16:04:27 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:04:27 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:04:27 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:04:27 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:04:28 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:04:28 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:04:30 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:04:30 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 16:04:30 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 16:04:30 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 16:04:30 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 16:04:30 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 16:04:30 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 16:04:30 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 16:04:30 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 16:04:30 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 16:04:30 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 16:04:30 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 16:04:30 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 16:05:08 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 16:05:08 - trading_bot                    - INFO     - [36m[2025-03-04 16:05:07][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:05:08 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:05:09 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:05:09 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 2 take profits
+2025-03-04 16:05:09 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.48, 0.48], Risk amount: 264.5185
+2025-03-04 16:05:09 - trading_bot                    - INFO     - [36m[2025-03-04 16:05:07][0m: Position sizes: [0.0, 0.48, 0.48]
+2025-03-04 16:05:09 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:05:10 - services.order_handler         - INFO     - [36m[2025-03-04 16:05:07][0m: Position #2 (size: 0.48) marked as RUNNER with distant take profit
+2025-03-04 16:05:10 - services.order_handler         - INFO     - [36m[2025-03-04 16:05:07][0m: Runner position will use trailing stop via position monitor service
+2025-03-04 16:05:10 - services.order_handler         - INFO     - [36m[2025-03-04 16:05:07][0m: Placing 2 limit orders in parallel...
+2025-03-04 16:05:10 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654103'}}
+2025-03-04 16:05:10 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654105'}}
+2025-03-04 16:05:10 - services.order_handler         - INFO     - [36m[2025-03-04 16:05:07][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654103'}}
+2025-03-04 16:05:10 - services.order_handler         - INFO     - [36m[2025-03-04 16:05:07][0m: Runner position (ID: 7349874591913654103) created - Position monitor will handle trailing stop
+2025-03-04 16:05:10 - services.order_handler         - INFO     - [36m[2025-03-04 16:05:07][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654105'}}
+2025-03-04 16:05:10 - services.order_handler         - INFO     - [36m[2025-03-04 16:05:07][0m: Runner position (ID: 7349874591913654105) created - Position monitor will handle trailing stop
+2025-03-04 16:09:27 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:09:27 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:09:27 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:09:27 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-04 16:09:27 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:09:31 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:09:31 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:09:31 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:09:31 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:09:32 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:09:32 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:09:34 - trading_bot                    - ERROR    - Account ID 6161 is not valid.
+2025-03-04 16:09:34 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 16:09:34 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:09:34 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:09:34 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:09:34 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:09:43 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:09:43 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:09:43 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:09:43 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:09:43 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:09:43 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:09:45 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:09:45 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 16:09:45 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 16:09:45 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 16:09:45 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 16:09:45 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 16:09:45 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 16:09:45 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 16:09:45 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 16:09:45 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 16:09:45 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 16:09:45 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 16:09:45 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 16:09:55 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 16:09:55 - trading_bot                    - INFO     - [36m[2025-03-04 16:09:53][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:09:55 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:09:55 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:09:55 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 2 take profits
+2025-03-04 16:09:55 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.48, 0.48], Risk amount: 264.5185
+2025-03-04 16:09:55 - trading_bot                    - INFO     - [36m[2025-03-04 16:09:53][0m: Position sizes: [0.0, 0.48, 0.48]
+2025-03-04 16:09:55 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:09:56 - services.order_handler         - INFO     - [36m[2025-03-04 16:09:53][0m: Instrument DJI30 is CFD
+2025-03-04 16:09:56 - services.order_handler         - INFO     - [36m[2025-03-04 16:09:53][0m: Position #2 (size: 0.48) marked as RUNNER (CFD instrument)
+2025-03-04 16:09:56 - services.order_handler         - INFO     - [36m[2025-03-04 16:09:53][0m: Setting 2000 pip distant take profit of 41020.0 for CFD runner position
+2025-03-04 16:09:56 - services.order_handler         - INFO     - [36m[2025-03-04 16:09:53][0m: Placing 2 limit orders in parallel...
+2025-03-04 16:09:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654287'}}
+2025-03-04 16:09:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654289'}}
+2025-03-04 16:09:56 - services.order_handler         - INFO     - [36m[2025-03-04 16:09:53][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654289'}}
+2025-03-04 16:09:56 - services.order_handler         - INFO     - [36m[2025-03-04 16:09:53][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654287'}}
+2025-03-04 16:09:56 - services.order_handler         - INFO     - [36m[2025-03-04 16:09:53][0m: CFD Runner position (ID: 7349874591913654287) created - Position monitor will handle trailing stop
+2025-03-04 16:10:15 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 16:10:15 - trading_bot                    - INFO     - [36m[2025-03-04 16:10:17][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:10:15 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:10:16 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:10:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:10:16 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 2 take profits
+2025-03-04 16:10:16 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.48, 0.48], Risk amount: 264.5185
+2025-03-04 16:10:16 - trading_bot                    - INFO     - [36m[2025-03-04 16:10:17][0m: Position sizes: [0.0, 0.48, 0.48]
+2025-03-04 16:10:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:10:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:10:17][0m: Instrument DJI30 is CFD
+2025-03-04 16:10:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:10:17][0m: Position #2 (size: 0.48) marked as RUNNER (CFD instrument)
+2025-03-04 16:10:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:10:17][0m: Setting 2000 pip distant take profit of 41020.0 for CFD runner position
+2025-03-04 16:10:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:10:17][0m: Placing 2 limit orders in parallel...
+2025-03-04 16:10:17 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654314'}}
+2025-03-04 16:10:17 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654313'}}
+2025-03-04 16:10:17 - services.order_handler         - INFO     - [36m[2025-03-04 16:10:17][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654313'}}
+2025-03-04 16:10:17 - services.order_handler         - INFO     - [36m[2025-03-04 16:10:17][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654314'}}
+2025-03-04 16:10:17 - services.order_handler         - INFO     - [36m[2025-03-04 16:10:17][0m: CFD Runner position (ID: 7349874591913654314) created - Position monitor will handle trailing stop
+2025-03-04 16:10:43 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:10:44 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:14:14 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:14:14 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:14:14 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:14:14 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-04 16:14:14 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:14:26 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:14:26 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:14:26 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:14:26 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:14:27 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:14:27 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:14:29 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:14:29 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 16:14:29 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 16:14:29 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 16:14:29 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 16:14:29 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 16:14:29 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 16:14:29 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 16:14:29 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 16:14:29 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 16:14:29 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 16:14:29 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 16:14:29 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 16:14:44 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:14:46 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 16:14:46 - trading_bot                    - INFO     - [36m[2025-03-04 16:14:45][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:14:46 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:14:46 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:14:47 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 16:14:47 - trading_bot                    - INFO     - [36m[2025-03-04 16:14:45][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 16:14:47 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Instrument DJI30 is CFD
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Processing 3 positions with non-zero size
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Position #3 (size: 0.32) marked as RUNNER (CFD instrument)
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Setting 500 pip distant take profit of 42520.0 for CFD runner position
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:14:49 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654535'}}
+2025-03-04 16:14:49 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654537'}}
+2025-03-04 16:14:49 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654539'}}
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654537'}}
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654539'}}
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654535'}}
+2025-03-04 16:14:49 - services.order_handler         - INFO     - [36m[2025-03-04 16:14:45][0m: CFD Runner position (ID: 7349874591913654535) created - Position monitor will handle trailing stop
+2025-03-04 16:16:29 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 16:16:29 - trading_bot                    - INFO     - [36m[2025-03-04 16:16:30][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:16:29 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:16:29 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:16:29 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 16:16:29 - trading_bot                    - INFO     - [36m[2025-03-04 16:16:30][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 16:16:29 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:16:30 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Instrument DJI30 is CFD
+2025-03-04 16:16:30 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Processing 3 positions with non-zero size
+2025-03-04 16:16:30 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Position #3 (size: 0.32) marked as RUNNER (CFD instrument)
+2025-03-04 16:16:30 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Setting 500 pip distant take profit of 42520.0 for CFD runner position
+2025-03-04 16:16:30 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:16:30 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654607'}}
+2025-03-04 16:16:30 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654609'}}
+2025-03-04 16:16:31 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654611'}}
+2025-03-04 16:16:31 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654609'}}
+2025-03-04 16:16:31 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654611'}}
+2025-03-04 16:16:31 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654607'}}
+2025-03-04 16:16:31 - services.order_handler         - INFO     - [36m[2025-03-04 16:16:30][0m: CFD Runner position (ID: 7349874591913654607) created - Position monitor will handle trailing stop
+2025-03-04 16:19:59 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:19:59 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:19:59 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:19:59 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-04 16:19:59 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:20:02 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:20:02 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:20:02 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:20:02 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:20:03 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:20:03 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:20:04 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:20:04 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 16:20:04 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 16:20:04 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 16:20:04 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 16:20:04 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 16:20:04 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 16:20:04 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 16:20:04 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 16:20:04 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 16:20:04 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 16:20:04 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 16:20:04 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 16:20:27 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+    "instrument": "DJI30", 
+    "order_type": "sell", 
+    "entry_point": 43020, 
+    "stop_loss": 43080, 
+    "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 16:20:27 - trading_bot                    - INFO     - [36m[2025-03-04 16:20:26][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:20:27 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:20:27 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:20:28 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 16:20:28 - trading_bot                    - INFO     - [36m[2025-03-04 16:20:26][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 16:20:28 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Instrument DJI30 is CFD
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Position #1 (size: 0.32) with take profit: 42955
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Position #2 (size: 0.32) with take profit: 42915
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Position #3 (RUNNER) (size: 0.32) with 500 pip distant take profit: 42520.0
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:20:29 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654788'}}
+2025-03-04 16:20:29 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654790'}}
+2025-03-04 16:20:29 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654792'}}
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654792'}}
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654788'}}
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654790'}}
+2025-03-04 16:20:29 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:26][0m: CFD Runner position (ID: 7349874591913654790) created - Position monitor will handle trailing stop
+2025-03-04 16:20:41 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 16:20:41 - trading_bot                    - INFO     - [36m[2025-03-04 16:20:43][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:20:41 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:20:42 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:20:42 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:20:42 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 16:20:42 - trading_bot                    - INFO     - [36m[2025-03-04 16:20:43][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 16:20:42 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Instrument DJI30 is CFD
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Position #1 (size: 0.32) with take profit: 42955
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Position #2 (size: 0.32) with take profit: 42915
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Position #3 (RUNNER) (size: 0.32) with 500 pip distant take profit: 42520.0
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:20:42 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654803'}}
+2025-03-04 16:20:42 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654805'}}
+2025-03-04 16:20:42 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654807'}}
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654803'}}
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654805'}}
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913654807'}}
+2025-03-04 16:20:42 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: CFD Runner position (ID: 7349874591913654807) created - Position monitor will handle trailing stop
+2025-03-04 16:26:26 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:26:26 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:26:26 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:26:26 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:26:26 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:26:26 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:26:28 - trading_bot                    - ERROR    - Account ID 6161 is not valid.
+2025-03-04 16:26:28 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 16:26:28 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:26:28 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:26:28 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:26:28 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:26:33 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:26:33 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:26:33 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:26:34 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:26:34 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:26:34 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:26:35 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:26:35 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 16:26:35 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 16:26:35 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 16:26:35 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 16:26:35 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 16:26:35 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 16:26:35 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 16:26:35 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 16:26:35 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 16:26:35 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 16:26:35 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 16:26:35 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 16:26:49 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-04 16:26:52 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 16:26:52 - trading_bot                    - INFO     - [36m[2025-03-04 16:20:43][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:26:52 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:26:52 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [
+    42990,
+    42960,
+    42920
+  ]
+}
+2025-03-04 16:26:52 - trading_bot                    - INFO     - [36m[2025-03-04 16:26:50][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:26:52 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:26:52 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:26:52 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:26:52 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 16:26:52 - trading_bot                    - INFO     - [36m[2025-03-04 16:26:50][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 16:26:52 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:26:53 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 16:26:53 - trading_bot                    - INFO     - [36m[2025-03-04 16:20:43][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 16:26:53 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Instrument DJI30 is CFD
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: All take profits in signal: [42985, 42955, 42915]
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Overriding TPs for US30 signal at 43020 to 42820 and 42920
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Position #1 (size: 0.32) with take profit: 42820
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Position #2 (size: 0.32) with take profit: 42920
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Position #3 (RUNNER) (size: 0.32) with 500 pip distant take profit: 42520.0
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Instrument DJI30 is CFD
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: All take profits in signal: [42985, 42955, 42915]
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Overriding TPs for US30 signal at 43020 to 42820 and 42920
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Position #1 (size: 0.32) with take profit: 42820
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Position #2 (size: 0.32) with take profit: 42920
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Position #3 (RUNNER) (size: 0.32) with 500 pip distant take profit: 42520.0
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:26:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655097'}}
+2025-03-04 16:26:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655101'}}
+2025-03-04 16:26:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655103'}}
+2025-03-04 16:26:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655099'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655099'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655103'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655101'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:26:50][0m: CFD Runner position (ID: 7349874591913655101) created - Position monitor will handle trailing stop
+2025-03-04 16:26:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655105'}}
+2025-03-04 16:26:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655107'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655107'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655105'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655097'}}
+2025-03-04 16:26:54 - services.order_handler         - INFO     - [36m[2025-03-04 16:20:43][0m: CFD Runner position (ID: 7349874591913655097) created - Position monitor will handle trailing stop
+2025-03-04 16:27:03 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 16:27:03 - trading_bot                    - INFO     - [36m[2025-03-04 16:27:04][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:27:03 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:27:03 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:27:03 - core.risk_management           - INFO     - Calculated position sizes: [0.32, 0.32, 0.32], Risk amount: 264.5185
+2025-03-04 16:27:03 - trading_bot                    - INFO     - [36m[2025-03-04 16:27:04][0m: Position sizes: [0.32, 0.32, 0.32]
+2025-03-04 16:27:03 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:27:03 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Instrument DJI30 is CFD
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: All take profits in signal: [42985, 42955, 42915]
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Overriding TPs for US30 signal at 43020 to 42820 and 42920
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Position #1 (size: 0.32) with take profit: 42820
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Position #2 (size: 0.32) with take profit: 42920
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Position #3 (RUNNER) (size: 0.32) with 500 pip distant take profit: 42520.0
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:27:04 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655112'}}
+2025-03-04 16:27:04 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655115'}}
+2025-03-04 16:27:04 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655114'}}
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655114'}}
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655112'}}
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655115'}}
+2025-03-04 16:27:04 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: CFD Runner position (ID: 7349874591913655115) created - Position monitor will handle trailing stop
+2025-03-04 16:34:01 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:34:01 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:34:01 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:34:01 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-04 16:34:01 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:34:09 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:34:09 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:34:09 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:34:09 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:34:09 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:34:09 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:34:12 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:34:12 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 16:34:12 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 16:34:12 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 16:34:12 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 16:34:12 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 16:34:12 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 16:34:12 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 16:34:12 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 16:34:12 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 16:34:12 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 16:34:12 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 16:34:12 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 16:34:17 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-04 16:34:19 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 16:34:19 - core.signal_parser             - INFO     - Applying 5 pip adjustment to DJI30 signal
+2025-03-04 16:34:19 - core.signal_parser             - INFO     - Adjusted take profits: [42995, 42965, 42925]
+2025-03-04 16:34:19 - trading_bot                    - INFO     - [36m[2025-03-04 16:34:18][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:34:19 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:34:20 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:34:20 - core.risk_management           - INFO     - Calculated position sizes: [0.29, 0.29, 0.29], Risk amount: 264.5185
+2025-03-04 16:34:20 - trading_bot                    - INFO     - [36m[2025-03-04 16:34:18][0m: Position sizes: [0.29, 0.29, 0.29]
+2025-03-04 16:34:20 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:34:21 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 16:34:21 - core.signal_parser             - INFO     - Applying 5 pip adjustment to DJI30 signal
+2025-03-04 16:34:21 - core.signal_parser             - INFO     - Adjusted take profits: [42995, 42965, 42925]
+2025-03-04 16:34:21 - trading_bot                    - INFO     - [36m[2025-03-04 16:27:04][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:34:21 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:34:21 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Instrument DJI30 is CFD
+2025-03-04 16:34:21 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:34:21 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Sorted TPs (ascending): [42925, 42965, 42995]
+2025-03-04 16:34:21 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Position #1 (size: 0.29) with take profit: 42925
+2025-03-04 16:34:21 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Position #2 (size: 0.29) with take profit: 42965
+2025-03-04 16:34:21 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 42520.0
+2025-03-04 16:34:21 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:34:21 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:34:21 - core.risk_management           - INFO     - Calculated position sizes: [0.29, 0.29, 0.29], Risk amount: 264.5185
+2025-03-04 16:34:21 - trading_bot                    - INFO     - [36m[2025-03-04 16:27:04][0m: Position sizes: [0.29, 0.29, 0.29]
+2025-03-04 16:34:21 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655393'}}
+2025-03-04 16:34:22 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:34:22 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655395'}}
+2025-03-04 16:34:22 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655397'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655393'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655397'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655395'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:18][0m: CFD Runner position (ID: 7349874591913655395) created - Position monitor will handle trailing stop
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Instrument DJI30 is CFD
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Sorted TPs (ascending): [42925, 42965, 42995]
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Position #1 (size: 0.29) with take profit: 42925
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Position #2 (size: 0.29) with take profit: 42965
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 42520.0
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:34:22 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655400'}}
+2025-03-04 16:34:22 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655402'}}
+2025-03-04 16:34:22 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655404'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655402'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655400'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655404'}}
+2025-03-04 16:34:22 - services.order_handler         - INFO     - [36m[2025-03-04 16:27:04][0m: CFD Runner position (ID: 7349874591913655404) created - Position monitor will handle trailing stop
+2025-03-04 16:34:32 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 16:34:32 - trading_bot                    - INFO     - [36m[2025-03-04 16:34:34][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:34:32 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:34:32 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:34:33 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:34:33 - core.risk_management           - INFO     - Calculated position sizes: [0.29, 0.29, 0.29], Risk amount: 264.5185
+2025-03-04 16:34:33 - trading_bot                    - INFO     - [36m[2025-03-04 16:34:34][0m: Position sizes: [0.29, 0.29, 0.29]
+2025-03-04 16:34:33 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Instrument DJI30 is CFD
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Sorted TPs (ascending): [42925, 42965, 42995]
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Position #1 (size: 0.29) with take profit: 42925
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Position #2 (size: 0.29) with take profit: 42965
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 42520.0
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:34:34 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655412'}}
+2025-03-04 16:34:34 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655414'}}
+2025-03-04 16:34:34 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655416'}}
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655416'}}
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655412'}}
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655414'}}
+2025-03-04 16:34:34 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: CFD Runner position (ID: 7349874591913655414) created - Position monitor will handle trailing stop
+2025-03-04 16:36:26 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:36:26 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:36:26 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:36:26 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-04 16:36:26 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:36:44 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:36:44 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:36:44 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:36:44 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:36:45 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:36:45 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:36:47 - trading_bot                    - ERROR    - Account ID 661 is not valid.
+2025-03-04 16:36:47 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 16:36:47 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 16:36:47 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 16:36:47 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:36:47 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 16:36:56 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:36:56 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:36:56 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:36:56 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:36:57 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:36:57 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 16:36:58 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:36:58 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 16:36:58 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 16:36:58 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 16:36:58 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 16:36:58 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 16:36:58 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 16:36:58 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 16:36:58 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 16:36:58 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 16:36:58 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 16:36:58 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 16:36:58 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 16:37:02 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-04 16:37:02 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-04 16:37:05 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [
+    42990,
+    42960,
+    42920
+  ]
+}
+2025-03-04 16:37:05 - core.signal_parser             - INFO     - Applying -5 pip adjustment to DJI30 signal
+2025-03-04 16:37:05 - core.signal_parser             - INFO     - Adjusted take profits: [42985, 42955, 42915]
+2025-03-04 16:37:05 - trading_bot                    - INFO     - [36m[2025-03-04 16:37:03][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:37:05 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:37:05 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:37:06 - core.risk_management           - INFO     - Calculated position sizes: [0.29, 0.29, 0.29], Risk amount: 264.5185
+2025-03-04 16:37:06 - trading_bot                    - INFO     - [36m[2025-03-04 16:37:03][0m: Position sizes: [0.29, 0.29, 0.29]
+2025-03-04 16:37:06 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:37:06 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920, 42820]
+}
+2025-03-04 16:37:06 - core.signal_parser             - INFO     - Applying -5 pip adjustment to DJI30 signal
+2025-03-04 16:37:06 - core.signal_parser             - INFO     - Adjusted take profits: [42985, 42955, 42915, 42815]
+2025-03-04 16:37:06 - trading_bot                    - INFO     - [36m[2025-03-04 16:34:34][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:37:06 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:37:06 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:37:06 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-04 16:37:06 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.29, 0.29, 0.29], Risk amount: 264.5185
+2025-03-04 16:37:06 - trading_bot                    - INFO     - [36m[2025-03-04 16:34:34][0m: Position sizes: [0.0, 0.29, 0.29, 0.29]
+2025-03-04 16:37:06 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Instrument DJI30 is CFD
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Sorted TPs (ascending): [42915, 42955, 42985]
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Position #1 (size: 0.29) with take profit: 42915
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Position #2 (size: 0.29) with take profit: 42955
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 42520.0
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Instrument DJI30 is CFD
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Sorted TPs (ascending): [42815, 42915, 42955, 42985]
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Position #1 (size: 0.29) with take profit: 42815
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Position #2 (size: 0.29) with take profit: 42915
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 42520.0
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:37:07 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655531'}}
+2025-03-04 16:37:07 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655533'}}
+2025-03-04 16:37:07 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655535'}}
+2025-03-04 16:37:07 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655537'}}
+2025-03-04 16:37:07 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655539'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655533'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655539'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655531'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:03][0m: CFD Runner position (ID: 7349874591913655531) created - Position monitor will handle trailing stop
+2025-03-04 16:37:07 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655541'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655541'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655537'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655535'}}
+2025-03-04 16:37:07 - services.order_handler         - INFO     - [36m[2025-03-04 16:34:34][0m: CFD Runner position (ID: 7349874591913655535) created - Position monitor will handle trailing stop
+2025-03-04 16:37:15 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-04 16:37:15 - trading_bot                    - INFO     - [36m[2025-03-04 16:37:17][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 16:37:15 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 16:37:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:37:16 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-04 16:37:16 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.29, 0.29, 0.29], Risk amount: 264.5185
+2025-03-04 16:37:16 - trading_bot                    - INFO     - [36m[2025-03-04 16:37:17][0m: Position sizes: [0.0, 0.29, 0.29, 0.29]
+2025-03-04 16:37:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Instrument DJI30 is CFD
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Sorted TPs (ascending): [42815, 42915, 42955, 42985]
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Position #1 (size: 0.29) with take profit: 42815
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Position #2 (size: 0.29) with take profit: 42915
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 42520.0
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Placing 3 limit orders in parallel...
+2025-03-04 16:37:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655549'}}
+2025-03-04 16:37:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655551'}}
+2025-03-04 16:37:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655552'}}
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655551'}}
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655552'}}
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913655549'}}
+2025-03-04 16:37:16 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: CFD Runner position (ID: 7349874591913655549) created - Position monitor will handle trailing stop
+2025-03-04 16:58:18 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 16:58:18 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 16:58:18 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 16:58:18 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 16:58:19 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 16:58:19 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:01:32 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 211, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:01:32 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:01:32 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:01:32 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001EC43E6CA50>
+2025-03-04 17:01:32 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001EC43E70590>
+2025-03-04 17:01:35 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:01:35 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:01:35 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:01:35 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:01:36 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:01:36 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:01:38 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:01:38 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 17:01:38 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 17:01:38 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 17:01:38 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 17:01:38 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 17:01:38 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 17:01:38 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 17:01:38 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 17:01:38 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 17:01:38 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 17:01:38 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 17:01:38 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 17:02:10 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-03-04 17:02:13 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 43020,
+  "stop_loss": 43080,
+  "take_profits": [42990, 42960, 42920]
+}
+2025-03-04 17:02:13 - core.signal_parser             - INFO     - Recording price difference: Signal 43020, Broker 42758.9, Diff 261.09999999999854
+2025-03-04 17:02:13 - core.signal_parser             - INFO     - Current broker price: 42758.9, Signal entry: 43020
+2025-03-04 17:02:13 - core.signal_parser             - INFO     - Average price difference over last 7 days: 261.09999999999854
+2025-03-04 17:02:13 - core.signal_parser             - INFO     - Applying dynamic -261.09999999999854 point adjustment to DJI30 signal
+2025-03-04 17:02:13 - core.signal_parser             - INFO     - Adjusted entry point: 42758.9
+2025-03-04 17:02:13 - core.signal_parser             - INFO     - Adjusted stop loss: 42818.9
+2025-03-04 17:02:13 - core.signal_parser             - INFO     - Adjusted take profits: [42728.9, 42698.9, 42658.9]
+2025-03-04 17:02:13 - trading_bot                    - INFO     - [36m[2025-03-04 16:37:17][0m Received message: Sell us30
+
+43020
+TP 42990
+TP 42960
+TP 42920
+TP 42820
+TP OPEN 
+
+SL 43080
+2025-03-04 17:02:13 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 17:02:14 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:02:14 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 42950,
+  "stop_loss": 43000,
+  "take_profits": [42920, 42890, 42850, 42750]
+}
+2025-03-04 17:02:14 - core.signal_parser             - INFO     - Recording price difference: Signal 42950, Broker 42758.9, Diff 191.09999999999854
+2025-03-04 17:02:14 - core.signal_parser             - INFO     - Current broker price: 42758.9, Signal entry: 42950
+2025-03-04 17:02:14 - core.signal_parser             - INFO     - Average price difference over last 7 days: 226.09999999999854
+2025-03-04 17:02:14 - core.signal_parser             - INFO     - Applying dynamic -226.09999999999854 point adjustment to DJI30 signal
+2025-03-04 17:02:14 - core.signal_parser             - INFO     - Adjusted entry point: 42723.9
+2025-03-04 17:02:14 - core.signal_parser             - INFO     - Adjusted stop loss: 42773.9
+2025-03-04 17:02:14 - core.signal_parser             - INFO     - Adjusted take profits: [42693.9, 42663.9, 42623.9, 42523.9]
+2025-03-04 17:02:14 - trading_bot                    - INFO     - [36m[2025-03-04 17:02:09][0m Received message: Sell us30
+
+42950
+TP 42920
+TP 42890
+TP 42850
+TP 42750
+TP OPEN 
+
+SL 43000
+
+@Traders_HIVE
+2025-03-04 17:02:14 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 17:02:14 - core.risk_management           - INFO     - Calculated position sizes: [0.29, 0.29, 0.29], Risk amount: 264.5185
+2025-03-04 17:02:14 - trading_bot                    - INFO     - [36m[2025-03-04 16:37:17][0m: Position sizes: [0.29, 0.29, 0.29]
+2025-03-04 17:02:14 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:02:14 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-04 17:02:14 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.35, 0.35, 0.35], Risk amount: 264.5185
+2025-03-04 17:02:14 - trading_bot                    - INFO     - [36m[2025-03-04 17:02:09][0m: Position sizes: [0.0, 0.35, 0.35, 0.35]
+2025-03-04 17:02:14 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Using MARKET SELL instead of limit. Current price: 42757.3, Entry: 42758.9, Diff: 2 pips, Adjusted SL: 42817.3
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Instrument DJI30 is CFD
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Sorted TPs (ascending): [42658.9, 42698.9, 42728.9]
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Position #1 (size: 0.29) with take profit: 42658.9
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Position #2 (size: 0.29) with take profit: 42698.9
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 42258.9
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Placing 3 market orders in parallel...
+2025-03-04 17:02:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since order type is not allowed for current session.'}
+2025-03-04 17:02:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since order type is not allowed for current session.'}
+2025-03-04 17:02:15 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:02:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since order type is not allowed for current session.'}
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since order type is not allowed for current session.'}
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since order type is not allowed for current session.'}
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created since order type is not allowed for current session.'}
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 16:37:17][0m: CFD Runner position (ID: None) created - Position monitor will handle trailing stop
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Instrument DJI30 is CFD
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Sorted TPs (ascending): [42523.9, 42623.9, 42663.9, 42693.9]
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Position #1 (size: 0.35) with take profit: 42523.9
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Position #2 (size: 0.35) with take profit: 42623.9
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Position #3 (RUNNER) (size: 0.35) with 500 pip distant take profit: 42223.9
+2025-03-04 17:02:15 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Placing 3 limit orders in parallel...
+2025-03-04 17:02:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661024'}}
+2025-03-04 17:02:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661026'}}
+2025-03-04 17:02:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661028'}}
+2025-03-04 17:02:16 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661024'}}
+2025-03-04 17:02:16 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661028'}}
+2025-03-04 17:02:16 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661026'}}
+2025-03-04 17:02:16 - services.order_handler         - INFO     - [36m[2025-03-04 17:02:09][0m: CFD Runner position (ID: 7349874591913661026) created - Position monitor will handle trailing stop
+2025-03-04 17:05:11 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:05:11 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:05:11 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:05:11 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:05:12 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:05:12 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:05:13 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:05:13 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 17:05:13 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 17:05:13 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 17:05:13 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 17:05:13 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 17:05:13 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 17:05:13 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 17:05:13 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 17:05:13 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 17:05:13 - trading_bot                    - ERROR    - Unexpected error in main loop: 'TradingBot' object has no attribute 'start_position_monitoring'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 412, in run
+    monitoring_task = await self.start_position_monitoring()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradingBot' object has no attribute 'start_position_monitoring'
+2025-03-04 17:05:13 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:05:13 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 17:05:13 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:05:13 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 17:07:15 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:07:15 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:07:15 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:07:16 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:07:17 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:07:17 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:07:18 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:07:18 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 17:07:18 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 17:07:18 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 17:07:18 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 17:07:18 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 17:07:18 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 17:07:18 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 17:07:18 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 17:07:18 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 17:07:18 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 17:07:18 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 17:07:18 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 17:09:52 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 42950,
+  "stop_loss": 43000,
+  "take_profits": [42920, 42890, 42850, 42750]
+}
+2025-03-04 17:09:52 - core.signal_parser             - INFO     - Applying -5 pip adjustment to DJI30 signal
+2025-03-04 17:09:52 - core.signal_parser             - INFO     - Adjusted take profits: [42915, 42885, 42845, 42745]
+2025-03-04 17:09:52 - trading_bot                    - INFO     - [36m[2025-03-04 17:09:49][0m Received message: Sell us30
+
+42950
+TP 42920
+TP 42890
+TP 42850
+TP 42750
+TP OPEN 
+
+SL 43000
+
+@Traders_HIVE
+2025-03-04 17:09:52 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-04 17:09:52 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:09:53 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-04 17:09:53 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.35, 0.35, 0.35], Risk amount: 264.5185
+2025-03-04 17:09:53 - trading_bot                    - INFO     - [36m[2025-03-04 17:09:49][0m: Position sizes: [0.0, 0.35, 0.35, 0.35]
+2025-03-04 17:09:53 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Instrument DJI30 is CFD
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Processing CFD instrument with custom take profit allocation
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Sorted TPs (ascending): [42745, 42845, 42885, 42915]
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Position #1 (size: 0.35) with take profit: 42745
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Position #2 (size: 0.35) with take profit: 42845
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Position #3 (RUNNER) (size: 0.35) with 500 pip distant take profit: 42450.0
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Placing 3 limit orders in parallel...
+2025-03-04 17:09:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661679'}}
+2025-03-04 17:09:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661677'}}
+2025-03-04 17:09:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661681'}}
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661679'}}
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661677'}}
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661681'}}
+2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: CFD Runner position (ID: 7349874591913661681) created - Position monitor will handle trailing stop

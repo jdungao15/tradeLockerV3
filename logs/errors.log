@@ -989,3 +989,33 @@ UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid 
 client_session: <aiohttp.client.ClientSession object at 0x0000027F203DD550>
 2025-03-04 15:10:46 - asyncio                        - ERROR    - Unclosed client session
 client_session: <aiohttp.client.ClientSession object at 0x0000027F203D9E50>
+2025-03-04 15:25:16 - trading_bot                    - ERROR    - Unexpected error in main loop: 'TradingBot' object has no attribute 'start_position_monitoring'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 412, in run
+    monitoring_task = await self.start_position_monitoring()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradingBot' object has no attribute 'start_position_monitoring'
+2025-03-04 16:09:34 - trading_bot                    - ERROR    - Account ID 6161 is not valid.
+2025-03-04 16:09:34 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 16:26:28 - trading_bot                    - ERROR    - Account ID 6161 is not valid.
+2025-03-04 16:26:28 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 16:36:47 - trading_bot                    - ERROR    - Account ID 661 is not valid.
+2025-03-04 16:36:47 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:01:32 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 211, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:01:32 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:01:32 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001EC43E6CA50>
+2025-03-04 17:01:32 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001EC43E70590>
+2025-03-04 17:05:13 - trading_bot                    - ERROR    - Unexpected error in main loop: 'TradingBot' object has no attribute 'start_position_monitoring'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 412, in run
+    monitoring_task = await self.start_position_monitoring()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradingBot' object has no attribute 'start_position_monitoring'

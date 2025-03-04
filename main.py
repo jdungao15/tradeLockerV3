@@ -163,6 +163,26 @@ class TradingBot:
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
 
+    async def start_position_monitoring(self):
+        """Start monitoring existing positions in the background"""
+        if not self.enable_monitor:
+            self.logger.info("Position monitoring is disabled. Skipping monitor start.")
+            return None
+
+        self.logger.info("Starting position monitoring...")
+        auth_token = await self.auth.get_access_token_async()
+        monitor_task = asyncio.create_task(
+            monitor_existing_position(
+                self.accounts_client,
+                self.instruments_client,
+                self.quotes_client,
+                self.selected_account,
+                self.base_url,
+                auth_token
+            )
+        )
+        self._tasks.add(monitor_task)
+        return monitor_task
     async def display_accounts(self):
         """Fetch and display all available accounts"""
         try:

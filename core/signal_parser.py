@@ -6,7 +6,7 @@ import logging
 import asyncio
 import re
 from dotenv import load_dotenv
-from functools import lru_cache
+
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -175,6 +175,36 @@ def parse_signal(message: str):
         return None
 
 
+def adjust_broker_pricing(parsed_signal):
+    """
+    Adjust prices in parsed signal to match broker pricing.
+
+    For US30/DJI30, applies a 5-pip adjustment to account for
+    difference between signal provider and broker pricing.
+    """
+    if not parsed_signal:
+        return parsed_signal
+
+    # Only apply adjustment for DJI30/US30
+    if parsed_signal.get('instrument') == 'DJI30':
+        # Get order direction
+        is_buy = parsed_signal.get('order_type', '').lower() == 'buy'
+
+        # Calculate adjustment:
+        # For BUY: -5 pips (lower take profits)
+        # For SELL: +5 pips (higher take profits)
+        adjustment = 5 if is_buy else -5
+
+        logger.info(f"Applying {adjustment} pip adjustment to DJI30 signal")
+
+        # Adjust take profits
+        if 'take_profits' in parsed_signal and parsed_signal['take_profits']:
+            parsed_signal['take_profits'] = [tp + adjustment for tp in parsed_signal['take_profits']]
+            logger.info(f"Adjusted take profits: {parsed_signal['take_profits']}")
+
+    return parsed_signal
+
+
 async def parse_signal_async(message: str):
     """
     Parse a trading signal using OpenAI API - asynchronous version.
@@ -285,18 +315,8 @@ async def parse_signal_async(message: str):
                     parsed_signal_cache[message] = None
                     return None
 
-                # Adjust prices for different brokers based on order type
-                if result.get("instrument") == "DJI30":
-                    # For buy orders, add the adjustment to match broker pricing
-                    if result.get("order_type") == "buy":
-                        result["stop_loss"] += 5
-                        #result["entry_point"] += 5
-                        result["take_profits"] = [tp + 5 for tp in result["take_profits"]]
-                    # For sell orders, subtract the adjustment to match broker pricing
-                    elif result.get("order_type") == "sell":
-                        result["stop_loss"] -= 5
-                        #result["entry_point"] -= 5
-                        result["take_profits"] = [tp - 5 for tp in result["take_profits"]]
+                # Apply broker-specific adjustments
+                result = adjust_broker_pricing(result)
 
                 # Cache the result
                 parsed_signal_cache[message] = result

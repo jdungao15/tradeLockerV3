@@ -271,7 +271,7 @@ def determine_risk_percentage(account_balance: float, instrument: dict) -> float
 
         # If the instrument type is EQUITY_CFD but not XAUUSD, set a fixed risk percentage of 2%
         if instrument["type"] == "EQUITY_CFD":
-            return 0.02  # 2%
+            return 0.01  # 2%
 
         # Determine the closest tier based on account balance for other instruments
         closest_tier = max(tier for tier in tiers if account_balance >= tier)
@@ -337,10 +337,34 @@ def calculate_position_size(
 
         # Calculate position size based on instrument type
         if instrument['type'] == "EQUITY_CFD":
-            # For indices and other CFDs
+            # For CFD instruments, use the last 3 take profits
+            if len(take_profits) > 3:
+                logger.info(f"For CFD instrument {instrument['name']}, using only the last 3 take profits")
+                filtered_take_profits = take_profits[-3:]  # Get last 3 take profits
+            else:
+                filtered_take_profits = take_profits  # Use all if less than 3
+
+            # Calculate position size for the selected take profits
             total_pos_in_lots = converted_risk_amount / (stop_loss_pips * pip_value)
-            position_per_tp = total_pos_in_lots / len(take_profits)
-            position_sizes = [round(position_per_tp, 2) for _ in take_profits]
+
+            # Equal distribution for all 3 take profits
+            position_per_tp = total_pos_in_lots / 3
+
+            # Create position sizes list with the right structure
+            position_sizes = []
+            if len(take_profits) > 3:
+                # Add zeros for take profits we're not using
+                position_sizes = [0.0] * (len(take_profits) - 3)
+                # Add actual position sizes for the last 3 take profits
+                position_sizes.extend([round(position_per_tp, 2) for _ in range(3)])
+            elif len(take_profits) == 3:
+                # If exactly 3 take profits, use equal distribution
+                position_sizes = [round(position_per_tp, 2) for _ in range(3)]
+            elif len(take_profits) < 3:
+                # If less than 3 take profits, distribute evenly
+                position_per_tp = total_pos_in_lots / len(take_profits)
+                position_sizes = [round(position_per_tp, 2) for _ in take_profits]
+
         else:
             # For forex and other instruments using lot sizes
             total_pos_in_units = converted_risk_amount / (stop_loss_pips * pip_value)
@@ -363,7 +387,6 @@ def calculate_position_size(
 
         logger.warning(f"Using fallback position sizes due to error: {position_sizes}")
         return position_sizes, round(est_risk)
-
 
 # Clear exchange rate cache
 def clear_exchange_rate_cache():
