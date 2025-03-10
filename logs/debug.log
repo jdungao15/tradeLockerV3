@@ -5546,3 +5546,1454 @@ SL 43000
 2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661677'}}
 2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913661681'}}
 2025-03-04 17:09:54 - services.order_handler         - INFO     - [36m[2025-03-04 17:09:49][0m: CFD Runner position (ID: 7349874591913661681) created - Position monitor will handle trailing stop
+2025-03-04 17:25:40 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 17:25:40 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:25:40 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:25:40 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-03-04 17:25:40 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 17:25:44 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:25:44 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:25:44 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:25:44 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:25:45 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:25:45 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:25:47 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:25:47 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 17:25:47 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 17:25:47 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 17:25:47 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 17:25:47 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 17:25:47 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 17:25:47 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 17:25:47 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 17:25:47 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 17:25:47 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 17:25:47 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 17:25:47 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-04 17:32:54 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:32:54 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:32:54 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:32:54 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:32:55 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:32:55 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:32:55 - trading_bot                    - ERROR    - Error fetching accounts: No module named 'pandas'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 196, in display_accounts
+    import pandas as pd
+ModuleNotFoundError: No module named 'pandas'
+2025-03-04 17:32:55 - trading_bot                    - ERROR    - No accounts found. Exiting.
+2025-03-04 17:32:55 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:32:55 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-03-04 17:32:55 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:32:55 - trading_bot                    - INFO     - Cleanup completed.
+2025-03-04 17:33:45 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:33:45 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:33:45 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:33:46 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:33:46 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:33:46 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:35:34 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 264, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:35:34 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:35:34 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:35:34 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000209BD635A90>
+2025-03-04 17:35:34 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000209BD629E50>
+2025-03-04 17:35:37 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:35:37 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:35:37 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:35:37 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:35:37 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:35:37 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:36:36 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 263, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:36:36 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:36:36 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:36:36 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000026BFAACDA90>
+2025-03-04 17:36:36 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000026BFAAB9E50>
+2025-03-04 17:36:40 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:36:40 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:36:40 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:36:40 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:36:41 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:36:41 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:36:45 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 335, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:36:45 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:36:45 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002746F7EDBE0>
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x000002746F7C15B0>, 268879.1944132)])']
+connector: <aiohttp.connector.TCPConnector object at 0x000002746F7ED7F0>
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002746F7DDE50>
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x000002746F7C1D90>, 268879.474078)])']
+connector: <aiohttp.connector.TCPConnector object at 0x000002746F7DDF90>
+2025-03-04 17:39:49 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:39:49 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:39:49 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:39:49 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:39:50 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:39:50 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:41:31 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 335, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:41:31 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:41:31 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-04 17:41:31 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002276A24DBE0>
+2025-03-04 17:41:31 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002276A23DE50>
+2025-03-04 17:41:39 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-04 17:41:39 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-04 17:41:39 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-04 17:41:39 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-04 17:41:40 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-04 17:41:40 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-04 17:42:05 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-04 17:42:05 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26451.85
+2025-03-04 17:42:05 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-04 17:42:05 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-04 18:00:00 EST
+2025-03-04 17:42:05 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-04 17:42:05 - trading_bot                    - INFO     - [2025-03-04 19:30] AUD - GDP q/q
+2025-03-04 17:42:05 - trading_bot                    - INFO     - [2025-03-04 21:00] USD - President Trump Speaks
+2025-03-04 17:42:05 - trading_bot                    - INFO     - [2025-03-05 02:30] CHF - CPI m/m
+2025-03-04 17:42:05 - trading_bot                    - INFO     - [2025-03-05 08:15] USD - ADP Non-Farm Employment Change
+2025-03-04 17:42:05 - trading_bot                    - INFO     - [2025-03-05 10:00] USD - ISM Services PMI
+2025-03-04 17:42:05 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-04 17:42:05 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-04 17:42:05 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-05 19:06:32 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-05 19:06:32 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-05 19:06:32 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-05 19:06:32 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-05 19:06:33 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-05 19:06:33 - services.news_filter           - INFO     - Loaded economic calendar from cache with 118 events
+2025-03-05 19:06:35 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-05 19:06:35 - trading_bot                    - INFO     - Selected account: ID: 1017072, Account Number: 61, Balance: 26460.58
+2025-03-05 19:06:35 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24341.5, starting=25341.5
+2025-03-05 19:06:35 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-06 18:00:00 EST
+2025-03-05 19:06:35 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-05 19:06:35 - trading_bot                    - INFO     - [2025-03-06 06:15] EUR - Euro Summit
+2025-03-05 19:06:35 - trading_bot                    - INFO     - [2025-03-06 08:15] EUR - Main Refinancing Rate
+2025-03-05 19:06:35 - trading_bot                    - INFO     - [2025-03-06 08:15] EUR - Monetary Policy Statement
+2025-03-05 19:06:35 - trading_bot                    - INFO     - [2025-03-06 08:30] USD - Unemployment Claims
+2025-03-05 19:06:35 - trading_bot                    - INFO     - [2025-03-06 08:45] EUR - ECB Press Conference
+2025-03-05 19:06:35 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-05 19:06:35 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-05 19:06:35 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-05 19:06:52 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 42950,
+  "stop_loss": 43000,
+  "take_profits": [42920, 42890, 42850, 42750]
+}
+2025-03-05 19:06:52 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-05 19:06:52 - core.signal_parser             - INFO     - Adjusted entry point: 42946
+2025-03-05 19:06:52 - core.signal_parser             - INFO     - Adjusted stop loss: 42996
+2025-03-05 19:06:52 - core.signal_parser             - INFO     - Adjusted take profits: [42916, 42886, 42846, 42746]
+2025-03-05 19:06:52 - core.signal_parser             - INFO     - Applied additional directional adjustment of -5 to take profits: [42911, 42881, 42841, 42741]
+2025-03-05 19:06:52 - trading_bot                    - INFO     - [36m[2025-03-05 19:06:49][0m Received message: Sell us30
+
+42950
+TP 42920
+TP 42890
+TP 42850
+TP 42750
+TP OPEN 
+
+SL 43000
+
+@Traders_HIVE
+2025-03-05 19:06:52 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-05 19:06:52 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-05 19:06:53 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-05 19:06:53 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.35, 0.35, 0.35], Risk amount: 264.60580000000004
+2025-03-05 19:06:53 - trading_bot                    - INFO     - [36m[2025-03-05 19:06:49][0m: Position sizes: [0.0, 0.35, 0.35, 0.35]
+2025-03-05 19:06:53 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-05 19:06:54 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Instrument DJI30 is CFD
+2025-03-05 19:06:54 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Processing CFD instrument with custom take profit allocation
+2025-03-05 19:06:54 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Sorted TPs (ascending): [42741, 42841, 42881, 42911]
+2025-03-05 19:06:54 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Position #1 (size: 0.35) with take profit: 42741
+2025-03-05 19:06:54 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Position #2 (size: 0.35) with take profit: 42841
+2025-03-05 19:06:54 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Position #3 (RUNNER) (size: 0.35) with 500 pip distant take profit: 42446.0
+2025-03-05 19:06:54 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Placing 3 limit orders in parallel...
+2025-03-05 19:06:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913783842'}}
+2025-03-05 19:06:54 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913783844'}}
+2025-03-05 19:06:55 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913783854'}}
+2025-03-05 19:06:55 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913783844'}}
+2025-03-05 19:06:55 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913783842'}}
+2025-03-05 19:06:55 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7349874591913783854'}}
+2025-03-05 19:06:55 - services.order_handler         - INFO     - [36m[2025-03-05 19:06:49][0m: CFD Runner position (ID: 7349874591913783854) created - Position monitor will handle trailing stop
+2025-03-05 19:08:57 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 19:09:34 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 19:10:00 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 19:25:00 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 19:29:01 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 19:33:51 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-05 19:36:58 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 20:33:21 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 21:03:22 - telethon.client.updates        - INFO     - Got difference for channel 2001867794 updates
+2025-03-05 21:21:34 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-05 22:03:22 - telethon.client.updates        - INFO     - Got difference for channel 1555470470 updates
+2025-03-05 22:18:22 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 22:38:17 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-05 22:48:22 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 23:01:08 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-05 23:24:15 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 00:06:53 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 00:17:58 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 00:32:58 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 01:17:58 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 01:55:12 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 01:57:34 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-06 02:01:09 - telethon.client.updates        - INFO     - Got difference for channel 1525522289 updates
+2025-03-06 02:16:09 - telethon.client.updates        - INFO     - Got difference for channel 1525522289 updates
+2025-03-06 03:17:59 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 03:53:13 - core.signal_parser             - DEBUG    - Content from signal_parser.py: null
+2025-03-06 03:53:13 - core.signal_parser             - INFO     - Not a valid trading signal
+2025-03-06 04:17:55 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 04:17:59 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 04:28:06 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 04:35:33 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 05:05:40 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 05:42:35 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-06 05:57:36 - telethon.client.updates        - INFO     - Got difference for channel 1220318149 updates
+2025-03-06 06:02:59 - telethon.client.updates        - INFO     - Got difference for channel 1220318149 updates
+2025-03-06 06:17:59 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 06:28:32 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 06:42:24 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 06:42:35 - telethon.client.updates        - INFO     - Got difference for channel 1256952599 updates
+2025-03-06 06:48:00 - telethon.client.updates        - INFO     - Got difference for channel 1220318149 updates
+2025-03-06 07:13:38 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 07:21:06 - telethon.client.updates        - INFO     - Got difference for channel 1300269873 updates
+2025-03-06 07:30:46 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 07:33:00 - telethon.client.updates        - INFO     - Got difference for channel 1300269873 updates
+2025-03-06 07:38:37 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 07:48:36 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 08:11:43 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 08:16:19 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 08:25:59 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 08:30:47 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "sell",
+  "entry_point": 2906,
+  "stop_loss": 2910,
+  "take_profits": [2903, 2900, 2889]
+}
+2025-03-06 08:30:47 - trading_bot                    - INFO     - [36m[2025-03-06 08:30:45][0m Received message: Sell  XAUUSD 2906-2908
+
+TP 2903
+TP 2900
+TP 2889
+TP 2880
+TP OPEN 
+
+SL 2910
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-06 08:30:47 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-06 08:30:47 - trading_bot                    - WARNING  - [36m[2025-03-06 08:30:45][0m: Cannot place trade for XAUUSD: High-impact USD news 'Unemployment Claims' at 08:30:00
+2025-03-06 08:31:16 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 08:31:30 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 08:32:33 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 08:32:59 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+"error": "Invalid input. Please provide a valid trading signal."
+}
+2025-03-06 08:32:59 - core.signal_parser             - WARNING  - Parsed signal is missing required fields: {'error': 'Invalid input. Please provide a valid trading signal.'}
+2025-03-06 08:36:38 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "sell",
+  "entry_point": 2907.5,
+  "stop_loss": 2911.5,
+  "take_profits": [2904.5, 2902, 2890]
+}
+2025-03-06 08:36:38 - trading_bot                    - INFO     - [36m[2025-03-06 08:36:35][0m Received message: Sell  XAUUSD 2907.5-2910
+
+TP 2904.5
+TP 2902
+TP 2890
+TP 2887
+TP OPEN 
+
+SL 2911.5
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-06 08:36:38 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-06 08:36:38 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 08:36:39 - core.risk_management           - INFO     - Account balance: 26460.58, Closest tier: 25000, Risk percentage for XAUUSD: 0.1%
+2025-03-06 08:36:39 - core.risk_management           - INFO     - Calculated position sizes: [0.02, 0.02, 0.02], Risk amount: 26.460580000000004
+2025-03-06 08:36:39 - trading_bot                    - INFO     - [36m[2025-03-06 08:36:35][0m: Position sizes: [0.02, 0.02, 0.02]
+2025-03-06 08:36:39 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Instrument XAUUSD is CFD
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Processing CFD instrument with custom take profit allocation
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Sorted TPs (ascending): [2890, 2902, 2904.5]
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Position #1 (size: 0.02) with take profit: 2890
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Position #2 (size: 0.02) with take profit: 2902
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Position #3 (RUNNER) (size: 0.02) with 500 pip distant take profit: 2857.5
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Placing 3 limit orders in parallel...
+2025-03-06 08:36:40 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 08:36:40 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 08:36:40 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 08:36:40 - services.order_handler         - INFO     - [36m[2025-03-06 08:36:35][0m: CFD Runner position (ID: None) created - Position monitor will handle trailing stop
+2025-03-06 08:37:48 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-06 08:41:11 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "sell",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": null
+}
+2025-03-06 08:41:11 - core.signal_parser             - WARNING  - take_profits is not a list, converting to list
+2025-03-06 08:41:11 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-06 08:42:39 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 08:42:39 - telethon.client.updates        - INFO     - Got difference for channel 2026354916 updates
+2025-03-06 08:42:52 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 08:42:59 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 08:43:07 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 08:43:07 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 08:43:18 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 08:43:18 - trading_bot                    - INFO     - [36m[2025-03-06 08:43:19][0m Received invalid signal: Take half profit it's extremely volatile
+
+@Traders_HIVE
+2025-03-06 08:44:11 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 08:44:11 - telethon.client.updates        - INFO     - Got difference for channel 2026354916 updates
+2025-03-06 08:45:48 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 08:47:24 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {"instrument": null, "order_type": null, "entry_point": null, "stop_loss": null, "take_profits": null}
+2025-03-06 08:47:24 - core.signal_parser             - WARNING  - take_profits is not a list, converting to list
+2025-03-06 08:47:24 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-06 08:48:00 - telethon.client.updates        - INFO     - Got difference for channel 1220318149 updates
+2025-03-06 08:48:00 - telethon.client.updates        - INFO     - Got difference for channel 1256952599 updates
+2025-03-06 09:02:37 - telethon.client.updates        - INFO     - Got difference for channel 1555470470 updates
+2025-03-06 09:07:39 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 09:08:37 - telethon.client.updates        - INFO     - Got difference for channel 1256952599 updates
+2025-03-06 09:09:15 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "sell",
+  "entry_point": 2911.3,
+  "stop_loss": 2912,
+  "take_profits": [2909, 2906, 2903]
+}
+2025-03-06 09:09:15 - trading_bot                    - INFO     - [36m[2025-03-06 09:09:13][0m Received message: Sell  XAUUSD 2911.3
+
+TP 2909
+TP 2906
+TP 2903
+TP 2887
+TP OPEN 
+
+SL 2912
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-06 09:09:15 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-06 09:09:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:09:16 - core.risk_management           - INFO     - Account balance: 26460.58, Closest tier: 25000, Risk percentage for XAUUSD: 0.1%
+2025-03-06 09:09:16 - core.risk_management           - INFO     - Calculated position sizes: [0.13, 0.13, 0.13], Risk amount: 26.460580000000004
+2025-03-06 09:09:16 - trading_bot                    - INFO     - [36m[2025-03-06 09:09:13][0m: Position sizes: [0.13, 0.13, 0.13]
+2025-03-06 09:09:16 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Instrument XAUUSD is CFD
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Processing CFD instrument with custom take profit allocation
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Sorted TPs (ascending): [2903, 2906, 2909]
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Position #1 (size: 0.13) with take profit: 2903
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Position #2 (size: 0.13) with take profit: 2906
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Position #3 (RUNNER) (size: 0.13) with 500 pip distant take profit: 2861.3
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Placing 3 limit orders in parallel...
+2025-03-06 09:09:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:09:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:09:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:09:16 - services.order_handler         - INFO     - [36m[2025-03-06 09:09:13][0m: CFD Runner position (ID: None) created - Position monitor will handle trailing stop
+2025-03-06 09:11:40 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-06 09:13:28 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 09:13:54 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "sell",
+  "entry_point": 40,
+  "stop_loss": null,
+  "take_profits": []
+}
+2025-03-06 09:13:54 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-03-06 09:22:39 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 09:24:33 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 09:30:24 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": 42560,
+  "stop_loss": 42500,
+  "take_profits": [42590, 42620, 42660]
+}
+2025-03-06 09:30:24 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-06 09:30:24 - core.signal_parser             - INFO     - Adjusted entry point: 42556
+2025-03-06 09:30:24 - core.signal_parser             - INFO     - Adjusted stop loss: 42496
+2025-03-06 09:30:24 - core.signal_parser             - INFO     - Adjusted take profits: [42586, 42616, 42656]
+2025-03-06 09:30:24 - core.signal_parser             - INFO     - Applied additional directional adjustment of 5 to take profits: [42591, 42621, 42661]
+2025-03-06 09:30:24 - trading_bot                    - INFO     - [36m[2025-03-06 09:30:21][0m Received message: BuyUs30
+Ic market broker
+42560
+TP 42590
+TP 42620
+TP 42660
+TP 42760
+TP OPEN 
+
+SL 42500
+
+@Traders_HIVE
+2025-03-06 09:30:24 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-06 09:30:24 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:30:24 - core.risk_management           - INFO     - Calculated position sizes: [0.29, 0.29, 0.29], Risk amount: 264.60580000000004
+2025-03-06 09:30:24 - trading_bot                    - INFO     - [36m[2025-03-06 09:30:21][0m: Position sizes: [0.29, 0.29, 0.29]
+2025-03-06 09:30:24 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:30:24 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Instrument DJI30 is CFD
+2025-03-06 09:30:24 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Processing CFD instrument with custom take profit allocation
+2025-03-06 09:30:24 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Sorted TPs (descending): [42661, 42621, 42591]
+2025-03-06 09:30:24 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Position #1 (size: 0.29) with take profit: 42661
+2025-03-06 09:30:24 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Position #2 (size: 0.29) with take profit: 42621
+2025-03-06 09:30:24 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Position #3 (RUNNER) (size: 0.29) with 500 pip distant take profit: 43056.0
+2025-03-06 09:30:24 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Placing 3 limit orders in parallel...
+2025-03-06 09:30:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:30:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:30:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:30:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:30:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:30:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:30:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:30:21][0m: CFD Runner position (ID: None) created - Position monitor will handle trailing stop
+2025-03-06 09:34:40 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 09:35:37 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 09:37:24 - core.signal_parser             - DEBUG    - Content from signal_parser.py: { 
+"instrument": "DJI30", 
+"order_type": "buy", 
+"entry_point": 42450, 
+"stop_loss": 42400, 
+"take_profits": [42500, 42650, 42660] 
+}
+2025-03-06 09:37:24 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-06 09:37:24 - core.signal_parser             - INFO     - Adjusted entry point: 42446
+2025-03-06 09:37:24 - core.signal_parser             - INFO     - Adjusted stop loss: 42396
+2025-03-06 09:37:24 - core.signal_parser             - INFO     - Adjusted take profits: [42496, 42646, 42656]
+2025-03-06 09:37:24 - core.signal_parser             - INFO     - Applied additional directional adjustment of 5 to take profits: [42501, 42651, 42661]
+2025-03-06 09:37:24 - trading_bot                    - INFO     - [36m[2025-03-06 09:37:22][0m Received message: BuyUs30
+Ic market broker
+42450
+TP 42500
+TP 42650
+TP 42660
+TP 42760
+TP OPEN 
+
+SL 42400
+
+@Traders_HIVE
+2025-03-06 09:37:24 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-06 09:37:24 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:37:24 - core.risk_management           - INFO     - Calculated position sizes: [0.35, 0.35, 0.35], Risk amount: 264.60580000000004
+2025-03-06 09:37:24 - trading_bot                    - INFO     - [36m[2025-03-06 09:37:22][0m: Position sizes: [0.35, 0.35, 0.35]
+2025-03-06 09:37:24 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Instrument DJI30 is CFD
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Processing CFD instrument with custom take profit allocation
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Sorted TPs (descending): [42661, 42651, 42501]
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Position #1 (size: 0.35) with take profit: 42661
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Position #2 (size: 0.35) with take profit: 42651
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Position #3 (RUNNER) (size: 0.35) with 500 pip distant take profit: 42946.0
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Placing 3 limit orders in parallel...
+2025-03-06 09:37:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:37:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:37:25 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:37:25 - services.order_handler         - INFO     - [36m[2025-03-06 09:37:22][0m: CFD Runner position (ID: None) created - Position monitor will handle trailing stop
+2025-03-06 09:37:39 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 09:39:12 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+"order_type": "buy",
+"instrument": "DJI30",
+"take_profits": [500],
+"entry_point": null,
+"stop_loss": null
+}
+2025-03-06 09:39:12 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-06 09:39:29 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+    "instrument": "DJI30",
+    "order_type": "buy",
+    "entry_point": 600,
+    "stop_loss": null,
+    "take_profits": []
+}
+2025-03-06 09:39:29 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-03-06 09:40:03 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 09:40:03 - trading_bot                    - INFO     - [36m[2025-03-06 09:40:05][0m Received invalid signal: If you notice we can't sell right now we are in the support area
+
+@Traders_HIVE
+2025-03-06 09:43:37 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 09:45:27 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+    "instrument": "DJI30",
+    "order_type": "buy",
+    "entry_point": 42380,
+    "stop_loss": 42360,
+    "take_profits": [42500, 42650, 42660, 42760]
+}
+2025-03-06 09:45:27 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-06 09:45:27 - core.signal_parser             - INFO     - Adjusted entry point: 42376
+2025-03-06 09:45:27 - core.signal_parser             - INFO     - Adjusted stop loss: 42356
+2025-03-06 09:45:27 - core.signal_parser             - INFO     - Adjusted take profits: [42496, 42646, 42656, 42756]
+2025-03-06 09:45:27 - core.signal_parser             - INFO     - Applied additional directional adjustment of 5 to take profits: [42501, 42651, 42661, 42761]
+2025-03-06 09:45:27 - trading_bot                    - INFO     - [36m[2025-03-06 09:45:25][0m Received message: BuyUs30
+Ic market broker
+42380
+TP 42500
+TP 42650
+TP 42660
+TP 42760
+TP OPEN 
+
+SL 42360
+
+@Traders_HIVE
+2025-03-06 09:45:27 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-06 09:45:27 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:45:27 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-06 09:45:27 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.88, 0.88, 0.88], Risk amount: 264.60580000000004
+2025-03-06 09:45:27 - trading_bot                    - INFO     - [36m[2025-03-06 09:45:25][0m: Position sizes: [0.0, 0.88, 0.88, 0.88]
+2025-03-06 09:45:27 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:45:27 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Instrument DJI30 is CFD
+2025-03-06 09:45:27 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Processing CFD instrument with custom take profit allocation
+2025-03-06 09:45:27 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Sorted TPs (descending): [42761, 42661, 42651, 42501]
+2025-03-06 09:45:27 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Position #1 (size: 0.88) with take profit: 42761
+2025-03-06 09:45:27 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Position #2 (size: 0.88) with take profit: 42661
+2025-03-06 09:45:27 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Position #3 (RUNNER) (size: 0.88) with 500 pip distant take profit: 42876.0
+2025-03-06 09:45:27 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Placing 3 limit orders in parallel...
+2025-03-06 09:45:27 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:45:27 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:45:28 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:45:28 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:45:28 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:45:28 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:45:28 - services.order_handler         - INFO     - [36m[2025-03-06 09:45:25][0m: CFD Runner position (ID: None) created - Position monitor will handle trailing stop
+2025-03-06 09:47:35 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-06 09:47:41 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 09:49:00 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 09:49:36 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 09:50:04 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [1200]
+}
+2025-03-06 09:50:04 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-06 09:50:38 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 09:51:15 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 09:51:17 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [1700]
+}
+2025-03-06 09:51:17 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-06 09:51:30 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 09:51:30 - trading_bot                    - INFO     - [36m[2025-03-06 09:51:32][0m Received invalid signal: 
+2025-03-06 09:52:39 - telethon.client.updates        - INFO     - Got difference for channel 1555470470 updates
+2025-03-06 09:58:31 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "sell",
+  "entry_point": 2916,
+  "stop_loss": 2919,
+  "take_profits": [2914, 2912, 2906]
+}
+2025-03-06 09:58:31 - trading_bot                    - INFO     - [36m[2025-03-06 09:58:30][0m Received message: Sell  XAUUSD 2916-2918
+
+TP 2914
+TP 2912
+TP 2906
+TP 2887
+TP OPEN 
+
+SL 2919
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-06 09:58:31 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-06 09:58:31 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:58:31 - core.risk_management           - INFO     - Account balance: 26460.58, Closest tier: 25000, Risk percentage for XAUUSD: 0.1%
+2025-03-06 09:58:31 - core.risk_management           - INFO     - Calculated position sizes: [0.03, 0.03, 0.03], Risk amount: 26.460580000000004
+2025-03-06 09:58:31 - trading_bot                    - INFO     - [36m[2025-03-06 09:58:30][0m: Position sizes: [0.03, 0.03, 0.03]
+2025-03-06 09:58:31 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1017072 saved to selected_account.json
+2025-03-06 09:58:31 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Instrument XAUUSD is CFD
+2025-03-06 09:58:31 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Processing CFD instrument with custom take profit allocation
+2025-03-06 09:58:31 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Sorted TPs (ascending): [2906, 2912, 2914]
+2025-03-06 09:58:31 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Position #1 (size: 0.03) with take profit: 2906
+2025-03-06 09:58:31 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Position #2 (size: 0.03) with take profit: 2912
+2025-03-06 09:58:31 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Position #3 (RUNNER) (size: 0.03) with 500 pip distant take profit: 2866.0
+2025-03-06 09:58:31 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Placing 3 limit orders in parallel...
+2025-03-06 09:58:31 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:58:32 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:58:32 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:58:32 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:58:32 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:58:32 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: Order placed successfully: {'s': 'error', 'errmsg': 'Order cannot be created. Only positions closing is allowed'}
+2025-03-06 09:58:32 - services.order_handler         - INFO     - [36m[2025-03-06 09:58:30][0m: CFD Runner position (ID: None) created - Position monitor will handle trailing stop
+2025-03-06 10:00:39 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 10:00:39 - trading_bot                    - INFO     - [36m[2025-03-06 10:00:40][0m Received invalid signal: Close early
+
+@Traders_HIVE
+2025-03-06 10:00:55 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 10:06:15 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 10:07:39 - telethon.client.updates        - INFO     - Got difference for channel 1555470470 updates
+2025-03-06 10:08:14 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [2700]
+}
+2025-03-06 10:08:14 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-06 10:09:02 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": 3000,
+  "stop_loss": null,
+  "take_profits": []
+}
+2025-03-06 10:09:02 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-03-06 10:23:37 - telethon.client.updates        - INFO     - Got difference for channel 1256952599 updates
+2025-03-06 10:27:37 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-06 10:30:45 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [3800]
+}
+2025-03-06 10:30:45 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-06 10:31:16 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-06 10:31:16 - trading_bot                    - INFO     - [36m[2025-03-06 10:31:18][0m Received invalid signal: 
+2025-03-06 10:37:29 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+"instrument": "DJI30",
+"order_type": "buy",
+"entry_point": 4500,
+"stop_loss": null,
+"take_profits": []
+}
+2025-03-06 10:37:29 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-03-06 10:42:01 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": 5000,
+  "stop_loss": null,
+  "take_profits": null
+}
+2025-03-06 10:42:01 - core.signal_parser             - WARNING  - take_profits is not a list, converting to list
+2025-03-06 10:42:01 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-03-06 10:42:37 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-06 11:06:16 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 11:17:43 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 11:22:28 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 11:57:45 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 11:57:46 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-06 11:57:47 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1017072/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-06 11:57:47 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-06 11:58:45 - telethon.network.mtprotosender - INFO     - Closing current connection to begin reconnect...
+2025-03-06 11:58:45 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-06 11:58:45 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-06 11:58:45 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 11:58:46 - telethon.client.updates        - INFO     - Got difference for channel 1525522289 updates
+2025-03-06 12:13:46 - telethon.client.updates        - INFO     - Got difference for channel 1220318149 updates
+2025-03-06 12:13:46 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 12:28:46 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 12:43:46 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 12:46:06 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 21:19:12 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-06 21:19:12 - telethon.network.connection.connection - WARNING  - Server closed the connection: [WinError 64] The specified network name is no longer available
+2025-03-06 21:19:12 - telethon.network.mtprotosender - INFO     - Connection closed while receiving data: [WinError 64] The specified network name is no longer available
+2025-03-06 21:19:12 - telethon.network.mtprotosender - INFO     - Closing current connection to begin reconnect...
+2025-03-06 21:19:12 - telethon.network.connection.connection - INFO     - <class 'ConnectionResetError'> during disconnect: [WinError 64] The specified network name is no longer available
+2025-03-06 21:19:12 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-06 21:19:12 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-06 21:19:12 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 1555470470 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 2153475473 updates
+2025-03-06 21:19:13 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 2001867794 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 1256952599 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 1518588952 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 1300269873 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 2074247092 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 1234291126 updates
+2025-03-06 21:19:13 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 21:19:14 - telethon.client.updates        - INFO     - Got difference for channel 1525522289 updates
+2025-03-06 21:29:30 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 21:29:33 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-06 21:34:12 - telethon.client.updates        - INFO     - Got difference for channel 1640176707 updates
+2025-03-06 21:34:14 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-06 21:40:15 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-07 08:48:17 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-07 08:48:17 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:17 - services.news_filter           - ERROR    - Error updating calendar: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\services\news_filter.py", line 60, in update_calendar
+    async with session.get(self.calendar_url) as response:
+               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:17 - telethon.network.connection.connection - WARNING  - Server closed the connection: [WinError 64] The specified network name is no longer available
+2025-03-07 08:48:17 - telethon.network.mtprotosender - INFO     - Connection closed while receiving data: [WinError 64] The specified network name is no longer available
+2025-03-07 08:48:17 - telethon.network.mtprotosender - INFO     - Closing current connection to begin reconnect...
+2025-03-07 08:48:17 - telethon.network.connection.connection - INFO     - <class 'ConnectionResetError'> during disconnect: [WinError 64] The specified network name is no longer available
+2025-03-07 08:48:17 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-07 08:48:17 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-07 08:48:17 - telethon.network.mtprotostate  - WARNING  - Server resent the older message 7479064048265628673, ignoring
+2025-03-07 08:48:17 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-07 08:48:17 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 1.0s: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for channel 1555470470 updates
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for channel 2153475473 updates
+2025-03-07 08:48:18 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 08:48:18 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 08:48:18 - core.signal_parser             - ERROR    - Error parsing signal: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\signal_parser.py", line 295, in parse_signal_async
+    async with session.post(api_url, headers=headers, json=payload) as response:
+               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - trading_bot                    - INFO     - [36m[2025-03-07 08:37:23][0m Received invalid signal: Buy  XAUUSD 2920-2918
+
+
+TP 2930
+TP 2940
+TP 2950
+TP 2980
+TP OPEN 
+
+SL 2915
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-07 08:48:18 - core.signal_parser             - ERROR    - Error parsing signal: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\signal_parser.py", line 295, in parse_signal_async
+    async with session.post(api_url, headers=headers, json=payload) as response:
+               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - trading_bot                    - INFO     - [36m[2025-03-07 08:40:43][0m Received invalid signal: Buy  XAUUSD 2918-2915
+
+
+TP 2920
+TP 2922
+TP 2928
+TP 2960
+TP OPEN 
+
+SL 2913
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for channel 2001867794 updates
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for channel 1518588952 updates
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for channel 1256952599 updates
+2025-03-07 08:48:18 - telethon.client.updates        - INFO     - Got difference for channel 1851322526 updates
+2025-03-07 08:48:18 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1017072/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:19 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-07 08:48:19 - telethon.client.updates        - INFO     - Got difference for channel 1300269873 updates
+2025-03-07 08:48:19 - telethon.client.updates        - INFO     - Got difference for channel 2074247092 updates
+2025-03-07 08:48:19 - telethon.client.updates        - INFO     - Got difference for channel 1234291126 updates
+2025-03-07 08:48:19 - telethon.client.updates        - INFO     - Got difference for channel 1534858685 updates
+2025-03-07 08:48:20 - telethon.client.updates        - INFO     - Got difference for channel 1220318149 updates
+2025-03-07 08:48:20 - telethon.client.updates        - INFO     - Got difference for channel 1525522289 updates
+2025-03-07 08:58:27 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "buy",
+  "entry_point": 2913,
+  "stop_loss": 2909,
+  "take_profits": [2915, 2918, 2923]
+}
+2025-03-07 08:58:27 - trading_bot                    - INFO     - [36m[2025-03-07 08:58:22][0m Received message: Buy  XAUUSD 2913-2910
+
+
+TP 2915
+TP 2918
+TP 2923
+TP 2960
+TP OPEN 
+
+SL 2909
+
+USE SMALL LOT SIZE
+
+@Traders_HIVE
+2025-03-07 08:58:27 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-07 08:59:05 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 09:00:24 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": null
+}
+2025-03-07 09:00:24 - core.signal_parser             - WARNING  - take_profits is not a list, converting to list
+2025-03-07 09:00:24 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-07 09:00:26 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-07 09:01:18 - telethon.client.updates        - INFO     - Got difference for channel 1525522289 updates
+2025-03-07 09:01:39 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 09:54:34 - telethon.network.connection.connection - WARNING  - Server closed the connection: [WinError 64] The specified network name is no longer available
+2025-03-07 09:54:34 - telethon.network.mtprotosender - INFO     - Connection closed while receiving data: [WinError 64] The specified network name is no longer available
+2025-03-07 09:54:34 - telethon.network.mtprotosender - INFO     - Closing current connection to begin reconnect...
+2025-03-07 09:54:34 - telethon.network.connection.connection - INFO     - <class 'ConnectionResetError'> during disconnect: [WinError 64] The specified network name is no longer available
+2025-03-07 09:54:34 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-07 09:54:34 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-07 09:54:34 - telethon.client.updates        - INFO     - Got difference for channel 1555470470 updates
+2025-03-07 09:54:34 - telethon.client.updates        - INFO     - Got difference for channel 2153475473 updates
+2025-03-07 09:54:34 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 09:54:34 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 09:54:34 - trading_bot                    - INFO     - [36m[2025-03-07 09:16:16][0m Received invalid signal: Take some profits before new york sessions begin
+
+@Traders_HIVE
+2025-03-07 09:54:34 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-07 09:54:34 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 09:54:34 - trading_bot                    - INFO     - [36m[2025-03-07 09:31:01][0m Received invalid signal: Close
+
+@Traders_HIVE
+2025-03-07 09:54:34 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-07 09:54:34 - trading_bot                    - INFO     - [36m[2025-03-07 09:38:35][0m Received invalid signal: 
+2025-03-07 09:54:34 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-07 09:54:34 - telethon.client.updates        - INFO     - Got difference for channel 1518588952 updates
+2025-03-07 09:54:35 - telethon.client.updates        - INFO     - Got difference for channel 1300269873 updates
+2025-03-07 09:54:35 - telethon.client.updates        - INFO     - Got difference for channel 2070227566 updates
+2025-03-07 09:54:35 - telethon.client.updates        - INFO     - Got difference for channel 1525522289 updates
+2025-03-07 09:54:36 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 1000,
+  "stop_loss": null,
+  "take_profits": []
+}
+2025-03-07 09:54:36 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-03-07 09:54:36 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [400]
+}
+2025-03-07 09:54:36 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-07 09:54:37 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 42540,
+  "stop_loss": 42600,
+  "take_profits": [42400, 42370, 42340, 42000]
+}
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Adjusted entry point: 42536
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Adjusted stop loss: 42596
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Adjusted take profits: [42396, 42366, 42336, 41996]
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Applied additional directional adjustment of -5 to take profits: [42391, 42361, 42331, 41991]
+2025-03-07 09:54:37 - trading_bot                    - INFO     - [36m[2025-03-07 09:36:25][0m Received message: Sell us30
+
+42540
+TP 42400
+TP 42370
+TP 42340
+TP 42000
+TP OPEN 
+
+SL 42600
+
+@Traders_HIVE
+2025-03-07 09:54:37 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-07 09:54:37 - core.signal_parser             - DEBUG    - Content from signal_parser.py: As the trading signal provided does not contain information about stop_loss, entry_point, or take_profits, it is invalid under the provided rules. You should return null as a result.
+
+Here is the response in JSON format:
+
+```json
+null
+```
+2025-03-07 09:54:37 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-07 09:54:37 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 42440,
+  "stop_loss": 42500,
+  "take_profits": [42400, 42370, 42340]
+}
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Adjusted entry point: 42436
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Adjusted stop loss: 42496
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Adjusted take profits: [42396, 42366, 42336]
+2025-03-07 09:54:37 - core.signal_parser             - INFO     - Applied additional directional adjustment of -5 to take profits: [42391, 42361, 42331]
+2025-03-07 09:54:37 - trading_bot                    - INFO     - [36m[2025-03-07 09:29:54][0m Received message: Sell us30
+
+42440
+TP 42400
+TP 42370
+TP 42340
+TP 42000
+TP OPEN 
+
+SL 42500
+
+@Traders_HIVE
+2025-03-07 09:54:37 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-07 09:54:37 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": 2000,
+  "stop_loss": null,
+  "take_profits": []
+}
+2025-03-07 09:54:37 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-03-07 09:54:38 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": 42360,
+  "stop_loss": 42330,
+  "take_profits": [42400, 42430, 42470]
+}
+2025-03-07 09:54:38 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-07 09:54:38 - core.signal_parser             - INFO     - Adjusted entry point: 42356
+2025-03-07 09:54:38 - core.signal_parser             - INFO     - Adjusted stop loss: 42326
+2025-03-07 09:54:38 - core.signal_parser             - INFO     - Adjusted take profits: [42396, 42426, 42466]
+2025-03-07 09:54:38 - core.signal_parser             - INFO     - Applied additional directional adjustment of 5 to take profits: [42401, 42431, 42471]
+2025-03-07 09:54:38 - trading_bot                    - INFO     - [36m[2025-03-07 09:13:00][0m Received message: BuyUs30
+Ic market broker
+42360
+TP 42400
+TP 42430
+TP 42470
+TP 42770
+TP OPEN
+
+SL 42330
+
+@Traders_HIVE
+2025-03-07 09:54:38 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-07 09:54:38 - core.signal_parser             - DEBUG    - Content from signal_parser.py: Based on the provided trading signal and rules, the following JSON object is constructed. However, as the trading signal is lacking information like entry_point, stop_loss, and take_profits, those fields are left empty.
+
+{
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": "",
+  "stop_loss": "",
+  "take_profits": []
+}
+2025-03-07 09:54:38 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-07 09:54:38 - core.signal_parser             - DEBUG    - Content from signal_parser.py: The given signal does not provide all the necessary information like entry point, stop loss and take profits. It only gives the instrument and order type. Also, according to the rules mentioned, we can't create a JSON without having all the mandatory fields. Therefore, for this case, the response will be null.
+
+```json
+null
+```
+
+Remember, as per the rules, every field is important so missing even one field will result in an invalid JSON object and hence, null.
+2025-03-07 09:54:38 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-07 09:54:40 - core.signal_parser             - DEBUG    - Content from signal_parser.py: Based on the provided trading signal, it's not possible to construct a JSON object fully compliant with the provided rules. The signal doesn't include enough information about: entry_point, stop_loss, or take_profits.
+
+However, from the information provided, I could set up the 'order_type' and 'instrument' fields as follows:
+
+{
+  "instrument": "DJI30",
+  "order_type": "buy"
+} 
+
+For a complete analysis, consider additional trading signal data.
+2025-03-07 09:54:40 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-07 09:57:55 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 42700,
+  "stop_loss": 42760,
+  "take_profits": [42650, 42600, 42500]
+}
+2025-03-07 09:57:55 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-07 09:57:55 - core.signal_parser             - INFO     - Adjusted entry point: 42696
+2025-03-07 09:57:55 - core.signal_parser             - INFO     - Adjusted stop loss: 42756
+2025-03-07 09:57:55 - core.signal_parser             - INFO     - Adjusted take profits: [42646, 42596, 42496]
+2025-03-07 09:57:55 - core.signal_parser             - INFO     - Applied additional directional adjustment of -5 to take profits: [42641, 42591, 42491]
+2025-03-07 09:57:55 - trading_bot                    - INFO     - [36m[2025-03-07 09:57:50][0m Received message: Sell us30
+
+42700
+TP 42650
+TP 42600
+TP 42500
+TP 44000
+TP OPEN 
+
+SL 42760
+
+@Traders_HIVE
+2025-03-07 09:57:55 - trading_bot                    - INFO     - Using account ID: 1017072
+2025-03-07 10:09:35 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-10 14:19:34 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-10 14:19:34 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-10 14:19:34 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-10 14:19:34 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-10 14:19:35 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-10 14:19:35 - services.news_filter           - INFO     - Loaded economic calendar from cache with 72 events
+2025-03-10 14:20:15 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 277, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-10 14:20:15 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-10 14:20:15 - trading_bot                    - INFO     - Performing cleanup...
+2025-03-10 14:20:15 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000244215FDD30>
+2025-03-10 14:20:15 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000244215EDE50>
+2025-03-10 14:20:19 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-03-10 14:20:19 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-03-10 14:20:19 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-03-10 14:20:19 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-03-10 14:20:20 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-03-10 14:20:20 - services.news_filter           - INFO     - Loaded economic calendar from cache with 73 events
+2025-03-10 14:20:22 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1020755 saved to selected_account.json
+2025-03-10 14:20:22 - trading_bot                    - INFO     - Selected account: ID: 1020755, Account Number: 62, Balance: 25000.00
+2025-03-10 14:20:22 - services.drawdown_manager      - INFO     - No existing drawdown file. Creating new limits.
+2025-03-10 14:20:22 - services.drawdown_manager      - INFO     - Daily drawdown limit set. Starting balance: 25000.0, Max drawdown balance: 24000.0 based on tier 25000
+2025-03-10 14:20:22 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-10 18:00:00 EST
+2025-03-10 14:20:22 - trading_bot                    - INFO     - Upcoming high-impact news events (next 24 hours):
+2025-03-10 14:20:22 - trading_bot                    - INFO     - [2025-03-11 10:00] USD - JOLTS Job Openings
+2025-03-10 14:20:22 - trading_bot                    - INFO     - Starting position monitoring...
+2025-03-10 14:20:22 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-03-10 14:20:22 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-03-10 14:20:47 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-10 14:20:48 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-10 14:20:50 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "sell",
+  "entry_point": 42950,
+  "stop_loss": 43000,
+  "take_profits": [42920, 42890, 42850, 42750]
+}
+2025-03-10 14:20:50 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-10 14:20:50 - core.signal_parser             - INFO     - Adjusted entry point: 42946
+2025-03-10 14:20:50 - core.signal_parser             - INFO     - Adjusted stop loss: 42996
+2025-03-10 14:20:50 - core.signal_parser             - INFO     - Adjusted take profits: [42916, 42886, 42846, 42746]
+2025-03-10 14:20:50 - core.signal_parser             - INFO     - Applied additional directional adjustment of -5 to take profits: [42911, 42881, 42841, 42741]
+2025-03-10 14:20:50 - trading_bot                    - INFO     - [36m[2025-03-10 14:20:50][0m Received message: Sell us30
+
+42950
+TP 42920
+TP 42890
+TP 42850
+TP 42750
+TP OPEN 
+
+SL 43000
+2025-03-10 14:20:50 - trading_bot                    - INFO     - Using account ID: 1020755
+2025-03-10 14:20:51 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1020755 saved to selected_account.json
+2025-03-10 14:20:51 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-10 14:20:51 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.33, 0.33, 0.33], Risk amount: 250.0
+2025-03-10 14:20:51 - trading_bot                    - INFO     - [36m[2025-03-10 14:20:50][0m: Position sizes: [0.0, 0.33, 0.33, 0.33]
+2025-03-10 14:20:51 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1020755 saved to selected_account.json
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Instrument DJI30 is CFD
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Processing CFD instrument with custom take profit allocation
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Sorted TPs (ascending): [42741, 42841, 42881, 42911]
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Position #1 (size: 0.33) with take profit: 42741
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Position #2 (size: 0.33) with take profit: 42841
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Position #3 (RUNNER) (size: 0.33) with 500 pip distant take profit: 42446.0
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Placing 3 limit orders in parallel...
+2025-03-10 14:20:52 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935957194'}}
+2025-03-10 14:20:52 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935957196'}}
+2025-03-10 14:20:52 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935957198'}}
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935957196'}}
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935957198'}}
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935957194'}}
+2025-03-10 14:20:52 - services.order_handler         - INFO     - [36m[2025-03-10 14:20:50][0m: CFD Runner position (ID: 7421932185935957194) created - Position monitor will handle trailing stop
+2025-03-10 14:43:24 - telethon.client.updates        - INFO     - Got difference for channel 2153475473 updates
+2025-03-10 14:43:24 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 14:43:28 - core.signal_parser             - DEBUG    - Content from signal_parser.py: The provided input doesn't contain necessary data, such as entry_point, stop_loss, and take_profits. Therefore, the response according to the rules will be null. 
+
+JSON Response:
+```
+null
+```
+2025-03-10 14:43:28 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 14:55:45 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "buy"
+}
+2025-03-10 14:55:45 - core.signal_parser             - WARNING  - Parsed signal is missing required fields: {'instrument': 'XAUUSD', 'order_type': 'buy'}
+2025-03-10 14:56:29 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-10 15:06:04 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 15:08:30 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": 41650,
+  "stop_loss": 41600,
+  "take_profits": [41680, 41710, 41750, 42000]
+}
+2025-03-10 15:08:30 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-10 15:08:30 - core.signal_parser             - INFO     - Adjusted entry point: 41646
+2025-03-10 15:08:30 - core.signal_parser             - INFO     - Adjusted stop loss: 41596
+2025-03-10 15:08:30 - core.signal_parser             - INFO     - Adjusted take profits: [41676, 41706, 41746, 41996]
+2025-03-10 15:08:30 - core.signal_parser             - INFO     - Applied additional directional adjustment of 5 to take profits: [41681, 41711, 41751, 42001]
+2025-03-10 15:08:30 - trading_bot                    - INFO     - [36m[2025-03-10 15:08:27][0m Received message: Buy Us30
+Ic market broker
+41650
+TP 41680
+TP 41710
+TP 41750
+TP 42000
+TP OPEN
+
+SL 41600
+
+@Traders_HIVE
+2025-03-10 15:08:30 - trading_bot                    - INFO     - Using account ID: 1020755
+2025-03-10 15:08:30 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1020755 saved to selected_account.json
+2025-03-10 15:08:30 - core.risk_management           - INFO     - For CFD instrument DJI30, using only the last 3 take profits
+2025-03-10 15:08:30 - core.risk_management           - INFO     - Calculated position sizes: [0.0, 0.33, 0.33, 0.33], Risk amount: 250.0
+2025-03-10 15:08:30 - trading_bot                    - INFO     - [36m[2025-03-10 15:08:27][0m: Position sizes: [0.0, 0.33, 0.33, 0.33]
+2025-03-10 15:08:31 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1020755 saved to selected_account.json
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Instrument DJI30 is CFD
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Processing CFD instrument with custom take profit allocation
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Sorted TPs (descending): [42001, 41751, 41711, 41681]
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Position #1 (size: 0.33) with take profit: 42001
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Position #2 (size: 0.33) with take profit: 41751
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Position #3 (RUNNER) (size: 0.33) with 500 pip distant take profit: 42146.0
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Placing 3 limit orders in parallel...
+2025-03-10 15:08:32 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960412'}}
+2025-03-10 15:08:32 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960417'}}
+2025-03-10 15:08:32 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960421'}}
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960421'}}
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960412'}}
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960417'}}
+2025-03-10 15:08:32 - services.order_handler         - INFO     - [36m[2025-03-10 15:08:27][0m: CFD Runner position (ID: 7421932185935960417) created - Position monitor will handle trailing stop
+2025-03-10 15:08:43 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1020755/instruments'
+2025-03-10 15:08:43 - services.pos_monitor           - INFO     - Position 7421932185911102329 (DJI30): Updating stop loss at 159100 pips
+2025-03-10 15:08:43 - services.pos_monitor           - INFO     - Position 7421932185911102328 (DJI30): Updating stop loss at 174000 pips
+2025-03-10 15:08:43 - services.pos_monitor           - INFO     - Stop loss updated for position 7421932185911102329 to 41645.98
+2025-03-10 15:08:43 - services.pos_monitor           - INFO     - Stop loss updated for position 7421932185911102328 to 41645.98
+2025-03-10 15:08:44 - services.pos_monitor           - INFO     - Position 7421932185911102327 (DJI30): Updating stop loss at 139100 pips
+2025-03-10 15:08:44 - services.pos_monitor           - INFO     - Stop loss updated for position 7421932185911102327 to 41645.98
+2025-03-10 15:12:27 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": 41620,
+  "stop_loss": 41570,
+  "take_profits": [41650, 41680, 41750]
+}
+2025-03-10 15:12:27 - core.signal_parser             - INFO     - Applying -4 point adjustment to DJI30 signal
+2025-03-10 15:12:27 - core.signal_parser             - INFO     - Adjusted entry point: 41616
+2025-03-10 15:12:27 - core.signal_parser             - INFO     - Adjusted stop loss: 41566
+2025-03-10 15:12:27 - core.signal_parser             - INFO     - Adjusted take profits: [41646, 41676, 41746]
+2025-03-10 15:12:27 - core.signal_parser             - INFO     - Applied additional directional adjustment of 5 to take profits: [41651, 41681, 41751]
+2025-03-10 15:12:27 - trading_bot                    - INFO     - [36m[2025-03-10 15:12:24][0m Received message: Buy Us30
+Ic market broker
+41620
+TP 41650
+TP 41680
+TP 41750
+TP 42000
+TP OPEN
+
+SL 41570
+
+@Traders_HIVE
+2025-03-10 15:12:27 - trading_bot                    - INFO     - Using account ID: 1020755
+2025-03-10 15:12:27 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1020755 saved to selected_account.json
+2025-03-10 15:12:27 - core.risk_management           - INFO     - Calculated position sizes: [0.33, 0.33, 0.33], Risk amount: 250.0
+2025-03-10 15:12:27 - trading_bot                    - INFO     - [36m[2025-03-10 15:12:24][0m: Position sizes: [0.33, 0.33, 0.33]
+2025-03-10 15:12:27 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1020755 saved to selected_account.json
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Instrument DJI30 is CFD
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Processing CFD instrument with custom take profit allocation
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Sorted TPs (descending): [41751, 41681, 41651]
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Position #1 (size: 0.33) with take profit: 41751
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Position #2 (size: 0.33) with take profit: 41681
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Position #3 (RUNNER) (size: 0.33) with 500 pip distant take profit: 42116.0
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Placing 3 limit orders in parallel...
+2025-03-10 15:12:28 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960648'}}
+2025-03-10 15:12:28 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960650'}}
+2025-03-10 15:12:28 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960652'}}
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960648'}}
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960652'}}
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185935960650'}}
+2025-03-10 15:12:28 - services.order_handler         - INFO     - [36m[2025-03-10 15:12:24][0m: CFD Runner position (ID: 7421932185935960650) created - Position monitor will handle trailing stop
+2025-03-10 15:13:25 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 15:13:57 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [300]
+}
+2025-03-10 15:13:57 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:14:07 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-10 15:14:13 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [600]
+}
+2025-03-10 15:14:13 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:14:54 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 15:16:34 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [1300]
+}
+2025-03-10 15:16:34 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:16:43 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [1000]
+}
+2025-03-10 15:16:43 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:17:33 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": null,
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": null
+}
+2025-03-10 15:17:33 - core.signal_parser             - WARNING  - take_profits is not a list, converting to list
+2025-03-10 15:17:33 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:17:38 - core.signal_parser             - DEBUG    - Content from signal_parser.py: Given that the trading signal provided does not contain values for entry point, stop_loss and take_profits, the JSON object for this signal as per the rules given is:
+
+```json
+{
+"instrument": "DJI30",
+"order_type": "buy",
+"entry_point": null,
+"stop_loss": null,
+"take_profits": []
+}
+```
+2025-03-10 15:17:38 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 15:18:08 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 15:18:08 - trading_bot                    - INFO     - [36m[2025-03-10 15:18:08][0m Received invalid signal: 
+2025-03-10 15:18:36 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 15:20:54 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-03-10 15:21:20 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 15:25:32 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "XAUUSD",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [80]
+}
+2025-03-10 15:25:32 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:29:57 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 15:31:06 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {"instrument": null, "order_type": null, "entry_point": null, "stop_loss": null, "take_profits": null}
+2025-03-10 15:31:06 - core.signal_parser             - WARNING  - take_profits is not a list, converting to list
+2025-03-10 15:31:06 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:31:12 - core.signal_parser             - DEBUG    - Content from signal_parser.py: Since the trading signal did not provide all the necessary values (like 'entry_point', 'stop_loss', and 'take_profits'), it's invalid. Here is the parsed JSON response:
+
+{
+  "instrument": null,
+  "order_type": null,
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": null
+}
+2025-03-10 15:31:12 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 15:32:58 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-10 15:37:25 - core.signal_parser             - DEBUG    - Content from signal_parser.py: {
+  "instrument": "DJI30",
+  "order_type": "buy",
+  "entry_point": null,
+  "stop_loss": null,
+  "take_profits": [3800]
+}
+2025-03-10 15:37:25 - core.signal_parser             - WARNING  - Field entry_point is not numeric: None
+2025-03-10 15:41:34 - core.signal_parser             - INFO     - Message doesn't appear to be a valid trading signal, skipping API call
+2025-03-10 16:29:42 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-03-10 18:00:02 - services.drawdown_manager      - INFO     - Performing scheduled daily drawdown reset
+2025-03-10 18:00:02 - services.drawdown_manager      - INFO     - Daily drawdown limit set. Starting balance: 25000.0, Max drawdown balance: 24000.0 based on tier 25000
+2025-03-10 18:00:02 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-03-11 18:00:00 EST
+2025-03-10 18:02:59 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-10 18:06:54 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-03-10 18:17:59 - telethon.client.updates        - INFO     - Got difference for channel 1577592108 updates
+2025-03-10 18:21:54 - telethon.client.updates        - INFO     - Got difference for account updates

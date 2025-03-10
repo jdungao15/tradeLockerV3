@@ -6,16 +6,13 @@ import platform
 import signal
 import sys
 import getpass
-import telethon
 from colorama import init, Fore, Style
-from tabulate import tabulate
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 from telethon.errors import SessionPasswordNeededError
 from datetime import datetime
 from cli.banner import display_banner
 from cli.display_menu import display_menu
-# Import our modules
 from core.signal_parser import parse_signal_async
 from core.risk_management import calculate_position_size
 from tradelocker_api.endpoints.auth import TradeLockerAuth
@@ -183,28 +180,97 @@ class TradingBot:
         )
         self._tasks.add(monitor_task)
         return monitor_task
+
     async def display_accounts(self):
-        """Fetch and display all available accounts"""
+        """Fetch and display all available accounts with colorama for reliable color output"""
         try:
+            from colorama import init, Fore, Back, Style
+            # Initialize colorama with autoreset and force mode
+            init(autoreset=True, convert=True, strip=False, wrap=True)
+
             accounts_data = await self.accounts_client.get_accounts_async()
 
             if not accounts_data or not accounts_data.get('accounts'):
                 self.logger.info("No accounts available.")
                 return None
 
-            account_table = [
-                [account['id'], account['accNum'], account['currency'], account['accountBalance']]
-                for account in accounts_data.get('accounts', [])
-            ]
-            account_table.sort(key=lambda x: int(x[1]), reverse=True)
+            # Sort accounts by Account Number (descending)
+            accounts = sorted(accounts_data.get('accounts', []),
+                              key=lambda x: int(x['accNum']), reverse=True)
+
+            # Calculate column widths for proper alignment
+            id_width = max(len("ID"), max(len(acc['id']) for acc in accounts)) + 2
+            acc_width = max(len("Account Number"), max(len(acc['accNum']) for acc in accounts)) + 2
+            currency_width = max(len("Currency"), max(len(acc['currency']) for acc in accounts)) + 2
+
+            # Calculate maximum balance width
+            balance_width = max(
+                len("Balance"),
+                max(len(f"${float(acc['accountBalance']):,.2f}") for acc in accounts),
+                len(f"${sum(float(acc['accountBalance']) for acc in accounts):,.2f}")
+            ) + 2
+
+            # Calculate total width
+            total_width = id_width + acc_width + currency_width + balance_width + 3  # 3 for the separators
+
+            # Print top border and title
+            print(f"\n{Fore.CYAN}{Style.BRIGHT}{'═' * total_width}{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}{Style.BRIGHT}{'Available Trading Accounts':^{total_width}}{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}{Style.BRIGHT}{'═' * total_width}{Style.RESET_ALL}")
+
+            # Print header row
+            print(
+                f"{Fore.YELLOW}{Style.BRIGHT}{'ID':<{id_width}} │ {'Account Number':<{acc_width}} │ {'Currency':<{currency_width}} │ {'Balance':>{balance_width}}{Style.RESET_ALL}")
+            print(
+                f"{Fore.YELLOW}{'─' * id_width}─┼─{'─' * acc_width}─┼─{'─' * currency_width}─┼─{'─' * balance_width}{Style.RESET_ALL}")
+
+            # Print each account row
+            for i, account in enumerate(accounts):
+                # Alternate row colors for better readability
+                row_color = Fore.LIGHTBLUE_EX if i % 2 == 0 else Fore.WHITE
+
+                # Format balance with currency symbol and commas
+                balance = float(account['accountBalance'])
+                formatted_balance = f"${balance:,.2f}"
+
+                # Choose balance color based on amount
+                if balance > 25000:
+                    balance_color = Fore.GREEN
+                elif balance > 10000:
+                    balance_color = Fore.CYAN
+                elif balance > 5000:
+                    balance_color = Fore.YELLOW
+                else:
+                    balance_color = Fore.RED
+
+                # Print the formatted row
+                print(
+                    f"{row_color}{account['id']:<{id_width}} │ {account['accNum']:<{acc_width}} │ {account['currency']:<{currency_width}} │ {balance_color}{formatted_balance:>{balance_width}}{Style.RESET_ALL}")
+
+            # Print bottom separator
+            print(
+                f"{Fore.YELLOW}{'─' * id_width}─┼─{'─' * acc_width}─┼─{'─' * currency_width}─┼─{'─' * balance_width}{Style.RESET_ALL}")
+
+            # Print summary row
+            total_accounts = len(accounts)
+            total_balance = sum(float(account['accountBalance']) for account in accounts)
+            formatted_total = f"${total_balance:,.2f}"
 
             print(
-                tabulate(account_table, headers=["ID", "Account Number", "Currency", "Amount"], tablefmt="fancy_grid"))
+                f"{Fore.GREEN}{Style.BRIGHT}{'TOTAL':<{id_width}} │ {f'{total_accounts} accounts':<{acc_width}} │ {'':^{currency_width}} │ {formatted_total:>{balance_width}}{Style.RESET_ALL}")
+
+            # Print bottom border with timestamp
+            print(f"{Fore.CYAN}{Style.BRIGHT}{'═' * total_width}{Style.RESET_ALL}")
+
+            # Add timestamp
+            from datetime import datetime
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(f"{Fore.CYAN}{'Account data as of ' + timestamp:^{total_width}}{Style.RESET_ALL}\n")
+
             return accounts_data
         except Exception as e:
             self.logger.error(f"Error fetching accounts: {e}", exc_info=True)
             return None
-
     async def select_account(self, accounts_data):
         """Prompt user to select an account to use for trading"""
         try:

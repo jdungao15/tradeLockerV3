@@ -7,7 +7,6 @@ import asyncio
 import re
 from dotenv import load_dotenv
 
-
 load_dotenv()
 logger = logging.getLogger(__name__)
 
@@ -16,6 +15,14 @@ api_url = "https://api.openai.com/v1/chat/completions"
 
 # Cache for parsed signals to avoid duplicate processing
 parsed_signal_cache = {}
+
+# Broker price difference configuration
+# This can be adjusted based on observed differences between signal provider and your broker
+BROKER_PRICE_ADJUSTMENTS = {
+    "DJI30": -4,  # Adjustment from signal provider to your broker (42764 -> 42760)
+    "NDX100": 0,  # Add adjustments for other CFDs as needed
+    "XAUUSD": 0  # Add adjustments for other instruments as needed
+}
 
 
 def is_potential_trading_signal(message: str) -> bool:
@@ -50,6 +57,60 @@ def is_potential_trading_signal(message: str) -> bool:
     # Return True if it looks like a signal, False otherwise
     return (has_trading_terms and has_instrument and has_prices and
             not too_many_emojis and not too_short and not is_pips_announcement)
+
+
+def adjust_broker_pricing(parsed_signal):
+    """
+    Adjust prices in parsed signal to match broker pricing.
+
+    For indices and other CFDs, applies configured price adjustments to account for
+    differences between signal provider and broker pricing.
+    """
+    if not parsed_signal:
+        return parsed_signal
+
+    instrument = parsed_signal.get('instrument')
+
+    # Check if we have a configured adjustment for this instrument
+    if instrument in BROKER_PRICE_ADJUSTMENTS:
+        adjustment = BROKER_PRICE_ADJUSTMENTS[instrument]
+
+        if adjustment == 0:
+            return parsed_signal  # No adjustment needed
+
+        logger.info(f"Applying {adjustment} point adjustment to {instrument} signal")
+
+        # Adjust entry point
+        if 'entry_point' in parsed_signal:
+            parsed_signal['entry_point'] += adjustment
+            logger.info(f"Adjusted entry point: {parsed_signal['entry_point']}")
+
+        # Adjust stop loss
+        if 'stop_loss' in parsed_signal:
+            parsed_signal['stop_loss'] += adjustment
+            logger.info(f"Adjusted stop loss: {parsed_signal['stop_loss']}")
+
+        # Adjust take profits
+        if 'take_profits' in parsed_signal and parsed_signal['take_profits']:
+            parsed_signal['take_profits'] = [tp + adjustment for tp in parsed_signal['take_profits']]
+            logger.info(f"Adjusted take profits: {parsed_signal['take_profits']}")
+
+    # Special adjustments for specific instruments (kept from original function)
+    if instrument == 'DJI30':
+        # Get order direction for potential direction-based adjustments
+        is_buy = parsed_signal.get('order_type', '').lower() == 'buy'
+
+        # Apply additional 5-pip adjustment for broker spread differences
+        # This is in addition to the absolute price level adjustment above
+        direction_adjustment = 5 if is_buy else -5
+
+        # Only adjust take profits for this directional adjustment
+        if 'take_profits' in parsed_signal and parsed_signal['take_profits']:
+            parsed_signal['take_profits'] = [tp + direction_adjustment for tp in parsed_signal['take_profits']]
+            logger.info(
+                f"Applied additional directional adjustment of {direction_adjustment} to take profits: {parsed_signal['take_profits']}")
+
+    return parsed_signal
 
 
 def parse_signal(message: str):
@@ -159,11 +220,8 @@ def parse_signal(message: str):
             parsed_signal_cache[message] = None
             return None
 
-        # Adjust prices for different brokers
-        if result.get("instrument") == "DJI30":
-            result["stop_loss"] += 46
-            result["entry_point"] += 46
-            result["take_profits"] = [tp + 46 for tp in result["take_profits"]]
+        # Apply broker price adjustments
+        result = adjust_broker_pricing(result)
 
         # Cache the result
         parsed_signal_cache[message] = result
@@ -173,36 +231,6 @@ def parse_signal(message: str):
         logger.error(f"Error parsing signal: {e}", exc_info=True)
         parsed_signal_cache[message] = None
         return None
-
-
-def adjust_broker_pricing(parsed_signal):
-    """
-    Adjust prices in parsed signal to match broker pricing.
-
-    For US30/DJI30, applies a 5-pip adjustment to account for
-    difference between signal provider and broker pricing.
-    """
-    if not parsed_signal:
-        return parsed_signal
-
-    # Only apply adjustment for DJI30/US30
-    if parsed_signal.get('instrument') == 'DJI30':
-        # Get order direction
-        is_buy = parsed_signal.get('order_type', '').lower() == 'buy'
-
-        # Calculate adjustment:
-        # For BUY: -5 pips (lower take profits)
-        # For SELL: +5 pips (higher take profits)
-        adjustment = 5 if is_buy else -5
-
-        logger.info(f"Applying {adjustment} pip adjustment to DJI30 signal")
-
-        # Adjust take profits
-        if 'take_profits' in parsed_signal and parsed_signal['take_profits']:
-            parsed_signal['take_profits'] = [tp + adjustment for tp in parsed_signal['take_profits']]
-            logger.info(f"Adjusted take profits: {parsed_signal['take_profits']}")
-
-    return parsed_signal
 
 
 async def parse_signal_async(message: str):
@@ -315,7 +343,7 @@ async def parse_signal_async(message: str):
                     parsed_signal_cache[message] = None
                     return None
 
-                # Apply broker-specific adjustments
+                # Apply broker price adjustments
                 result = adjust_broker_pricing(result)
 
                 # Cache the result
@@ -396,6 +424,30 @@ def extract_price_points(text: str):
     return results
 
 
+# Function to update broker price adjustments based on observation
+def update_broker_adjustment(instrument, provider_price, broker_price):
+    """
+    Update the broker price adjustment for a specific instrument based on observed prices.
+
+    Args:
+        instrument: The instrument code (e.g., 'DJI30')
+        provider_price: The current price from the signal provider
+        broker_price: The current price from your broker
+
+    Returns:
+        The calculated adjustment (broker_price - provider_price)
+    """
+    adjustment = broker_price - provider_price
+
+    # Update the global adjustment configuration
+    BROKER_PRICE_ADJUSTMENTS[instrument] = adjustment
+
+    logger.info(f"Updated price adjustment for {instrument}: {adjustment} points")
+    logger.info(f"Provider price: {provider_price}, Broker price: {broker_price}")
+
+    return adjustment
+
+
 # Clear signal cache periodically (every 24 hours)
 async def cache_maintenance_task():
     """Background task to clear signal cache periodically"""
@@ -424,3 +476,6 @@ def start_cache_maintenance():
 
 # Initialize cache maintenance
 start_cache_maintenance()
+
+# Initialize with current observed pricing difference for DJI30
+update_broker_adjustment('DJI30', 42764, 42760)
