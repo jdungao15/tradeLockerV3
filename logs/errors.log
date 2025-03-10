@@ -1265,3 +1265,5 @@ client_session: <aiohttp.client.ClientSession object at 0x00000244215EDE50>
 2025-03-10 14:43:28 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
 2025-03-10 15:17:38 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
 2025-03-10 15:31:12 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 19:28:15 - trading_bot                    - ERROR    - Account ID 6262 is not valid.
+2025-03-10 19:28:15 - trading_bot                    - ERROR    - Account selection failed. Exiting.

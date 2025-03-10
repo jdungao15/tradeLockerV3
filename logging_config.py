@@ -154,7 +154,106 @@ def _setup_logging(self):
     # Set the instance logger
     self.logger = logging.getLogger("trading_bot")
 
-# Example usage in other files:
-# from logging_config import setup_logging
-# logger = setup_logging()
-# logger = logging.getLogger("your_component_name")
+
+class EnhancedTradingFormatter(logging.Formatter):
+    """Enhanced formatter for trading bot logs with better color coding and readability"""
+
+    def __init__(self, use_colors=True):
+        super().__init__()
+        self.use_colors = use_colors and sys.stdout.isatty()  # Only use colors for terminal output
+
+        # ANSI color codes
+        self.reset = "\033[0m" if self.use_colors else ""
+
+        # Level colors
+        self.colors = {
+            logging.DEBUG: "\033[38;5;39m",  # Light blue
+            logging.INFO: "\033[38;5;34m",  # Green
+            logging.WARNING: "\033[38;5;214m",  # Orange
+            logging.ERROR: "\033[38;5;196m",  # Red
+            logging.CRITICAL: "\033[48;5;196m\033[38;5;15m",  # White on red background
+        }
+
+        # Component colors with brighter, more distinct colors
+        self.component_colors = {
+            "trading_bot": "\033[38;5;51m",  # Bright cyan
+            "tradelocker_api": "\033[38;5;33m",  # Blue
+            "services.drawdown_manager": "\033[38;5;141m",  # Light purple
+            "services.pos_monitor": "\033[38;5;46m",  # Bright green
+            "services.order_handler": "\033[38;5;118m",  # Light green
+            "core.signal_parser": "\033[38;5;220m",  # Yellow
+            "core.risk_management": "\033[38;5;208m",  # Orange
+        }
+
+        # Message type highlights (for special message types)
+        self.highlights = {
+            "MARKET ORDER": "\033[48;5;27m\033[38;5;15m",  # White on blue
+            "LIMIT ORDER": "\033[48;5;28m\033[38;5;15m",  # White on green
+            "SUCCESS": "\033[48;5;28m\033[38;5;15m",  # White on green
+            "FAILED": "\033[48;5;160m\033[38;5;15m",  # White on red
+            "WARNING": "\033[48;5;214m\033[38;5;0m",  # Black on orange
+        }
+
+        # Default component color
+        self.default_component_color = "\033[38;5;250m"  # Light gray
+
+    def get_component_color(self, name):
+        """Get the appropriate color for a component based on its name"""
+        if not self.use_colors:
+            return ""
+
+        # Find the most specific match
+        matching_component = None
+        for comp in self.component_colors:
+            if name.startswith(comp) and (matching_component is None or len(comp) > len(matching_component)):
+                matching_component = comp
+
+        return self.component_colors.get(matching_component, self.default_component_color)
+
+    def highlight_keywords(self, message):
+        """Add background highlighting to important keywords"""
+        if not self.use_colors:
+            return message
+
+        for keyword, color in self.highlights.items():
+            if keyword in message:
+                message = message.replace(keyword, f"{color}{keyword}{self.reset}")
+
+        return message
+
+    def format(self, record):
+        # Format timestamp (with cleaner format)
+        timestamp = self.formatTime(record, "%Y-%m-%d %H:%M:%S")
+
+        # Get appropriate colors
+        level_color = self.colors.get(record.levelno, "") if self.use_colors else ""
+        component_color = self.get_component_color(record.name)
+
+        # Create log message
+        level_name = f"{record.levelname:<8}"
+        component_name = f"{record.name:<30}"
+
+        # Get the message and highlight keywords
+        message = self.highlight_keywords(record.getMessage())
+
+        # Add nice separator for better readability between log entries
+        if record.levelno >= logging.WARNING:
+            separator = f"\n{level_color}{'=' * 100}{self.reset}\n"
+        else:
+            separator = ""
+
+        # Build the formatted message with colors
+        formatted_message = (
+            f"{separator}"
+            f"{level_color}{timestamp}{self.reset} | "
+            f"{component_color}{component_name}{self.reset} | "
+            f"{level_color}{level_name}{self.reset} | "
+            f"{message}"
+        )
+
+        # Add exception info if present
+        if record.exc_info:
+            exception_text = self.formatException(record.exc_info)
+            formatted_message += f"\n{exception_text}"
+
+        return formatted_message

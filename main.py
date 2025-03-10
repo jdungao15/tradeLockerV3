@@ -331,7 +331,14 @@ class TradingBot:
                 self.logger.info(f"{colored_time} Received invalid signal: {message_text}")
                 return
 
-            self.logger.info(f"{colored_time} Received message: {message_text}")
+            self.logger.info(f"{colored_time} {Fore.CYAN}Received trading signal:{Style.RESET_ALL} {message_text}")
+            self.logger.info(
+                f"{Fore.YELLOW}Signal details:{Style.RESET_ALL} Instrument: {Fore.GREEN}{parsed_signal['instrument']}{Style.RESET_ALL}, "
+                f"Type: {Fore.GREEN}{parsed_signal['order_type'].upper()}{Style.RESET_ALL}, "
+                f"Entry: {Fore.CYAN}{parsed_signal['entry_point']}{Style.RESET_ALL}, "
+                f"SL: {Fore.RED}{parsed_signal['stop_loss']}{Style.RESET_ALL}")
+            self.logger.info(
+                f"Take profits: {Fore.GREEN}{', '.join(map(str, parsed_signal['take_profits']))}{Style.RESET_ALL}")
             self.logger.info(f"Using account ID: {self.selected_account['id']}")
 
             # Check news restrictions if enabled
@@ -342,7 +349,7 @@ class TradingBot:
 
                     if not can_trade:
                         self.logger.warning(
-                            f"{colored_time}: Cannot place trade for {parsed_signal['instrument']}: {reason}")
+                            f"{colored_time}: {Fore.RED}Cannot place trade for {parsed_signal['instrument']}: {reason}{Style.RESET_ALL}")
                         return
                 except AttributeError as e:
                     # Handle the case where the method might not be available
@@ -362,7 +369,7 @@ class TradingBot:
 
             if not instrument_data:
                 self.logger.warning(
-                    f"{colored_time}: Instrument {parsed_signal['instrument']} not found. Skipping this signal."
+                    f"{colored_time}: {Fore.RED}Instrument {parsed_signal['instrument']} not found. Skipping this signal.{Style.RESET_ALL}"
                 )
                 return
 
@@ -375,7 +382,7 @@ class TradingBot:
                 self.selected_account
             )
 
-            self.logger.info(f"{colored_time}: Position sizes: {position_sizes}")
+            self.logger.info(f"{colored_time}: Position sizes: {Fore.YELLOW}{position_sizes}{Style.RESET_ALL}")
 
             # Place the order with risk checks - now including quotes_client for market order logic
             await place_orders_with_risk_check(
@@ -392,9 +399,12 @@ class TradingBot:
             )
 
         except KeyError as e:
-            self.logger.error(f"{colored_time}: Error processing signal: Missing key {e}. Skipping this signal.")
+            self.logger.error(
+                f"{colored_time}: {Fore.RED}Error processing signal: Missing key {e}. Skipping this signal.{Style.RESET_ALL}")
         except Exception as e:
-            self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.", exc_info=True)
+            self.logger.error(
+                f"{colored_time}: {Fore.RED}Unexpected error: {e}. Skipping this signal.{Style.RESET_ALL}",
+                exc_info=True)
     async def display_upcoming_news(self):
         """Display upcoming high-impact news events for major currencies"""
         if not self.enable_news_filter:

@@ -1,9 +1,12 @@
 import logging
 import asyncio
 from typing import List, Dict, Any
+from colorama import init, Fore, Style
+
+# Initialize colorama
+init(autoreset=True)
 
 logger = logging.getLogger(__name__)
-
 
 def place_order(orders_client, selected_account, instrument_data, parsed_signal, position_sizes, colored_time):
     """
@@ -162,10 +165,7 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
             pip_diff = round(price_diff / pip_value)
 
             # Check if within threshold for market order
-            threshold_pips = 5
-            if instrument_data['name'] == "DJI30":
-                threshold_pips = 8  # Higher for US30 (due to +5 pips adjustment in signal_parser)
-
+            threshold_pips = 10  # If within 10 pips, use market order
             if pip_diff <= threshold_pips:
                 order_type = 'market'
 
@@ -176,9 +176,11 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
                     adjusted_stop_loss = parsed_signal['stop_loss'] - price_diff
 
                 logger.info(
-                    f"{colored_time}: Using MARKET {side.upper()} instead of limit. "
-                    f"Current price: {current_price}, Entry: {parsed_signal['entry_point']}, "
-                    f"Diff: {pip_diff} pips, Adjusted SL: {adjusted_stop_loss}"
+                    f"{colored_time}: Using {Fore.GREEN}MARKET {side.upper()}{Style.RESET_ALL} instead of limit. "
+                    f"Current price: {Fore.YELLOW}{current_price}{Style.RESET_ALL}, "
+                    f"Entry: {Fore.YELLOW}{parsed_signal['entry_point']}{Style.RESET_ALL}, "
+                    f"Diff: {Fore.CYAN}{pip_diff} pips{Style.RESET_ALL}, "
+                    f"Adjusted SL: {Fore.MAGENTA}{adjusted_stop_loss}{Style.RESET_ALL}"
                 )
         else:
             logger.warning(f"{colored_time}: Could not get current price. Using limit order.")
@@ -330,7 +332,8 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
                 orders_batch.append(order)
 
         # Place orders in parallel
-        logger.info(f"{colored_time}: Placing {len(orders_batch)} {order_type} orders in parallel...")
+        logger.info(
+            f"{colored_time}: Placing {len(orders_batch)} {Fore.CYAN}{order_type.upper()}{Style.RESET_ALL} orders in parallel...")
 
         result = await orders_client.place_orders_batch_async(
             selected_account['id'],
@@ -342,7 +345,22 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
             # Log results
             successful_orders = result.get('successful', [])
             for j, (order, response) in enumerate(successful_orders):
-                logger.info(f"{colored_time}: Order placed successfully: {response}")
+                entry_point = parsed_signal['entry_point']
+                stop_loss = parsed_signal['stop_loss']
+                side = parsed_signal['order_type'].upper()
+
+                # Get take profit for this specific order
+                take_profit = order.get('take_profit', 'N/A')
+
+                logger.info(
+                    f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{Style.RESET_ALL} - "
+                    f"Instrument: {Fore.YELLOW}{instrument_data['name']}{Style.RESET_ALL}, "
+                    f"Side: {Fore.BLUE}{side}{Style.RESET_ALL}, "
+                    f"Size: {Fore.YELLOW}{order.get('quantity')}{Style.RESET_ALL}, "
+                    f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
+                    f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
+                    f"TP: {Fore.GREEN}{take_profit}{Style.RESET_ALL}"
+                )
 
                 # Check for runner position to log additional info (for CFD only)
                 if is_cfd and j == len(successful_orders) - 1:
@@ -357,11 +375,12 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
                     except Exception:
                         pass
 
-                    logger.info(f"{colored_time}: CFD Runner position (ID: {position_id}) created - "
-                                f"Position monitor will handle trailing stop")
+                    logger.info(
+                        f"{colored_time}: {Fore.MAGENTA}CFD Runner position{Style.RESET_ALL} (ID: {position_id}) created - "
+                        f"Position monitor will handle trailing stop")
 
             for order, error in result.get('failed', []):
-                logger.error(f"{colored_time}: Failed to place order: {error}")
+                logger.error(f"{colored_time}: {Fore.RED}Failed to place order{Style.RESET_ALL}: {error}")
 
             return result
         else:
