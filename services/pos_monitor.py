@@ -5,7 +5,18 @@ import time
 from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
-
+def calculate_pip_difference(entry_price, current_price, instrument_name):
+    """
+    Calculate pip difference based on the instrument type.
+    """
+    if instrument_name.endswith("JPY"):
+        return round(abs(current_price - entry_price) / 0.01)
+    elif instrument_name == "XAUUSD":  # For Gold
+        return round(abs(current_price - entry_price) / 0.1)
+    elif instrument_name in ["DJI30", "NDX100"]:  # For indices
+        return round(abs(current_price - entry_price) / 1.0)
+    else:
+        return round(abs(current_price - entry_price) / 0.0001)
 
 async def monitor_existing_position(accounts_client, instruments_client, quotes_client,
                                     selected_account, base_url, auth_token):
@@ -151,6 +162,7 @@ async def process_position_update(position_id, instrument_data, side, entry_pric
     """
     try:
         instrument_name = instrument_data['name']
+        instrument_type = instrument_data.get('type', '')
         ask_price = quote_data['d'].get('ap', 0)
         bid_price = quote_data['d'].get('bp', 0)
 
@@ -165,8 +177,43 @@ async def process_position_update(position_id, instrument_data, side, entry_pric
         tracking_data = position_tracking.get(position_id, {
             'last_update': 0,
             'stop_loss_moved': False,
-            'pip_high': 0
+            'pip_high': 0,
+            'is_runner': False  # Flag to identify runner positions
         })
+
+        # Store instrument name and position ID for future reference
+        tracking_data['instrument_name'] = instrument_name
+        tracking_data['position_id'] = position_id
+
+        # Determine if this is a CFD runner position to apply selective trailing
+        is_cfd = instrument_type == "EQUITY_CFD"
+        is_gold = instrument_name == "XAUUSD"
+        is_index = instrument_name in ["DJI30", "NDX100"]
+
+        # CFD instruments (including gold) should have trailing, but with different rules
+        should_trail = is_cfd
+
+        # Additional check for runner position (third position)
+        # If this is the first time we're processing this position
+        if should_trail and 'is_runner_checked' not in tracking_data:
+            # Mark as checked to avoid repeated checks
+            tracking_data['is_runner_checked'] = True
+
+            # For simplicity, we identify runners by their order ID or position in the batch
+            # In production, you might want a more robust identification method
+            # Here we're checking for positions whose ID ends with specific characters
+            # or using other attributes that identify your "runner" positions
+
+            # Check if this is the "runner" position - the third position for indices
+            # You may need to customize this logic based on how your positions are created
+            if position_id.endswith('3') or tracking_data.get('is_third_position', False):
+                tracking_data['is_runner'] = True
+                logger.info(f"Position {position_id} ({instrument_name}) identified as runner - will apply trailing")
+            else:
+                logger.info(f"Position {position_id} ({instrument_name}) is not a runner - won't apply trailing")
+
+        # Check if this position should be trailed
+        should_trail = should_trail and tracking_data.get('is_runner', False)
 
         # Track the highest pip movement in favor
         if side.lower() == 'buy' and current_price > entry_price:
@@ -177,18 +224,43 @@ async def process_position_update(position_id, instrument_data, side, entry_pric
         # Determine if stop loss update is needed
         update_needed = False
 
-        # If price has moved 40+ pips in favor and stop loss hasn't been moved yet
-        if not tracking_data['stop_loss_moved'] and pip_difference >= 40:
-            if (side.lower() == 'buy' and current_price > entry_price) or \
-                    (side.lower() == 'sell' and current_price < entry_price):
-                update_needed = True
-                tracking_data['stop_loss_moved'] = True
+        # Only apply trailing to identified runner positions with appropriate pip difference
+        if should_trail:
+            # Set threshold based on instrument type
+            pip_threshold = 100 if is_index else 40  # 100 pips for indices, 40 pips for gold
 
-        # If price has moved significantly further after initial stop loss move
-        # implement trailing stop logic
-        elif tracking_data['stop_loss_moved'] and tracking_data['pip_high'] - pip_difference >= 20:
-            # Price has pulled back 20 pips from highest point, move stop loss again
-            update_needed = True
+            # If price has moved beyond threshold pips in favor and stop loss hasn't been moved yet
+            if not tracking_data['stop_loss_moved'] and pip_difference >= pip_threshold:
+                if (side.lower() == 'buy' and current_price > entry_price) or \
+                        (side.lower() == 'sell' and current_price < entry_price):
+                    update_needed = True
+                    tracking_data['stop_loss_moved'] = True
+                    logger.info(
+                        f"Runner position {position_id} ({instrument_name}): Initiating trailing stop at {pip_difference} pips (threshold: {pip_threshold} pips)")
+
+            # If price has moved significantly further after initial stop loss move
+            # implement trailing stop logic with 20 pip pullback
+            elif tracking_data['stop_loss_moved'] and tracking_data['pip_high'] - pip_difference >= 20:
+                # Price has pulled back 20 pips from highest point, move stop loss again
+                update_needed = True
+                logger.info(
+                    f"Runner position {position_id} ({instrument_name}): Trailing stop - {tracking_data['pip_high'] - pip_difference} pip pullback from highest")
+
+        # For non-runner positions, apply the original logic (40 pip threshold)
+        # This keeps the existing behavior for non-CFD instruments and gold
+        elif not should_trail and not is_cfd:
+            # If price has moved 40+ pips in favor and stop loss hasn't been moved yet
+            if not tracking_data['stop_loss_moved'] and pip_difference >= 40:
+                if (side.lower() == 'buy' and current_price > entry_price) or \
+                        (side.lower() == 'sell' and current_price < entry_price):
+                    update_needed = True
+                    tracking_data['stop_loss_moved'] = True
+
+            # If price has moved significantly further after initial stop loss move
+            # implement trailing stop logic
+            elif tracking_data['stop_loss_moved'] and tracking_data['pip_high'] - pip_difference >= 20:
+                # Price has pulled back 20 pips from highest point, move stop loss again
+                update_needed = True
 
         if update_needed:
             logger.info(f"Position {position_id} ({instrument_name}): Updating stop loss at {pip_difference} pips")
@@ -209,8 +281,6 @@ async def process_position_update(position_id, instrument_data, side, entry_pric
 
     except Exception as e:
         logger.error(f"Error processing position update: {e}", exc_info=True)
-
-
 def calculate_pip_difference(entry_price, current_price, instrument_name):
     """
     Calculate pip difference based on the instrument type.
