@@ -1,0 +1,1269 @@
+2025-03-01 15:55:06 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 15:55:06 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 15:55:06 - trading_bot                    - ERROR    - [36m[2025-03-01 15:55:05][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 16:00:49 - core.risk_management           - ERROR    - Invalid entry_point type: <class 'dict'>
+2025-03-01 16:00:49 - core.risk_management           - ERROR    - Invalid entry_point type: <class 'dict'>
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:51 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:00:52 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 400, message='Bad Request', url='https://demo.tradelocker.com/backend-api/trade/accounts/1011989/orders'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - trading_bot                    - ERROR    - [36m[2025-03-01 16:00:46][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'int' and 'dict'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+2025-03-01 16:02:34 - trading_bot                    - ERROR    - [36m[2025-03-01 16:02:32][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'int' and 'dict'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 316, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-01 23:20:38 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 166, in select_account
+    try:
+    
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:20:38 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-01 23:20:38 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013F2F6F4690>
+2025-03-01 23:20:38 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013F2F6F86E0>
+2025-03-01 23:22:24 - root                           - ERROR    - Critical error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 461, in <module>
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 455, in main
+    sys.exit(1)
+    ~~~~~~~~^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 381, in run
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 381, in run
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 381, in run
+  [Previous line repeated 3 more times]
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 365, in run
+    self.logger.error("Initialization failed. Exiting.")
+     ^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\cli\display_menu.py", line 11, in display_menu
+    choice = input(f"{Fore.GREEN}Enter your choice (1-2): {Style.RESET_ALL}")
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:22:53 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 167, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:22:53 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-01 23:22:53 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013FED7B8690>
+2025-03-01 23:22:53 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000013FED73BE00>
+2025-03-01 23:28:55 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 167, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-01 23:28:55 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-01 23:28:55 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001C554E08690>
+2025-03-01 23:28:55 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001C554D8BE00>
+2025-03-02 04:01:46 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo-maintenance.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 10:41:44 - trading_bot                    - ERROR    - Account ID 90 is not valid.
+2025-03-02 10:41:44 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-02 10:46:32 - trading_bot                    - ERROR    - [36m[2025-03-01 18:13:05][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:46:32 - trading_bot                    - ERROR    - [36m[2025-03-02 10:46:29][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:56:58 - trading_bot                    - ERROR    - [36m[2025-03-02 10:52:43][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    if self.enable_news_filter:
+                            ^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 10:56:59 - trading_bot                    - ERROR    - [36m[2025-03-02 10:46:29][0m: Unexpected error: 'NewsEventFilter' object has no attribute 'can_place_order'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 228, in process_message
+    if self.enable_news_filter:
+                            ^^^
+AttributeError: 'NewsEventFilter' object has no attribute 'can_place_order'
+2025-03-02 11:07:33 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:39 - asyncio                        - ERROR    - Task exception was never retrieved
+future: <Task finished name='Task-52' coro=<TelegramBaseClient._disconnect_coro() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py:707> exception=OperationalError('database is locked')>
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:39 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:44 - trading_bot                    - ERROR    - Unexpected error in main loop: database is locked
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 38, in _run_until_disconnected
+    raise self._updates_error
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 308, in _update_loop
+    diff = await self(get_diff)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 30, in __call__
+    return await self._call(self._sender, request, ordered=ordered)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 93, in _call
+    self.session.process_entities(result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 414, in run
+    await self.client.run_until_disconnected()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py", line 43, in _run_until_disconnected
+    await self.disconnect()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:44 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-03-02 11:07:50 - root                           - ERROR    - Critical error: database is locked
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 468, in <module>
+    asyncio.run(main())
+    ~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 460, in main
+    await bot.run()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 421, in run
+    await self.cleanup()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 372, in cleanup
+    await self.client.disconnect()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 737, in _disconnect_coro
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-03-02 15:31:49 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:31:49 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:00 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:00 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:23 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:23 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:34 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:32:34 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 15:33:18 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: 
+2025-03-02 15:33:18 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: 
+2025-03-02 15:33:28 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:33:38 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:33:48 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:33:58 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:34:08 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:34:52 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: 
+2025-03-02 15:34:52 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: 
+2025-03-02 15:35:02 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:35:12 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Service unavailable: trade/accounts/1011989/positions
+2025-03-02 15:41:01 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 
+2025-03-02 15:41:01 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 
+2025-03-02 15:41:01 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 
+2025-03-02 15:41:01 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 
+2025-03-02 15:41:01 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/orders failed after 3 attempts: 
+2025-03-02 15:41:01 - tradelocker_api.endpoints.orders - ERROR    - Failed to place order: 
+2025-03-02 16:48:02 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 16:48:02 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 18:01:24 - trading_bot                    - ERROR    - [36m[2025-03-02 18:01:23][0m: Error processing signal: Missing key 'instrument'. Skipping this signal.
+2025-03-02 18:04:53 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-02 18:06:30 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-02 18:12:35 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'NoneType' and 'int'
+2025-03-02 18:12:35 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'NoneType' and 'int'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+2025-03-02 18:12:35 - trading_bot                    - ERROR    - [36m[2025-03-02 18:12:33][0m: Unexpected error: 'NoneType' object is not iterable. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 260, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 359, in calculate_position_size
+    position_sizes = [min_position for _ in take_profits]
+                                            ^^^^^^^^^^^^
+TypeError: 'NoneType' object is not iterable
+2025-03-02 18:12:49 - core.risk_management           - ERROR    - Error calculating stop loss pips: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+2025-03-02 18:12:49 - core.risk_management           - ERROR    - Error calculating position size: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+2025-03-02 18:12:49 - trading_bot                    - ERROR    - [36m[2025-03-02 18:12:47][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 169, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point)
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 322, in calculate_position_size
+    stop_loss_pips = calculate_stop_loss_pips(stop_loss, entry_point, instrument)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 173, in calculate_stop_loss_pips
+    return abs(stop_loss - entry_point) * 10000
+               ~~~~~~~~~~^~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'NoneType'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 260, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-02 18:23:24 - core.risk_management           - ERROR    - Error calculating position size: float division by zero
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 342, in calculate_position_size
+    position_per_tp = total_pos_in_lots / len(take_profits)
+                      ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: float division by zero
+2025-03-02 18:23:24 - trading_bot                    - ERROR    - [36m[2025-03-02 18:23:22][0m: Unexpected error: can't multiply sequence by non-int of type 'float'. Skipping this signal.
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 342, in calculate_position_size
+    position_per_tp = total_pos_in_lots / len(take_profits)
+                      ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: float division by zero
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 260, in process_message
+    position_sizes, risk_amount = calculate_position_size(
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^
+        instrument_data,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.selected_account
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\risk_management.py", line 362, in calculate_position_size
+    est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+TypeError: can't multiply sequence by non-int of type 'float'
+2025-03-02 22:24:34 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 22:24:36 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-02 22:24:36 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 08:49:41 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 08:49:41 - services.news_filter           - ERROR    - Error updating calendar: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\services\news_filter.py", line 60, in update_calendar
+    async with session.get(self.calendar_url) as response:
+               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+2025-03-03 08:51:09 - trading_bot                    - ERROR    - Account ID 6060 is not valid.
+2025-03-03 08:51:09 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 11:10:03 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445099'
+2025-03-03 11:10:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445098'
+2025-03-03 11:10:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445100'
+2025-03-03 11:10:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445100'
+2025-03-03 11:10:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445098'
+2025-03-03 11:10:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445099'
+2025-03-03 11:11:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445099'
+2025-03-03 11:11:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445098'
+2025-03-03 11:11:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838445100'
+2025-03-03 12:26:46 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 167, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-03 12:26:46 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 12:26:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002804EB6C690>
+2025-03-03 12:26:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002804EAF3E00>
+2025-03-03 12:26:52 - trading_bot                    - ERROR    - Account ID 669 is not valid.
+2025-03-03 12:26:52 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 15:29:18 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1011989/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 15:29:18 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 16:08:41 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 19:34:53 - trading_bot                    - ERROR    - Error setting up Telegram client: TelegramBaseClient.__init__() got an unexpected keyword argument 'sqlite_auto_vacuum'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 110, in setup_telegram_client
+    self.client = TelegramClient(
+                  ~~~~~~~~~~~~~~^
+        './my_session',
+        ^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        sqlite_auto_vacuum=True  # Helps prevent DB locks
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: TelegramBaseClient.__init__() got an unexpected keyword argument 'sqlite_auto_vacuum'
+2025-03-03 19:34:53 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-03 19:37:10 - trading_bot                    - ERROR    - Account ID 660 is not valid.
+2025-03-03 19:37:10 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 20:56:07 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-03 21:58:46 - trading_bot                    - ERROR    - Account ID 660 is not valid.
+2025-03-03 21:58:46 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-03 22:59:00 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 22:59:35 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:00:10 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:00:44 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:01:19 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:01:53 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:02:29 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:03:03 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:03:38 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:04:12 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:04:47 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:05:21 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:05:55 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:06:30 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:07:05 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:07:39 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:08:14 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:08:48 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:09:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:09:57 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:10:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:11:06 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:11:40 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:12:14 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:12:48 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:13:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:13:56 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:14:30 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:15:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:15:38 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:16:13 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:16:48 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:17:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:17:57 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:18:31 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:19:06 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:19:40 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:20:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:20:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:21:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:21:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:22:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:23:06 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:23:41 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:24:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:24:50 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:25:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:25:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:26:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:27:06 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:27:41 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:28:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:28:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:29:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:29:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:30:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:31:07 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:31:41 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:32:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:32:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:33:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:33:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:34:33 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:35:07 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:35:42 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:36:17 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:36:52 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:37:27 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:38:02 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:38:36 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:39:10 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:39:45 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:40:19 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:40:53 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:41:28 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:42:02 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:42:36 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-03 23:43:11 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:00:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:00:38 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:01:27 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:02:07 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:02:42 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:29:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:29:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:30:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:30:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:31:33 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:33:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:34:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:35:12 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:35:47 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:36:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:36:56 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:37:30 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:38:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:38:39 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:39:13 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:39:47 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:40:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:40:57 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:41:31 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:42:05 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:42:39 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:43:13 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:43:47 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:44:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:44:56 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:45:31 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:46:05 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:46:39 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:47:14 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:47:48 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:48:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:48:56 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:49:30 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:50:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:50:38 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:51:12 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:51:46 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:52:20 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:52:54 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:53:28 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:54:02 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:54:36 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:55:11 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:55:44 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:56:18 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:56:52 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:57:26 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:58:00 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:58:34 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:59:08 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 00:59:42 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:00:16 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:00:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:01:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:01:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:02:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:03:05 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:03:40 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:04:14 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:04:48 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:05:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:05:55 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:06:30 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:07:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:07:38 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:08:12 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:08:46 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:09:20 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:09:55 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:10:29 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:11:03 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:11:37 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:12:11 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:12:45 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:13:19 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:13:53 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:14:27 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:15:01 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:15:35 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:16:10 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:16:43 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:17:17 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:17:52 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:18:25 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:18:59 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:19:33 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:20:08 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:20:42 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:21:16 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:21:50 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:22:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:22:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:23:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:24:06 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:24:40 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:25:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:25:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:26:22 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:26:56 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:27:30 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:28:04 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:28:38 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:29:13 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:29:46 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:30:21 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:30:55 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:31:29 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:32:02 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:32:36 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:33:11 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:33:44 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:34:19 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:34:53 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:35:27 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:36:01 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:36:35 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:37:09 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:37:43 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:38:17 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:38:51 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:39:25 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:39:59 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:40:33 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:41:07 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:41:41 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:42:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:42:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:43:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:43:57 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:44:31 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:45:05 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:45:40 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:46:13 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:46:47 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:47:21 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:47:55 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:48:29 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:49:14 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:49:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:50:24 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:50:59 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:51:34 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:52:09 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:52:44 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:53:18 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:53:53 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:54:27 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:55:02 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:55:37 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:56:12 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:56:46 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:57:21 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:57:56 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:58:30 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:59:06 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 01:59:40 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:00:14 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:00:49 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:01:23 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:01:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:02:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:03:06 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:03:41 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:04:15 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:04:50 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:05:25 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:05:59 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:06:34 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:07:08 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:07:43 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:08:17 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:08:52 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:09:26 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:10:01 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:10:36 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:11:10 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:11:45 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:12:19 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:12:54 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:13:28 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:14:03 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:14:37 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:15:11 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:15:45 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:16:20 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:16:58 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 02:17:32 - services.pos_monitor           - ERROR    - Failed to update stop loss after 3 attempts: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/trade/positions/7277816997838451302'
+2025-03-04 14:57:52 - trading_bot                    - ERROR    - Initialization error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 165, in _start
+    value = phone()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 22, in <lambda>
+    phone: typing.Union[typing.Callable[[], str], str] = lambda: input('Please enter your phone (or bot token): '),
+                                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 14:57:52 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 14:59:24 - trading_bot                    - ERROR    - Initialization error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 165, in _start
+    value = phone()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 22, in <lambda>
+    phone: typing.Union[typing.Callable[[], str], str] = lambda: input('Please enter your phone (or bot token): '),
+                                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 14:59:24 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 15:00:14 - trading_bot                    - ERROR    - Initialization error: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 165, in _start
+    value = phone()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 22, in <lambda>
+    phone: typing.Union[typing.Callable[[], str], str] = lambda: input('Please enter your phone (or bot token): '),
+                                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 15:00:14 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 15:00:35 - trading_bot                    - ERROR    - Initialization error: The phone number is invalid (caused by SendCodeRequest)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 96, in initialize
+    await self.client.start()
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 184, in _start
+    await self.send_code_request(phone, force_sms=force_sms)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 434, in send_code_request
+    result = await self(functions.auth.SendCodeRequest(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        phone, self.api_id, self.api_hash, types.CodeSettings()))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 30, in __call__
+    return await self._call(self._sender, request, ordered=ordered)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 92, in _call
+    result = await future
+             ^^^^^^^^^^^^
+telethon.errors.rpcerrorlist.PhoneNumberInvalidError: The phone number is invalid (caused by SendCodeRequest)
+2025-03-04 15:00:35 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 15:06:16 - trading_bot                    - ERROR    - Initialization error: Two-steps verification is enabled and a password is required (caused by SignInRequest)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 106, in initialize
+    await self.client.sign_in(phone, code)
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\auth.py", line 357, in sign_in
+    result = await self(request)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 30, in __call__
+    return await self._call(self._sender, request, ordered=ordered)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\telethon\client\users.py", line 92, in _call
+    result = await future
+             ^^^^^^^^^^^^
+telethon.errors.rpcerrorlist.SessionPasswordNeededError: Two-steps verification is enabled and a password is required (caused by SignInRequest)
+2025-03-04 15:06:16 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-03-04 15:10:46 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 191, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 15:10:46 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 15:10:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000027F203DD550>
+2025-03-04 15:10:46 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000027F203D9E50>
+2025-03-04 15:25:16 - trading_bot                    - ERROR    - Unexpected error in main loop: 'TradingBot' object has no attribute 'start_position_monitoring'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 412, in run
+    monitoring_task = await self.start_position_monitoring()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradingBot' object has no attribute 'start_position_monitoring'
+2025-03-04 16:09:34 - trading_bot                    - ERROR    - Account ID 6161 is not valid.
+2025-03-04 16:09:34 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 16:26:28 - trading_bot                    - ERROR    - Account ID 6161 is not valid.
+2025-03-04 16:26:28 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 16:36:47 - trading_bot                    - ERROR    - Account ID 661 is not valid.
+2025-03-04 16:36:47 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:01:32 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 211, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:01:32 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:01:32 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001EC43E6CA50>
+2025-03-04 17:01:32 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001EC43E70590>
+2025-03-04 17:05:13 - trading_bot                    - ERROR    - Unexpected error in main loop: 'TradingBot' object has no attribute 'start_position_monitoring'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 412, in run
+    monitoring_task = await self.start_position_monitoring()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradingBot' object has no attribute 'start_position_monitoring'
+2025-03-04 17:32:55 - trading_bot                    - ERROR    - Error fetching accounts: No module named 'pandas'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 196, in display_accounts
+    import pandas as pd
+ModuleNotFoundError: No module named 'pandas'
+2025-03-04 17:32:55 - trading_bot                    - ERROR    - No accounts found. Exiting.
+2025-03-04 17:35:34 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 264, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:35:34 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:35:34 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000209BD635A90>
+2025-03-04 17:35:34 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000209BD629E50>
+2025-03-04 17:36:36 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 263, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:36:36 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:36:36 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000026BFAACDA90>
+2025-03-04 17:36:36 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000026BFAAB9E50>
+2025-03-04 17:36:45 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 335, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:36:45 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002746F7EDBE0>
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x000002746F7C15B0>, 268879.1944132)])']
+connector: <aiohttp.connector.TCPConnector object at 0x000002746F7ED7F0>
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002746F7DDE50>
+2025-03-04 17:36:45 - asyncio                        - ERROR    - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x000002746F7C1D90>, 268879.474078)])']
+connector: <aiohttp.connector.TCPConnector object at 0x000002746F7DDF90>
+2025-03-04 17:41:31 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 335, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-04 17:41:31 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-04 17:41:31 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002276A24DBE0>
+2025-03-04 17:41:31 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002276A23DE50>
+2025-03-06 11:57:47 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1017072/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-06 11:57:47 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:17 - tradelocker_api.endpoints.auth - ERROR    - Failed to refresh token: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:17 - services.news_filter           - ERROR    - Error updating calendar: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\services\news_filter.py", line 60, in update_calendar
+    async with session.get(self.calendar_url) as response:
+               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host nfs.faireconomy.media:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - core.signal_parser             - ERROR    - Error parsing signal: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\signal_parser.py", line 295, in parse_signal_async
+    async with session.post(api_url, headers=headers, json=payload) as response:
+               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - core.signal_parser             - ERROR    - Error parsing signal: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1362, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 995, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1026, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\resolver.py", line 36, in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Uncrowned King\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11004] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\core\signal_parser.py", line 295, in parse_signal_async
+    async with session.post(api_url, headers=headers, json=payload) as response:
+               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 1425, in __aenter__
+    self._resp: _RetType = await self._coro
+                           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\client.py", line 703, in _request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 548, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1056, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\.venv\Lib\site-packages\aiohttp\connector.py", line 1368, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host api.openai.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - tradelocker_api.api_client     - ERROR    - Request to trade/accounts/1017072/positions failed after 3 attempts: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 08:48:18 - tradelocker_api.endpoints.accounts - ERROR    - Failed to fetch open positions: Cannot connect to host demo.tradelocker.com:443 ssl:default [getaddrinfo failed]
+2025-03-07 09:54:37 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-07 09:54:38 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-07 09:54:38 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-07 09:54:40 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 14:20:15 - trading_bot                    - ERROR    - Error selecting account: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Downloads\tradeLockerV3\main.py", line 277, in select_account
+    account_id = input("Please enter the Account Number you want to use for trading: ").strip()
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen codecs>", line 325, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+2025-03-10 14:20:15 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-03-10 14:20:15 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000244215FDD30>
+2025-03-10 14:20:15 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000244215EDE50>
+2025-03-10 14:43:28 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 15:17:38 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 15:31:12 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
+2025-03-10 19:28:15 - trading_bot                    - ERROR    - Account ID 6262 is not valid.
+2025-03-10 19:28:15 - trading_bot                    - ERROR    - Account selection failed. Exiting.
