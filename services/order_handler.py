@@ -209,12 +209,13 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
         # Prepare order batch - only include positions with non-zero size
         orders_batch = []
 
-        # Check if this is a CFD instrument
-        is_cfd = instrument_data['type'] == "EQUITY_CFD"
-        logger.info(f"{colored_time}: Instrument {instrument_data['name']} is {'CFD' if is_cfd else 'non-CFD'}")
+        # Check if this is a CFD instrument that should get special treatment
+        # XAUUSD should be excluded from special CFD handling, even though it's a CFD type
+        is_cfd = instrument_data['type'] == "EQUITY_CFD" and instrument_data['name'] != "XAUUSD"
+        logger.info(f"{colored_time}: Instrument {instrument_data['name']} is {'CFD' if is_cfd else 'non-CFD/XAUUSD'}")
 
         if is_cfd:
-            # For CFD instruments, we need to place exactly 3 orders with specific take profits
+            # For CFD instruments (excluding XAUUSD), we need to place exactly 3 orders with specific take profits
             logger.info(f"{colored_time}: Processing CFD instrument with custom take profit allocation")
 
             # Get total position size (sum of all non-zero positions)
@@ -281,8 +282,6 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
                 pip_value = 1.0
             elif instrument_data['name'] == "NDX100":
                 pip_value = 1.0
-            elif instrument_data['name'] == "XAUUSD":
-                pip_value = 0.1
             else:
                 pip_value = 1.0  # Default for other CFDs
 
@@ -308,7 +307,7 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
                 f"{colored_time}: Position #3 (RUNNER) (size: {position_per_segment}) with 500 pip distant take profit: {far_tp}")
 
         else:
-            # For non-CFD instruments, process normally
+            # For non-CFD instruments and XAUUSD, process normally with original take profits
             valid_positions = [(size, tp) for size, tp in zip(position_sizes, parsed_signal['take_profits']) if
                                size > 0]
 
@@ -330,6 +329,7 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
                     'take_profit': take_profit
                 }
                 orders_batch.append(order)
+                logger.info(f"{colored_time}: Position #{i+1} (size: {position_size}) with take profit: {take_profit}")
 
         # Place orders in parallel
         logger.info(

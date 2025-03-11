@@ -237,13 +237,14 @@ def calculate_pip_value(instrument: dict) -> float:
 
 
 # Determine the risk percentage based on account tiers
-def determine_risk_percentage(account_balance: float, instrument: dict) -> float:
+def determine_risk_percentage(account_balance: float, instrument: dict, reduced_risk: bool = False) -> float:
     """
-    Determine risk percentage based on account balance and instrument.
+    Determine risk percentage based on account balance, instrument, and risk flag.
 
     Args:
         account_balance: Current account balance
         instrument: Instrument data dictionary
+        reduced_risk: Flag indicating if the signal suggests reduced risk
 
     Returns:
         float: Risk percentage (e.g., 0.02 for 2%)
@@ -251,11 +252,11 @@ def determine_risk_percentage(account_balance: float, instrument: dict) -> float
     try:
         # Define account tiers and corresponding risk percentages
         tiers = {
-            5000: 0.015,  # Risk 2% for 5k accounts
-            10000: 0.015,  # Risk 2% for 10k accounts
-            25000: 0.015,  # Risk 2% for 25k accounts
-            50000: 0.015,  # Risk 2% for 50k accounts
-            100000: 0.015  # Risk 2% for 100k accounts
+            5000: 0.015,  # Risk 1.5% for 5k accounts
+            10000: 0.015,  # Risk 1.5% for 10k accounts
+            25000: 0.015,  # Risk 1.5% for 25k accounts
+            50000: 0.015,  # Risk 1.5% for 50k accounts
+            100000: 0.015  # Risk 1.5% for 100k accounts
         }
 
         # Special handling for XAUUSD, which should follow the same risk as FOREX
@@ -263,19 +264,38 @@ def determine_risk_percentage(account_balance: float, instrument: dict) -> float
             # Determine the closest tier based on account balance for XAUUSD
             closest_tier = max(tier for tier in tiers if account_balance >= tier)
             risk_percentage = tiers[closest_tier]
+
+            # If reduced risk is flagged, halve the risk percentage
+            if reduced_risk:
+                risk_percentage = risk_percentage / 2
+                logger.info(f"Reduced risk applied for {instrument['name']}: {risk_percentage * 100}% (half of normal)")
+
             logger.info(
                 f"Account balance: {account_balance}, Closest tier: {closest_tier}, "
                 f"Risk percentage for XAUUSD: {risk_percentage * 100}%"
             )
             return risk_percentage
 
-        # If the instrument type is EQUITY_CFD but not XAUUSD, set a fixed risk percentage of 2%
+        # If the instrument type is EQUITY_CFD but not XAUUSD, set a fixed risk percentage of 1%
         if instrument["type"] == "EQUITY_CFD":
-            return 0.01  # 2%
+            risk_percentage = 0.01  # 1%
+
+            # If reduced risk is flagged, halve the risk percentage
+            if reduced_risk:
+                risk_percentage = risk_percentage / 2
+                logger.info(f"Reduced risk applied for {instrument['name']}: {risk_percentage * 100}% (half of normal)")
+
+            return risk_percentage
 
         # Determine the closest tier based on account balance for other instruments
         closest_tier = max(tier for tier in tiers if account_balance >= tier)
         risk_percentage = tiers[closest_tier]
+
+        # If reduced risk is flagged, halve the risk percentage
+        if reduced_risk:
+            risk_percentage = risk_percentage / 2
+            logger.info(f"Reduced risk applied for {instrument['name']}: {risk_percentage * 100}% (half of normal)")
+
         logger.info(
             f"Account balance: {account_balance}, Closest tier: {closest_tier}, "
             f"Risk percentage: {risk_percentage * 100}%"
@@ -284,7 +304,7 @@ def determine_risk_percentage(account_balance: float, instrument: dict) -> float
     except Exception as e:
         logger.error(f"Error determining risk percentage: {e}")
         # Safe fallback: Use a conservative risk percentage
-        return 0.01  # 1% as a safe default
+        return 0.005 if reduced_risk else 0.01  # 0.5% (reduced) or 1% as safe defaults
 
 
 # Main function to calculate position size
@@ -293,7 +313,8 @@ def calculate_position_size(
         entry_point: float,
         stop_loss: float,
         take_profits: list,
-        account: dict
+        account: dict,
+        reduced_risk: bool = False
 ) -> tuple:
     """
     Calculate position size based on risk management parameters.
@@ -304,6 +325,7 @@ def calculate_position_size(
         stop_loss: Stop loss price
         take_profits: List of take profit prices
         account: Account data dictionary
+        reduced_risk: Flag indicating if the signal suggests reduced risk
 
     Returns:
         tuple: (list of position sizes, total risk amount)
@@ -311,8 +333,8 @@ def calculate_position_size(
     try:
         account_balance = float(account['accountBalance'])
 
-        # Determine the risk percentage based on account tiers and instrument type
-        risk_percentage = determine_risk_percentage(account_balance, instrument)
+        # Determine the risk percentage based on account tiers, instrument type, and risk flag
+        risk_percentage = determine_risk_percentage(account_balance, instrument, reduced_risk)
 
         # Calculate the pip value for the instrument
         pip_value = calculate_pip_value(instrument)
@@ -383,7 +405,7 @@ def calculate_position_size(
         position_sizes = [min_position for _ in take_profits]
 
         # Estimate risk based on small position sizes
-        est_risk = account['accountBalance'] * 0.005  # Estimate 0.5% risk
+        est_risk = account['accountBalance'] * (0.0025 if reduced_risk else 0.005)  # Estimate 0.25% or 0.5% risk
 
         logger.warning(f"Using fallback position sizes due to error: {position_sizes}")
         return position_sizes, round(est_risk)
