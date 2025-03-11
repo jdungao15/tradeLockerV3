@@ -233,6 +233,22 @@ def parse_signal(message: str):
         return None
 
 
+def is_reduced_risk_signal(message: str) -> bool:
+    """
+    Check if the signal suggests reduced risk (high risk, small size, small lot).
+
+    Args:
+        message: The signal message text
+
+    Returns:
+        bool: True if the signal suggests using reduced risk, False otherwise
+    """
+    message_lower = message.lower()
+    risk_keywords = ['high risk', 'small size', 'small lot', 'risky', 'conservative entry',
+                     'small position', 'reduced size', 'lower size', 'careful']
+    return any(keyword in message_lower for keyword in risk_keywords)
+
+
 async def parse_signal_async(message: str):
     """
     Parse a trading signal using OpenAI API - asynchronous version.
@@ -338,6 +354,11 @@ async def parse_signal_async(message: str):
                         parsed_signal_cache[message] = None
                         return None
 
+                    # Check if this is a reduced risk signal and add the flag
+                    result['reduced_risk'] = is_reduced_risk_signal(message)
+                    if result['reduced_risk']:
+                        logger.info(f"Signal identified as reduced risk: {message[:100]}...")
+
                 except json.JSONDecodeError as e:
                     logger.error(f"Error parsing OpenAI response: {e}")
                     parsed_signal_cache[message] = None
@@ -354,7 +375,6 @@ async def parse_signal_async(message: str):
         logger.error(f"Error parsing signal: {e}", exc_info=True)
         parsed_signal_cache[message] = None
         return None
-
 
 # Helper function to extract price points from complex messages
 def extract_price_points(text: str):

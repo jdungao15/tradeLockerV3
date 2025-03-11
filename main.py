@@ -331,6 +331,11 @@ class TradingBot:
                 self.logger.info(f"{colored_time} Received invalid signal: {message_text}")
                 return
 
+            # Check if this is a reduced risk signal
+            reduced_risk = parsed_signal.get('reduced_risk', False)
+            if reduced_risk:
+                self.logger.info(f"{colored_time} {Fore.YELLOW}Signal identified as REDUCED RISK.{Style.RESET_ALL}")
+
             self.logger.info(f"{colored_time} {Fore.CYAN}Received trading signal:{Style.RESET_ALL} {message_text}")
             self.logger.info(
                 f"{Fore.YELLOW}Signal details:{Style.RESET_ALL} Instrument: {Fore.GREEN}{parsed_signal['instrument']}{Style.RESET_ALL}, "
@@ -373,22 +378,28 @@ class TradingBot:
                 )
                 return
 
-            # Calculate position sizes based on risk management
+            # Calculate position sizes based on risk management, passing the reduced_risk flag
             position_sizes, risk_amount = calculate_position_size(
                 instrument_data,
                 parsed_signal['entry_point'],
                 parsed_signal['stop_loss'],
                 parsed_signal['take_profits'],
-                self.selected_account
+                self.selected_account,
+                reduced_risk  # Pass the reduced risk flag
             )
 
             self.logger.info(f"{colored_time}: Position sizes: {Fore.YELLOW}{position_sizes}{Style.RESET_ALL}")
+
+            # Display risk information
+            risk_percentage = "0.75%" if reduced_risk else "1.5%"  # Approximate values for display
+            self.logger.info(f"{colored_time}: {Fore.CYAN}Risk percentage: {risk_percentage} " +
+                             f"({Fore.RED}REDUCED{Style.RESET_ALL} due to signal keywords)" if reduced_risk else "")
 
             # Place the order with risk checks - now including quotes_client for market order logic
             await place_orders_with_risk_check(
                 self.orders_client,
                 self.accounts_client,
-                self.quotes_client,  # Added quotes_client for price checks
+                self.quotes_client,
                 self.selected_account,
                 instrument_data,
                 parsed_signal,
