@@ -506,7 +506,7 @@ class TradingBot:
 
             # Load drawdown data and schedule daily reset
             load_drawdown_data(self.selected_account)
-            schedule_daily_reset(self.selected_account)
+            schedule_daily_reset(self.accounts_client, self.selected_account)
 
             # Set up message handler
             await self.setup_telegram_handler()
