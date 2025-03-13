@@ -22,7 +22,7 @@ from tradelocker_api.endpoints.orders import TradeLockerOrders
 from tradelocker_api.endpoints.quotes import TradeLockerQuotes
 from services.drawdown_manager import (
     load_drawdown_data,
-    schedule_daily_reset,
+    schedule_daily_reset_async,
     max_drawdown_balance
 )
 from services.order_handler import place_orders_with_risk_check
@@ -159,6 +159,7 @@ class TradingBot:
         task = asyncio.create_task(update_calendar_task())
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
+
 
     async def start_position_monitoring(self):
         """Start monitoring existing positions in the background"""
@@ -320,7 +321,17 @@ class TradingBot:
             self._tasks.add(task)
             task.add_done_callback(self._tasks.discard)
 
-    # In main.py, update the process_message method to properly handle news filtering
+    async def start_drawdown_monitor(self):
+        """Start the drawdown monitoring with proper async handling"""
+        # Load drawdown data
+        load_drawdown_data(self.selected_account)
+
+        # Schedule first reset using async approach
+        reset_task = asyncio.create_task(
+            schedule_daily_reset_async(self.accounts_client, self.selected_account)
+        )
+        self._tasks.add(reset_task)
+        reset_task.add_done_callback(self._tasks.discard)
 
     async def process_message(self, message_text, colored_time):
         """Process a received Telegram message"""
@@ -505,8 +516,7 @@ class TradingBot:
                 return
 
             # Load drawdown data and schedule daily reset
-            load_drawdown_data(self.selected_account)
-            schedule_daily_reset(self.accounts_client, self.selected_account)
+            await self.start_drawdown_monitor()
 
             # Set up message handler
             await self.setup_telegram_handler()
