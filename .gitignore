@@ -8,3 +8,13 @@ venv/
 ENV/
 .env
 economic_events.json
+# Account and drawdown data
+daily_drawdown.json
+selected_account.json
+
+# Log files
+logs/
+*.log
+debug.log
+errors.log
+trading_bot.log
