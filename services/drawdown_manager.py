@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 # Global variables
 max_drawdown_balance = 0  # This is the minimum balance the account should not drop below
-drawdown_limit_file = '../daily_drawdown.json'
-starting_balance = 0  # Balance at the start of the trading day
+drawdown_limit_file = 'daily_drawdown.json'
+starting_balance = 0  # Balance at the start of the trading day (total equity)
 _drawdown_lock = threading.RLock()  # Lock for thread-safe operations
 
 
@@ -35,11 +35,11 @@ def load_drawdown_data(selected_account):
                         f"Loaded drawdown data: max_drawdown={max_drawdown_balance}, starting={starting_balance}")
             else:
                 logger.info("No existing drawdown file. Creating new limits.")
-                reset_daily_drawdown(selected_account)
+                reset_daily_drawdown(None, selected_account)  # Pass None since we don't have accounts_client yet
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in drawdown file: {e}")
             logger.info("Creating new drawdown limits due to corrupted file.")
-            reset_daily_drawdown(selected_account)
+            reset_daily_drawdown(None, selected_account)
         except Exception as e:
             logger.error(f"Error loading drawdown data: {e}")
             # Set safe defaults if we can't load
@@ -79,7 +79,7 @@ def save_drawdown_data():
             logger.error(f"Error saving drawdown data: {e}")
 
 
-# Function to determine the correct tier size and apply the 10% rule
+# Function to determine the correct tier size based on account balance
 def get_tier_size(account_balance):
     """
     Determine correct tier size based on account balance.
@@ -97,83 +97,203 @@ def get_tier_size(account_balance):
         return 100000, float('inf')  # $100,000 tier, no upper limit
 
 
-# Function to reset the daily drawdown
-def reset_daily_drawdown(selected_account):
+# Enhanced reset daily drawdown function
+async def reset_daily_drawdown_async(accounts_client, selected_account):
     """
-    Reset daily drawdown based on current account balance.
+    Reset daily drawdown based on current account state including unrealized P/L.
+
+    Args:
+        accounts_client: TradeLocker accounts client for API calls
+        selected_account: Selected account information dictionary
     """
     global max_drawdown_balance, starting_balance
 
     with _drawdown_lock:
         try:
-            # Get the latest balance
-            account_balance = float(selected_account['accountBalance'])
+            # If accounts_client is None, use account balance from selected_account
+            if accounts_client is None:
+                account_balance = float(selected_account['accountBalance'])
+                unrealized_pnl = 0  # Default to 0 without API access
+                total_equity = account_balance
+                logger.info("Using account balance without API access for drawdown calculation")
+            else:
+                # Get account state from API
+                account_id = int(selected_account['id'])
+                acc_num = int(selected_account['accNum'])
 
-            # Determine the correct tier size and its upper limit
+                account_state = await accounts_client.get_account_state_async(account_id, acc_num)
+
+                if not account_state or 'd' not in account_state or 'accountDetailsData' not in account_state['d']:
+                    logger.error("Failed to get account state data. Using account balance instead.")
+                    account_balance = float(selected_account['accountBalance'])
+                    unrealized_pnl = 0
+                    total_equity = account_balance
+                else:
+                    # Extract data from account state response
+                    details = account_state['d']['accountDetailsData']
+
+                    # Access the fields using indices based on the API response format
+                    account_balance = float(details[0])  # Balance (index 0) - Current realized balance
+                    unrealized_pnl = float(details[23])  # Open Net P&L (index 23) - Unrealized profit/loss
+
+                    # Calculate total equity (realized + unrealized)
+                    total_equity = account_balance + unrealized_pnl
+
+                    logger.info(
+                        f"API data retrieved successfully: Balance={account_balance}, Unrealized P&L={unrealized_pnl}")
+
+            # Determine the correct tier size based on realized balance
             tier_size, upper_limit = get_tier_size(account_balance)
 
-            # The drawdown is based on the tier, so calculate 4% of the tier size
+            # Calculate drawdown limit (4% of tier size)
             drawdown_limit = tier_size * 0.04
 
-            # Set the starting balance and max drawdown balance
+            # Set starting balance (total equity) and max drawdown balance
+            starting_balance = total_equity
+            max_drawdown_balance = starting_balance - drawdown_limit
+
+            tier_size, _ = get_tier_size(account_balance)
+            logger.info(
+                f"Daily drawdown limits for today: Account Balance=${account_balance:.2f}, "
+                f"Tier=${tier_size}, Drawdown Limit=${drawdown_limit:.2f}, "
+                f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
+            )
+
+            save_drawdown_data()
+            return True
+        except Exception as e:
+            logger.error(f"Error resetting daily drawdown: {e}", exc_info=True)
+            return False
+
+
+# Synchronous wrapper for reset_daily_drawdown
+def reset_daily_drawdown(accounts_client, selected_account):
+    """
+    Synchronous wrapper for reset_daily_drawdown_async.
+
+    Args:
+        accounts_client: TradeLocker accounts client for API calls
+        selected_account: Selected account information dictionary
+    """
+    global max_drawdown_balance, starting_balance
+
+    try:
+        # Check if we're in an event loop
+        try:
+            loop = asyncio.get_event_loop()
+            in_event_loop = loop.is_running()
+        except RuntimeError:
+            in_event_loop = False
+
+        if in_event_loop:
+            # If we're already in a running event loop, we can't use run_until_complete
+            # Instead, set the drawdown values based on account balance without API
+            with _drawdown_lock:
+                account_balance = float(selected_account['accountBalance'])
+                tier_size, _ = get_tier_size(account_balance)
+                drawdown_limit = tier_size * 0.04
+
+                starting_balance = account_balance
+                max_drawdown_balance = starting_balance - drawdown_limit
+
+                logger.info(
+                    f"Balance=${account_balance:.2f}, Tier=${tier_size}, "
+                    f"Drawdown=${drawdown_limit:.2f}, Max Drawdown Balance=${max_drawdown_balance:.2f}"
+                )
+
+                save_drawdown_data()
+                return True
+        else:
+            # No event loop running, we can create one and run the async function
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            return loop.run_until_complete(reset_daily_drawdown_async(accounts_client, selected_account))
+
+    except Exception as e:
+        logger.error(f"Error in synchronous reset_daily_drawdown: {e}", exc_info=True)
+
+        # Fallback to simple calculation without API
+        with _drawdown_lock:
+            account_balance = float(selected_account['accountBalance'])
+            tier_size, _ = get_tier_size(account_balance)
+            drawdown_limit = tier_size * 0.04
+
             starting_balance = account_balance
             max_drawdown_balance = starting_balance - drawdown_limit
 
             logger.info(
-                f"Daily drawdown limit set. Starting balance: {starting_balance}, "
-                f"Max drawdown balance: {max_drawdown_balance} based on tier {tier_size}"
+                f"Daily drawdown reset (fallback): Balance=${account_balance:.2f}, "
+                f"Tier=${tier_size}, Drawdown=${drawdown_limit:.2f}, "
+                f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
             )
+
             save_drawdown_data()
-
-        except Exception as e:
-            logger.error(f"Error resetting daily drawdown: {e}")
-
+            return False
 
 # Function to schedule the daily drawdown reset
-def schedule_daily_reset(selected_account):
+def schedule_daily_reset(accounts_client, selected_account):
     """
-    Schedule a daily reset of drawdown limits at 6 PM EST.
+    Schedule a daily reset of drawdown limits at 7 PM EST.
+
+    Args:
+        accounts_client: TradeLocker accounts client for API calls
+        selected_account: Selected account information dictionary
     """
     try:
+        # Get current time in EST timezone
         now = datetime.now(pytz.timezone('America/New_York'))
-        reset_time = now.replace(hour=18, minute=0, second=0, microsecond=0)
 
+        # Set reset time to 7:00 PM EST
+        reset_time = now.replace(hour=19, minute=0, second=0, microsecond=0)
+
+        # If current time is past 7 PM, schedule for next day
         if now >= reset_time:
             reset_time += timedelta(days=1)
 
+        # Calculate wait time in seconds
         wait_time = (reset_time - now).total_seconds()
 
         logger.info(f"Scheduling next drawdown reset at {reset_time.strftime('%Y-%m-%d %H:%M:%S')} EST")
-        threading.Timer(wait_time, perform_daily_reset, args=[selected_account]).start()
+
+        # Schedule the reset
+        threading.Timer(wait_time, perform_daily_reset, args=[accounts_client, selected_account]).start()
 
     except Exception as e:
         logger.error(f"Error scheduling daily reset: {e}")
         # Fallback: Try again in 1 hour
-        threading.Timer(3600, schedule_daily_reset, args=[selected_account]).start()
+        threading.Timer(3600, schedule_daily_reset, args=[accounts_client, selected_account]).start()
 
 
-def perform_daily_reset(selected_account):
+# Function to perform the scheduled reset
+def perform_daily_reset(accounts_client, selected_account):
     """
     Perform the daily reset and schedule the next one.
+
+    Args:
+        accounts_client: TradeLocker accounts client for API calls
+        selected_account: Selected account information dictionary
     """
     try:
         logger.info("Performing scheduled daily drawdown reset")
-        reset_daily_drawdown(selected_account)
-        schedule_daily_reset(selected_account)
+        reset_daily_drawdown(accounts_client, selected_account)
+        # Schedule the next reset
+        schedule_daily_reset(accounts_client, selected_account)
     except Exception as e:
         logger.error(f"Error in daily reset: {e}")
         # Fallback: Try again in 1 hour
-        threading.Timer(3600, schedule_daily_reset, args=[selected_account]).start()
+        threading.Timer(3600, schedule_daily_reset, args=[accounts_client, selected_account]).start()
 
 
 # Async version of reset for use in async contexts
-async def reset_daily_drawdown_async(selected_account):
+async def reset_daily_drawdown_async_wrapper(accounts_client, selected_account):
     """
     Asynchronous wrapper for reset_daily_drawdown.
+
+    Args:
+        accounts_client: TradeLocker accounts client for API calls
+        selected_account: Selected account information dictionary
     """
-    # Use run_in_executor to run the synchronous function in a thread pool
-    loop = asyncio.get_event_loop()
-    await loop.run_in_executor(None, reset_daily_drawdown, selected_account)
+    return await reset_daily_drawdown_async(accounts_client, selected_account)
 
 
 # Check if an operation would exceed drawdown limits
