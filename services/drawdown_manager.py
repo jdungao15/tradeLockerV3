@@ -230,14 +230,10 @@ def reset_daily_drawdown(accounts_client, selected_account):
             save_drawdown_data()
             return False
 
-# Function to schedule the daily drawdown reset
-def schedule_daily_reset(accounts_client, selected_account):
-    """
-    Schedule a daily reset of drawdown limits at 7 PM EST.
 
-    Args:
-        accounts_client: TradeLocker accounts client for API calls
-        selected_account: Selected account information dictionary
+async def schedule_daily_reset_async(accounts_client, selected_account):
+    """
+    Schedule daily reset using asyncio instead of threading
     """
     try:
         # Get current time in EST timezone
@@ -255,14 +251,22 @@ def schedule_daily_reset(accounts_client, selected_account):
 
         logger.info(f"Scheduling next drawdown reset at {reset_time.strftime('%Y-%m-%d %H:%M:%S')} EST")
 
-        # Schedule the reset
-        threading.Timer(wait_time, perform_daily_reset, args=[accounts_client, selected_account]).start()
+        # Sleep until it's time to reset
+        await asyncio.sleep(wait_time)
 
+        # Perform the reset directly with the async function
+        await reset_daily_drawdown_async(accounts_client, selected_account)
+
+        # Schedule the next reset
+        asyncio.create_task(schedule_daily_reset_async(accounts_client, selected_account))
+
+    except asyncio.CancelledError:
+        logger.info("Drawdown reset task was cancelled")
     except Exception as e:
         logger.error(f"Error scheduling daily reset: {e}")
         # Fallback: Try again in 1 hour
-        threading.Timer(3600, schedule_daily_reset, args=[accounts_client, selected_account]).start()
-
+        await asyncio.sleep(3600)
+        asyncio.create_task(schedule_daily_reset_async(accounts_client, selected_account))
 
 # Function to perform the scheduled reset
 def perform_daily_reset(accounts_client, selected_account):
