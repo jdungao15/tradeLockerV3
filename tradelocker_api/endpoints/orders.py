@@ -155,7 +155,7 @@ class TradeLockerOrders(ApiClient):
             logger.error(f"Failed to fetch orders: {e}")
             return None
 
-    async def cancel_order_async(self, account_id: int, acc_num: int, order_id: str):
+    async def cancel_order_async(self, account_id, acc_num, order_id):
         """
         Cancel an existing order - async version.
         """
@@ -169,7 +169,8 @@ class TradeLockerOrders(ApiClient):
             return response
         except Exception as e:
             logger.error(f"Failed to cancel order {order_id}: {e}")
-            return None
+            # Rethrow so the caller can handle it
+            raise
 
     async def place_orders_batch_async(self, account_id: int, acc_num: int, orders: list):
         """

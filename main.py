@@ -28,6 +28,9 @@ from services.drawdown_manager import (
 from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
+from services.missed_signal_detection import MissedSignalHandler
+
+
 class TradingBot:
     def __init__(self):
         # Initialize colorama
@@ -39,9 +42,10 @@ class TradingBot:
         # Load configuration
         self._load_config()
 
-        # Initialize news filter
+        # Initialize service handlers
         self.news_filter = NewsEventFilter(timezone=self.local_timezone.zone)
         self.enable_news_filter = os.getenv('ENABLE_NEWS_FILTER', 'true').lower() == 'true'
+        self.missed_signal_handler = None  # Will be initialized later
 
         # Initialize clients as None
         self.client = None
@@ -55,6 +59,10 @@ class TradingBot:
         # Tasks tracking
         self._tasks = set()
         self._shutdown_flag = False
+
+    # -------------------------------------------------------------------------
+    # Initialization and Setup Methods
+    # -------------------------------------------------------------------------
 
     def _setup_logging(self):
         """Configure logging for the application"""
@@ -137,29 +145,56 @@ class TradingBot:
                 # Schedule regular updates
                 self._schedule_news_calendar_updates()
 
+            # Initialize missed signal handler
+            self.missed_signal_handler = MissedSignalHandler(
+                self.accounts_client,
+                self.orders_client,
+                self.instruments_client,
+                self.auth  # Pass the auth client
+            )
+
+            # Configure the missed signal handler
+            await self.configure_missed_signal_handler(
+                enable_fallback=False,  # Default: Don't cancel unrelated orders
+                max_signal_age_hours=48,  # Only consider signals from last 48 hours
+                consider_channel=True  # Consider channel source when matching signals
+            )
+
             return True
         except Exception as e:
             self.logger.error(f"Initialization error: {e}", exc_info=True)
             return False
 
-    def _schedule_news_calendar_updates(self):
-        """Schedule regular updates for the economic calendar"""
+    async def configure_missed_signal_handler(self, enable_fallback=False, max_signal_age_hours=48,
+                                              consider_channel=True):
+        """
+        Configure the missed signal handler's behavior.
 
-        async def update_calendar_task():
-            while not self._shutdown_flag:
-                try:
-                    await asyncio.sleep(6 * 3600)  # Update every 6 hours
-                    await self.news_filter.update_calendar()
-                except asyncio.CancelledError:
-                    break
-                except Exception as e:
-                    self.logger.error(f"Error updating economic calendar: {e}")
-                    await asyncio.sleep(1800)  # Retry in 30 minutes
+        Args:
+            enable_fallback (bool): Whether to enable the fallback protection
+                                  (cancelling all orders when no specific match)
+            max_signal_age_hours (int): Maximum age of signals to consider for matching (hours)
+            consider_channel (bool): Whether to consider channel/source when matching signals
+        """
+        if not self.missed_signal_handler:
+            self.logger.warning("Missed signal handler not initialized yet.")
+            return False
 
-        task = asyncio.create_task(update_calendar_task())
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
+        self.missed_signal_handler.enable_fallback_protection = enable_fallback
+        self.missed_signal_handler.max_signal_age_hours = max_signal_age_hours
+        self.missed_signal_handler.consider_channel_source = consider_channel
 
+        self.logger.info(
+            f"Missed signal handler configured: "
+            f"Fallback protection {'ENABLED' if enable_fallback else 'DISABLED'}, "
+            f"Signal age limit: {max_signal_age_hours} hours, "
+            f"Consider channel source: {'YES' if consider_channel else 'NO'}"
+        )
+        return True
+
+    # -------------------------------------------------------------------------
+    # Monitoring Methods
+    # -------------------------------------------------------------------------
 
     async def start_position_monitoring(self):
         """Start monitoring existing positions in the background"""
@@ -181,6 +216,70 @@ class TradingBot:
         )
         self._tasks.add(monitor_task)
         return monitor_task
+
+    def _schedule_news_calendar_updates(self):
+        """Schedule regular updates for the economic calendar"""
+
+        async def update_calendar_task():
+            while not self._shutdown_flag:
+                try:
+                    await asyncio.sleep(6 * 3600)  # Update every 6 hours
+                    await self.news_filter.update_calendar()
+                except asyncio.CancelledError:
+                    break
+                except Exception as e:
+                    self.logger.error(f"Error updating economic calendar: {e}")
+                    await asyncio.sleep(1800)  # Retry in 30 minutes
+
+        task = asyncio.create_task(update_calendar_task())
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
+
+    async def start_drawdown_monitor(self):
+        """Start the drawdown monitoring with proper async handling"""
+        # Load drawdown data
+        load_drawdown_data(self.selected_account)
+
+        # Schedule first reset using async approach
+        reset_task = asyncio.create_task(
+            schedule_daily_reset_async(self.accounts_client, self.selected_account)
+        )
+        self._tasks.add(reset_task)
+        reset_task.add_done_callback(self._tasks.discard)
+
+    async def display_upcoming_news(self):
+        """Display upcoming high-impact news events for major currencies"""
+        if not self.enable_news_filter:
+            self.logger.info("News filter is disabled.")
+            return
+
+        # Focus on major currencies typically traded
+        major_currencies = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "NZD"]
+
+        try:
+            # Use our new method to get high-impact events for major currencies
+            upcoming_events = self.news_filter.get_high_impact_events_for_currencies(
+                major_currencies, hours=24
+            )
+        except AttributeError:
+            # Fall back to the old method if the new one isn't available
+            upcoming_events = self.news_filter.get_upcoming_high_impact_events(hours=24)
+
+        if not upcoming_events:
+            self.logger.info("No upcoming high-impact news events in the next 24 hours.")
+            return
+
+        self.logger.info("Upcoming high-impact news events (next 24 hours):")
+        for event in upcoming_events:
+            event_time = event['datetime']
+            local_time = event_time.astimezone(self.local_timezone)
+            self.logger.info(
+                f"[{local_time.strftime('%Y-%m-%d %H:%M')}] {event['currency']} - {event['event']}"
+            )
+
+    # -------------------------------------------------------------------------
+    # Account Management Methods
+    # -------------------------------------------------------------------------
 
     async def display_accounts(self):
         """Fetch and display all available accounts with colorama for reliable color output"""
@@ -272,6 +371,7 @@ class TradingBot:
         except Exception as e:
             self.logger.error(f"Error fetching accounts: {e}", exc_info=True)
             return None
+
     async def select_account(self, accounts_data):
         """Prompt user to select an account to use for trading"""
         try:
@@ -297,6 +397,10 @@ class TradingBot:
             self.logger.error(f"Error selecting account: {e}", exc_info=True)
             return False
 
+    # -------------------------------------------------------------------------
+    # Communication Methods (Telegram)
+    # -------------------------------------------------------------------------
+
     async def setup_telegram_handler(self):
         """Set up the Telegram message handler"""
         if not self.enable_signals:
@@ -311,36 +415,91 @@ class TradingBot:
             message_text = event.message.message
             message_time_utc = event.message.date
 
+            # Extract channel information
+            chat = event.chat if hasattr(event, 'chat') else None
+            channel_id = str(chat.id) if chat else None
+            channel_name = chat.title if chat and hasattr(chat, 'title') else None
+
+            # Extract message and reply information
+            message_id = str(event.message.id) if hasattr(event.message, 'id') else None
+            reply_to_msg_id = None
+
+            # Check if this is a reply to another message
+            if hasattr(event.message, 'reply_to') and event.message.reply_to:
+                reply_to_msg_id = str(event.message.reply_to.reply_to_msg_id)
+                self.logger.debug(f"Message is a reply to message ID: {reply_to_msg_id}")
+
             # Convert the UTC time to local time zone
             message_time_local = message_time_utc.astimezone(self.local_timezone)
             formatted_time = message_time_local.strftime('%Y-%m-%d %H:%M:%S')
             colored_time = f"{Fore.CYAN}[{formatted_time}]{Style.RESET_ALL}"
 
-            # Process the message in a new task to avoid blocking
-            task = asyncio.create_task(self.process_message(message_text, colored_time))
+            # Process the message in a new task with reply information
+            task = asyncio.create_task(
+                self.process_message(
+                    message_text,
+                    colored_time,
+                    event,
+                    channel_id=channel_id,
+                    channel_name=channel_name,
+                    reply_to_msg_id=reply_to_msg_id
+                )
+            )
             self._tasks.add(task)
             task.add_done_callback(self._tasks.discard)
 
-    async def start_drawdown_monitor(self):
-        """Start the drawdown monitoring with proper async handling"""
-        # Load drawdown data
-        load_drawdown_data(self.selected_account)
+    # -------------------------------------------------------------------------
+    # Trading Signal Processing Methods
+    # -------------------------------------------------------------------------
 
-        # Schedule first reset using async approach
-        reset_task = asyncio.create_task(
-            schedule_daily_reset_async(self.accounts_client, self.selected_account)
-        )
-        self._tasks.add(reset_task)
-        reset_task.add_done_callback(self._tasks.discard)
-
-    async def process_message(self, message_text, colored_time):
+    async def process_message(self, message_text, colored_time, event=None, channel_id=None, channel_name=None,
+                              reply_to_msg_id=None):
         """Process a received Telegram message"""
         try:
+            # Extract message ID if available
+            message_id = str(event.message.id) if event and hasattr(event, 'message') else None
+
+            # First, check if this is a TP hit message using the missed signal handler
+            if self.missed_signal_handler:
+                is_handled, result = await self.missed_signal_handler.handle_message(
+                    message_text,
+                    self.selected_account,
+                    colored_time,
+                    message_id,
+                    channel_id,
+                    channel_name,
+                    reply_to_msg_id  # Pass the reply_to_msg_id
+                )
+
+                if is_handled:
+                    # If it was a TP hit message and we handled it, we can stop processing
+                    if result and result.get("action") == "cancelled":
+                        matched_signal = f"with signal_id {result.get('matched_signal_id')}" if result.get(
+                            'matched_signal_id') else ""
+                        fallback_note = " (using fallback protection)" if result.get("fallback_used") else ""
+                        self.logger.warning(
+                            f"{colored_time}: {Fore.RED}Cancelled {result.get('cancelled_count')} pending orders "
+                            f"for {result.get('instrument')} due to missed signal (TP{result.get('tp_level')} hit) "
+                            f"{matched_signal}{fallback_note}{Style.RESET_ALL}"
+                        )
+                    return
+
             # Parse signal from Telegram message
             parsed_signal = await parse_signal_async(message_text)
             if parsed_signal is None:
                 self.logger.info(f"{colored_time} Received invalid signal: {message_text}")
                 return
+
+            # Store the parsed signal in history for future reference
+            signal_id = None
+            if self.missed_signal_handler:
+                signal_id = self.missed_signal_handler.add_signal_to_history(
+                    parsed_signal,
+                    message_id=message_id,
+                    raw_message=message_text,
+                    channel_id=channel_id,
+                    channel_name=channel_name
+                )
 
             # Check if this is a reduced risk signal
             reduced_risk = parsed_signal.get('reduced_risk', False)
@@ -406,8 +565,8 @@ class TradingBot:
             self.logger.info(f"{colored_time}: {Fore.CYAN}Risk percentage: {risk_percentage} " +
                              f"({Fore.RED}REDUCED{Style.RESET_ALL} due to signal keywords)" if reduced_risk else "")
 
-            # Place the order with risk checks - now including quotes_client for market order logic
-            await place_orders_with_risk_check(
+            # Place the order with risk checks
+            result = await place_orders_with_risk_check(
                 self.orders_client,
                 self.accounts_client,
                 self.quotes_client,
@@ -420,6 +579,22 @@ class TradingBot:
                 colored_time
             )
 
+            # Register orders with the missed signal handler
+            if self.missed_signal_handler and signal_id and result and instrument_data:
+                order_ids = []
+                for order_info, response in result.get('successful', []):
+                    if isinstance(response, dict) and 'd' in response and 'orderId' in response['d']:
+                        order_ids.append(response['d']['orderId'])
+                    elif isinstance(response, dict) and 'orderId' in response:
+                        order_ids.append(response['orderId'])
+
+                if order_ids:
+                    self.missed_signal_handler.register_orders_for_signal(
+                        parsed_signal['instrument'],
+                        signal_id,
+                        order_ids
+                    )
+
         except KeyError as e:
             self.logger.error(
                 f"{colored_time}: {Fore.RED}Error processing signal: Missing key {e}. Skipping this signal.{Style.RESET_ALL}")
@@ -427,79 +602,14 @@ class TradingBot:
             self.logger.error(
                 f"{colored_time}: {Fore.RED}Unexpected error: {e}. Skipping this signal.{Style.RESET_ALL}",
                 exc_info=True)
-    async def display_upcoming_news(self):
-        """Display upcoming high-impact news events for major currencies"""
-        if not self.enable_news_filter:
-            self.logger.info("News filter is disabled.")
-            return
 
-        # Focus on major currencies typically traded
-        major_currencies = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "NZD"]
-
-        try:
-            # Use our new method to get high-impact events for major currencies
-            upcoming_events = self.news_filter.get_high_impact_events_for_currencies(
-                major_currencies, hours=24
-            )
-        except AttributeError:
-            # Fall back to the old method if the new one isn't available
-            upcoming_events = self.news_filter.get_upcoming_high_impact_events(hours=24)
-
-        if not upcoming_events:
-            self.logger.info("No upcoming high-impact news events in the next 24 hours.")
-            return
-
-        self.logger.info("Upcoming high-impact news events (next 24 hours):")
-        for event in upcoming_events:
-            event_time = event['datetime']
-            local_time = event_time.astimezone(self.local_timezone)
-            self.logger.info(
-                f"[{local_time.strftime('%Y-%m-%d %H:%M')}] {event['currency']} - {event['event']}"
-            )
-
-    async def cleanup(self):
-        """Cleanup resources on shutdown"""
-        self.logger.info("Performing cleanup...")
-
-        # Set shutdown flag
-        self._shutdown_flag = True
-
-        # Cancel all tasks
-        for task in self._tasks:
-            if not task.done():
-                task.cancel()
-
-        # Wait for tasks to complete cancellation
-        if self._tasks:
-            await asyncio.gather(*self._tasks, return_exceptions=True)
-
-        # Close API clients
-        if self.auth:
-            await self.auth.close()
-
-        if hasattr(self.accounts_client, 'close') and self.accounts_client:
-            await self.accounts_client.close()
-
-        if hasattr(self.instruments_client, 'close') and self.instruments_client:
-            await self.instruments_client.close()
-
-        if hasattr(self.orders_client, 'close') and self.orders_client:
-            await self.orders_client.close()
-
-        if hasattr(self.quotes_client, 'close') and self.quotes_client:
-            await self.quotes_client.close()
-
-        # Disconnect Telegram client
-        if self.client:
-            await self.client.disconnect()
-
-        self.logger.info("Cleanup completed.")
+    # -------------------------------------------------------------------------
+    # Main Execution Methods
+    # -------------------------------------------------------------------------
 
     async def run(self):
         """Main execution method"""
-
         try:
-
             # Initialize connections and authenticate
             if not await self.initialize():
                 self.logger.error("Initialization failed. Exiting.")
@@ -540,6 +650,44 @@ class TradingBot:
             self.logger.error(f"Unexpected error in main loop: {e}", exc_info=True)
         finally:
             await self.cleanup()
+
+    async def cleanup(self):
+        """Cleanup resources on shutdown"""
+        self.logger.info("Performing cleanup...")
+
+        # Set shutdown flag
+        self._shutdown_flag = True
+
+        # Cancel all tasks
+        for task in self._tasks:
+            if not task.done():
+                task.cancel()
+
+        # Wait for tasks to complete cancellation
+        if self._tasks:
+            await asyncio.gather(*self._tasks, return_exceptions=True)
+
+        # Close API clients
+        if self.auth:
+            await self.auth.close()
+
+        if hasattr(self.accounts_client, 'close') and self.accounts_client:
+            await self.accounts_client.close()
+
+        if hasattr(self.instruments_client, 'close') and self.instruments_client:
+            await self.instruments_client.close()
+
+        if hasattr(self.orders_client, 'close') and self.orders_client:
+            await self.orders_client.close()
+
+        if hasattr(self.quotes_client, 'close') and self.quotes_client:
+            await self.quotes_client.close()
+
+        # Disconnect Telegram client
+        if self.client:
+            await self.client.disconnect()
+
+        self.logger.info("Cleanup completed.")
 
 
 async def shutdown(loop):
@@ -582,6 +730,7 @@ async def main():
 
     else:
         print(f"{Fore.RED}Invalid choice. Exiting.{Style.RESET_ALL}")
+
 
 if __name__ == "__main__":
     try:
