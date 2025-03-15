@@ -1,14 +1,47 @@
 from datetime import datetime
 from colorama import init, Fore, Style
+import risk_config
 
 
 def display_menu():
-    """Display the main menu options"""
-    print(f"\n{Fore.CYAN}===== MENU ====={Style.RESET_ALL}")
-    print(f"{Fore.YELLOW}1.{Style.RESET_ALL} Start Trading Bot")
+    """Display the main menu options with current risk profile settings"""
+    # Get current risk profile
+    current_profile = risk_config.detect_current_profile()
+
+    # Format the profile name with color
+    if current_profile == "conservative":
+        profile_display = f"{Fore.BLUE}Conservative{Style.RESET_ALL}"
+    elif current_profile == "balanced":
+        profile_display = f"{Fore.GREEN}Balanced{Style.RESET_ALL}"
+    elif current_profile == "aggressive":
+        profile_display = f"{Fore.RED}Aggressive{Style.RESET_ALL}"
+    else:
+        profile_display = f"{Fore.YELLOW}Custom{Style.RESET_ALL}"
+
+    # Get risk percentages for common instruments
+    forex_risk = risk_config.get_risk_percentage("FOREX") * 100
+    cfd_risk = risk_config.get_risk_percentage("CFD") * 100
+    gold_risk = risk_config.get_risk_percentage("XAUUSD") * 100
+
+    # Get management settings
+    mgmt_settings = risk_config.get_management_settings()
+    auto_be = mgmt_settings.get("auto_breakeven", False)
+    auto_close = mgmt_settings.get("auto_close_early", False)
+
+    print(f"\n{Fore.CYAN}===== TRADING BOT MENU ====={Style.RESET_ALL}")
+
+    # Display current profile information
+    print(f"\n{Fore.CYAN}Current Risk Profile: {profile_display}{Style.RESET_ALL}")
+    print(
+        f"Risk Settings: Forex {Fore.YELLOW}{forex_risk:.1f}%{Style.RESET_ALL} | CFD {Fore.YELLOW}{cfd_risk:.1f}%{Style.RESET_ALL} | Gold {Fore.YELLOW}{gold_risk:.1f}%{Style.RESET_ALL}")
+    print(
+        f"Auto-Breakeven: {Fore.GREEN if auto_be else Fore.RED}{'Enabled' if auto_be else 'Disabled'}{Style.RESET_ALL} | Auto-Close: {Fore.GREEN if auto_close else Fore.RED}{'Enabled' if auto_close else 'Disabled'}{Style.RESET_ALL}")
+
+    # Menu options
+    print(f"\n{Fore.YELLOW}1.{Style.RESET_ALL} Start Trading Bot")
     print(f"{Fore.YELLOW}2.{Style.RESET_ALL} Configure Risk Settings")
     print(f"{Fore.YELLOW}3.{Style.RESET_ALL} Exit")
-    print(f"{Fore.CYAN}================{Style.RESET_ALL}\n")
+    print(f"{Fore.CYAN}=============================={Style.RESET_ALL}\n")
 
     choice = input(f"{Fore.GREEN}Enter your choice (1-3): {Style.RESET_ALL}")
     return choice

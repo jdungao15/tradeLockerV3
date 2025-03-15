@@ -2,6 +2,8 @@ import re
 import logging
 import asyncio
 from datetime import datetime
+
+import aiohttp
 from colorama import Fore, Style
 
 logger = logging.getLogger(__name__)
@@ -25,7 +27,7 @@ class SignalManagementHandler:
         self.auto_breakeven = True  # Whether to automatically move SL to breakeven
         self.auto_close_early = True  # Whether to automatically close positions when recommended
         self.confirmation_required = False  # Whether to ask for confirmation before actions
-        self.partial_closure_percent = 50  # Percentage to close when partial closure is recommended
+        self.partial_closure_percent = 30  # Percentage to close when partial closure is recommended
 
     def set_risk_profile_settings(self, profile):
         """Configure behavior based on selected risk profile"""
