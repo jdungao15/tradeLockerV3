@@ -1,5 +1,5 @@
 import asyncio
-
+import risk_config
 import requests
 import aiohttp
 import json
@@ -240,6 +240,7 @@ def calculate_pip_value(instrument: dict) -> float:
 def determine_risk_percentage(account_balance: float, instrument: dict, reduced_risk: bool = False) -> float:
     """
     Determine risk percentage based on account balance, instrument, and risk flag.
+    Uses configurable risk settings from risk_config.
 
     Args:
         account_balance: Current account balance
@@ -250,57 +251,27 @@ def determine_risk_percentage(account_balance: float, instrument: dict, reduced_
         float: Risk percentage (e.g., 0.02 for 2%)
     """
     try:
-        # Define account tiers and corresponding risk percentages
-        tiers = {
-            5000: 0.015,  # Risk 1.5% for 5k accounts
-            10000: 0.015,  # Risk 1.5% for 10k accounts
-            25000: 0.015,  # Risk 1.5% for 25k accounts
-            50000: 0.015,  # Risk 1.5% for 50k accounts
-            100000: 0.015  # Risk 1.5% for 100k accounts
-        }
+        # Determine instrument type for risk configuration
+        instrument_name = instrument.get("name", "")
+        instrument_type = instrument.get("type", "")
 
-        # Special handling for XAUUSD, which should follow the same risk as FOREX
-        if instrument["name"] == "XAUUSD":
-            # Determine the closest tier based on account balance for XAUUSD
-            closest_tier = max(tier for tier in tiers if account_balance >= tier)
-            risk_percentage = tiers[closest_tier]
-
-            # If reduced risk is flagged, halve the risk percentage
-            if reduced_risk:
-                risk_percentage = risk_percentage / 2
-                logger.info(f"Reduced risk applied for {instrument['name']}: {risk_percentage * 100}% (half of normal)")
-
-            logger.info(
-                f"Account balance: {account_balance}, Closest tier: {closest_tier}, "
-                f"Risk percentage for XAUUSD: {risk_percentage * 100}%"
-            )
+        # Special case for XAUUSD (Gold)
+        if instrument_name == "XAUUSD":
+            risk_percentage = risk_config.get_risk_percentage("XAUUSD", reduced_risk)
+            logger.info(f"Using XAUUSD risk setting: {risk_percentage * 100:.2f}%")
             return risk_percentage
 
-        # If the instrument type is EQUITY_CFD but not XAUUSD, set a fixed risk percentage of 1%
-        if instrument["type"] == "EQUITY_CFD":
-            risk_percentage = 0.01  # 1%
-
-            # If reduced risk is flagged, halve the risk percentage
-            if reduced_risk:
-                risk_percentage = risk_percentage / 2
-                logger.info(f"Reduced risk applied for {instrument['name']}: {risk_percentage * 100}% (half of normal)")
-
+        # For other CFD instruments
+        if instrument_type == "EQUITY_CFD":
+            risk_percentage = risk_config.get_risk_percentage("CFD", reduced_risk)
+            logger.info(f"Using CFD risk setting: {risk_percentage * 100:.2f}%")
             return risk_percentage
 
-        # Determine the closest tier based on account balance for other instruments
-        closest_tier = max(tier for tier in tiers if account_balance >= tier)
-        risk_percentage = tiers[closest_tier]
-
-        # If reduced risk is flagged, halve the risk percentage
-        if reduced_risk:
-            risk_percentage = risk_percentage / 2
-            logger.info(f"Reduced risk applied for {instrument['name']}: {risk_percentage * 100}% (half of normal)")
-
-        logger.info(
-            f"Account balance: {account_balance}, Closest tier: {closest_tier}, "
-            f"Risk percentage: {risk_percentage * 100}%"
-        )
+        # Default to forex risk settings
+        risk_percentage = risk_config.get_risk_percentage("FOREX", reduced_risk)
+        logger.info(f"Using FOREX risk setting: {risk_percentage * 100:.2f}%")
         return risk_percentage
+
     except Exception as e:
         logger.error(f"Error determining risk percentage: {e}")
         # Safe fallback: Use a conservative risk percentage
