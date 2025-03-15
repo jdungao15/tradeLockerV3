@@ -18,6 +18,12 @@ RISK_PROFILES = {
         "XAUUSD": {
             "default": 0.01,  # 1.0% risk for Gold
             "reduced": 0.005  # 0.5% risk for reduced risk signals
+        },
+        "management": {
+            "auto_breakeven": False,  # Don't automatically move SL to breakeven
+            "auto_close_early": False,  # Don't automatically close positions early
+            "confirmation_required": True,  # Require confirmation for management actions
+            "partial_closure_percent": 33  # Close 1/3 when partially closing
         }
     },
     "balanced": {
@@ -32,6 +38,12 @@ RISK_PROFILES = {
         "XAUUSD": {
             "default": 0.015,  # 1.5% risk for Gold
             "reduced": 0.0075  # 0.75% risk for reduced risk signals
+        },
+        "management": {
+            "auto_breakeven": True,  # Automatically move SL to breakeven
+            "auto_close_early": False,  # Don't automatically close positions early
+            "confirmation_required": True,  # Require confirmation for management actions
+            "partial_closure_percent": 50  # Close half when partially closing
         }
     },
     "aggressive": {
@@ -46,6 +58,12 @@ RISK_PROFILES = {
         "XAUUSD": {
             "default": 0.02,  # 2.0% risk for Gold
             "reduced": 0.01  # 1.0% risk for reduced risk signals
+        },
+        "management": {
+            "auto_breakeven": True,  # Automatically move SL to breakeven
+            "auto_close_early": True,  # Automatically close positions early
+            "confirmation_required": False,  # No confirmation needed for management actions
+            "partial_closure_percent": 66  # Close 2/3 when partially closing
         }
     }
 }
@@ -113,6 +131,20 @@ def get_risk_percentage(instrument_type, reduced_risk=False):
     return risk_config[instrument_type][risk_type]
 
 
+def get_management_settings():
+    """
+    Get the current management settings based on the active profile
+
+    Returns:
+        dict: Management settings
+    """
+    if "management" in risk_config:
+        return risk_config["management"]
+    else:
+        # Default to balanced profile if not found
+        return RISK_PROFILES["balanced"]["management"]
+
+
 def update_risk_percentage(instrument_type, risk_value, is_reduced=False):
     """
     Update the risk percentage for a specific instrument type
@@ -153,9 +185,20 @@ def display_current_risk_settings():
     print("-" * 45)
 
     for instrument, settings in risk_config.items():
-        default_risk = f"{settings['default'] * 100:.2f}%"
-        reduced_risk = f"{settings['reduced'] * 100:.2f}%"
-        print(f"{instrument:<15} {default_risk:<15} {reduced_risk:<15}")
+        if instrument != "management":  # Skip the management settings in this display
+            default_risk = f"{settings['default'] * 100:.2f}%"
+            reduced_risk = f"{settings['reduced'] * 100:.2f}%"
+            print(f"{instrument:<15} {default_risk:<15} {reduced_risk:<15}")
+
+    print("\n---- Position Management Settings ----")
+    if "management" in risk_config:
+        mgmt = risk_config["management"]
+        print(f"Auto-Breakeven: {'Yes' if mgmt.get('auto_breakeven', False) else 'No'}")
+        print(f"Auto-Close Early: {'Yes' if mgmt.get('auto_close_early', False) else 'No'}")
+        print(f"Confirmation Required: {'Yes' if mgmt.get('confirmation_required', True) else 'No'}")
+        print(f"Partial Closure: {mgmt.get('partial_closure_percent', 50)}%")
+    else:
+        print("No management settings found (using defaults)")
 
     print("=" * 45)
 
@@ -176,9 +219,34 @@ def current_profile_text(profile):
 
 def detect_current_profile():
     """Detect which profile the current settings match, if any"""
+    # First, check for exact matches
     for profile_name, profile_settings in RISK_PROFILES.items():
-        if risk_config == profile_settings:
+        is_match = True
+        for instrument, settings in profile_settings.items():
+            if instrument not in risk_config:
+                is_match = False
+                break
+
+            if instrument == "management":
+                # For management settings, we need to check each key
+                if "management" not in risk_config:
+                    is_match = False
+                    break
+
+                for key, value in settings.items():
+                    if key not in risk_config["management"] or risk_config["management"][key] != value:
+                        is_match = False
+                        break
+            else:
+                # For risk settings
+                if risk_config[instrument]["default"] != settings["default"] or \
+                        risk_config[instrument]["reduced"] != settings["reduced"]:
+                    is_match = False
+                    break
+
+        if is_match:
             return profile_name
+
     return "custom"
 
 
