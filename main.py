@@ -12,7 +12,7 @@ from telethon import TelegramClient, events
 from telethon.errors import SessionPasswordNeededError
 from datetime import datetime
 from cli.banner import display_banner
-from cli.display_menu import display_menu
+from cli.display_menu import display_menu, display_risk_menu, get_risk_percentage_input
 from core.signal_parser import parse_signal_async
 from core.risk_management import calculate_position_size
 from tradelocker_api.endpoints.auth import TradeLockerAuth
@@ -29,6 +29,7 @@ from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
 from services.missed_signal_detection import MissedSignalHandler
+import risk_config
 
 
 class TradingBot:
@@ -472,7 +473,7 @@ class TradingBot:
                 )
 
                 if is_handled:
-                    # If it was a TP hit message and we handled it, we can stop processing
+                    # If it was a TP hit message, and we handled it, we can stop processing
                     if result and result.get("action") == "cancelled":
                         matched_signal = f"with signal_id {result.get('matched_signal_id')}" if result.get(
                             'matched_signal_id') else ""
@@ -704,32 +705,142 @@ async def shutdown(loop):
     logging.info("Shutdown complete.")
 
 
+async def handle_risk_configuration():
+    """Handle risk management configuration menu"""
+    while True:
+        risk_choice = display_risk_menu()
+
+        if risk_choice == '1':
+            # View current risk settings
+            risk_config.display_current_risk_settings()
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '2':
+            # Apply conservative profile
+            confirmation = input(f"Apply {Fore.BLUE}Conservative{Style.RESET_ALL} risk profile? (y/n): ").lower()
+            if confirmation == 'y':
+                risk_config.apply_risk_profile("conservative")
+                print(f"{Fore.GREEN}Conservative risk profile applied.{Style.RESET_ALL}")
+                # Display the new settings
+                risk_config.display_current_risk_settings()
+                input("\nPress Enter to continue...")
+
+        elif risk_choice == '3':
+            # Apply balanced profile
+            confirmation = input(f"Apply {Fore.GREEN}Balanced{Style.RESET_ALL} risk profile? (y/n): ").lower()
+            if confirmation == 'y':
+                risk_config.apply_risk_profile("balanced")
+                print(f"{Fore.GREEN}Balanced risk profile applied.{Style.RESET_ALL}")
+                # Display the new settings
+                risk_config.display_current_risk_settings()
+                input("\nPress Enter to continue...")
+
+        elif risk_choice == '4':
+            # Apply aggressive profile
+            confirmation = input(
+                f"Apply {Fore.RED}Aggressive{Style.RESET_ALL} risk profile? This uses higher risk percentages. Are you sure? (y/n): ").lower()
+            if confirmation == 'y':
+                risk_config.apply_risk_profile("aggressive")
+                print(f"{Fore.GREEN}Aggressive risk profile applied.{Style.RESET_ALL}")
+                # Display the new settings
+                risk_config.display_current_risk_settings()
+                input("\nPress Enter to continue...")
+
+        elif risk_choice == '5':
+            # Configure Forex risk
+            print(f"\n{Fore.CYAN}Configuring Forex Risk Percentages{Style.RESET_ALL}")
+
+            # Normal risk
+            normal_risk = get_risk_percentage_input("Forex", is_reduced=False)
+            if normal_risk:
+                risk_config.update_risk_percentage("FOREX", normal_risk, is_reduced=False)
+
+            # Reduced risk
+            reduced_risk = get_risk_percentage_input("Forex", is_reduced=True)
+            if reduced_risk:
+                risk_config.update_risk_percentage("FOREX", reduced_risk, is_reduced=True)
+
+            print(f"{Fore.GREEN}Forex risk settings updated.{Style.RESET_ALL}")
+
+        elif risk_choice == '6':
+            # Configure CFD risk
+            print(f"\n{Fore.CYAN}Configuring CFD Risk Percentages{Style.RESET_ALL}")
+
+            # Normal risk
+            normal_risk = get_risk_percentage_input("CFD", is_reduced=False)
+            if normal_risk:
+                risk_config.update_risk_percentage("CFD", normal_risk, is_reduced=False)
+
+            # Reduced risk
+            reduced_risk = get_risk_percentage_input("CFD", is_reduced=True)
+            if reduced_risk:
+                risk_config.update_risk_percentage("CFD", reduced_risk, is_reduced=True)
+
+            print(f"{Fore.GREEN}CFD risk settings updated.{Style.RESET_ALL}")
+
+        elif risk_choice == '7':
+            # Configure XAUUSD risk
+            print(f"\n{Fore.CYAN}Configuring XAUUSD (Gold) Risk Percentages{Style.RESET_ALL}")
+
+            # Normal risk
+            normal_risk = get_risk_percentage_input("XAUUSD", is_reduced=False)
+            if normal_risk:
+                risk_config.update_risk_percentage("XAUUSD", normal_risk, is_reduced=False)
+
+            # Reduced risk
+            reduced_risk = get_risk_percentage_input("XAUUSD", is_reduced=True)
+            if reduced_risk:
+                risk_config.update_risk_percentage("XAUUSD", reduced_risk, is_reduced=True)
+
+            print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
+
+        elif risk_choice == '8':
+            # Reset to defaults
+            confirmation = input(
+                f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
+            if confirmation == 'y':
+                risk_config.apply_risk_profile("balanced")
+                print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
+
+        elif risk_choice == '9':
+            # Return to main menu
+            return
+
+        else:
+            print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
+
+
 async def main():
     """Main entry point with Windows-compatible signal handling"""
     # Display banner first
     display_banner()
 
-    # Show menu and get choice
-    choice = display_menu()
+    while True:
+        # Show menu and get choice
+        choice = display_menu()
 
-    if choice == '2':
-        print(f"{Fore.YELLOW}Exiting program. Goodbye!{Style.RESET_ALL}")
-        return
+        if choice == '3':
+            print(f"{Fore.YELLOW}Exiting program. Goodbye!{Style.RESET_ALL}")
+            return
 
-    elif choice == '1':
-        bot = TradingBot()
+        elif choice == '1':
+            bot = TradingBot()
 
-        # Set up signal handlers for systems that support them (Unix/Linux/Mac)
-        if platform.system() != "Windows":
-            loop = asyncio.get_running_loop()
-            for sig in (signal.SIGINT, signal.SIGTERM):
-                loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(loop)))
+            # Set up signal handlers for systems that support them (Unix/Linux/Mac)
+            if platform.system() != "Windows":
+                loop = asyncio.get_running_loop()
+                for sig in (signal.SIGINT, signal.SIGTERM):
+                    loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(loop)))
 
-        # Run the bot
-        await bot.run()
+            # Run the bot
+            await bot.run()
+            return  # Exit after bot finishes
 
-    else:
-        print(f"{Fore.RED}Invalid choice. Exiting.{Style.RESET_ALL}")
+        elif choice == '2':
+            await handle_risk_configuration()
+
+        else:
+            print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
 
 
 if __name__ == "__main__":
