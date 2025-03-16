@@ -29,6 +29,7 @@ from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
 from services.missed_signal_detection import MissedSignalHandler
+from services.signal_management import SignalManagementHandler
 import risk_config
 
 
@@ -47,6 +48,7 @@ class TradingBot:
         self.news_filter = NewsEventFilter(timezone=self.local_timezone.zone)
         self.enable_news_filter = os.getenv('ENABLE_NEWS_FILTER', 'true').lower() == 'true'
         self.missed_signal_handler = None  # Will be initialized later
+        self.signal_manager = None  # Will be initialized later
 
         # Initialize clients as None
         self.client = None
@@ -151,7 +153,7 @@ class TradingBot:
                 self.accounts_client,
                 self.orders_client,
                 self.instruments_client,
-                self.auth  # Pass the auth client
+                self.auth
             )
 
             # Configure the missed signal handler
@@ -160,6 +162,23 @@ class TradingBot:
                 max_signal_age_hours=48,  # Only consider signals from last 48 hours
                 consider_channel=True  # Consider channel source when matching signals
             )
+
+            # Initialize signal management handler
+            self.signal_manager = SignalManagementHandler(
+                self.accounts_client,
+                self.orders_client,
+                self.instruments_client,
+                self.quotes_client,
+                self.auth
+            )
+
+            # Apply current risk profile settings to signal manager
+            current_profile = risk_config.detect_current_profile()
+            self.signal_manager.set_risk_profile_settings(current_profile)
+
+            # Link to the missed signal handler's history
+            if self.missed_signal_handler:
+                self.signal_manager.set_signal_history(self.missed_signal_handler.signal_history)
 
             return True
         except Exception as e:
@@ -460,7 +479,34 @@ class TradingBot:
             # Extract message ID if available
             message_id = str(event.message.id) if event and hasattr(event, 'message') else None
 
-            # First, check if this is a TP hit message using the missed signal handler
+            # First, check if this is a management instruction (move SL to BE, close early)
+            if self.signal_manager:
+                is_handled, result = await self.signal_manager.handle_message(
+                    message_text,
+                    self.selected_account,
+                    colored_time,
+                    reply_to_msg_id  # Pass the reply_to_msg_id
+                )
+
+                if is_handled:
+                    # If it was a management instruction and we handled it, we can stop processing
+                    instruction_type = result.get("instruction_type", "unknown")
+                    success = result.get("success", False)
+                    instrument = result.get("instrument", "unknown instrument")
+
+                    if success:
+                        self.logger.info(
+                            f"{colored_time}: {Fore.GREEN}Successfully executed {instruction_type} "
+                            f"instruction for {instrument}{Style.RESET_ALL}"
+                        )
+                    else:
+                        self.logger.warning(
+                            f"{colored_time}: {Fore.YELLOW}Failed to execute {instruction_type} "
+                            f"instruction for {instrument}{Style.RESET_ALL}"
+                        )
+                    return
+
+            # Then, check if this is a TP hit message using the missed signal handler
             if self.missed_signal_handler:
                 is_handled, result = await self.missed_signal_handler.handle_message(
                     message_text,
@@ -473,7 +519,7 @@ class TradingBot:
                 )
 
                 if is_handled:
-                    # If it was a TP hit message, and we handled it, we can stop processing
+                    # If it was a TP hit message and we handled it, we can stop processing
                     if result and result.get("action") == "cancelled":
                         matched_signal = f"with signal_id {result.get('matched_signal_id')}" if result.get(
                             'matched_signal_id') else ""
