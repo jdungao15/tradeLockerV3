@@ -162,7 +162,11 @@ def calculate_stop_loss_pips(stop_loss: float, entry_point: float, instrument: d
         float: Stop loss distance in pips
     """
     try:
-        if instrument['name'].endswith("JPY"):
+        # Handle instrument name with suffixes (.C, .X, .Z)
+        instrument_name = instrument["name"]
+        base_name = instrument_name.split('.')[0]  # Remove any suffix
+
+        if base_name.endswith("JPY"):
             return abs(stop_loss - entry_point) / 0.01
         elif instrument['type'] == "FOREX":
             return abs(stop_loss - entry_point) / 0.0001
@@ -171,49 +175,50 @@ def calculate_stop_loss_pips(stop_loss: float, entry_point: float, instrument: d
         logger.error(f"Error calculating stop loss pips: {e}")
         # Safe fallback: Use a default calculation
         return abs(stop_loss - entry_point) * 10000
+# Update the calculate_pip_value function in core/risk_management.py
 
-
-# Calculate pip value for an instrument
 def calculate_pip_value(instrument: dict) -> float:
     """
     Calculate pip value for a given instrument.
-
     Args:
         instrument: Instrument data dictionary
-
     Returns:
         float: Value of 1 pip in account currency
-
     Raises:
         ValueError: If unable to calculate pip value
     """
     try:
+        # Handle instrument name with suffixes (.C, .X, .Z)
+        instrument_name = instrument["name"]
+        base_name = instrument_name.split('.')[0]  # Remove any suffix
+
+        # Add explicit mapping for DOW to DJI30
+        if base_name == "DOW":
+            base_name = "DJI30"  # Treat DOW as DJI30 for pip value lookup
+            logger.info(f"Treating {instrument_name} as DJI30 for pip calculations")
+
         if instrument["type"] == "FOREX":
-            base_currency = instrument["name"][:3]
-            quote_currency = instrument["name"][3:]
-
+            base_currency = base_name[:3]
+            quote_currency = base_name[3:]
             exchange_rate = get_exchange_rate(base_currency, quote_currency)
-            pip_value = 0.01 / exchange_rate if instrument["name"].endswith("JPY") else 0.0001 / exchange_rate
-
+            pip_value = 0.01 / exchange_rate if base_name.endswith("JPY") else 0.0001 / exchange_rate
         elif instrument["type"] == "EQUITY_CFD":
             pip_values = {
                 "NDX100": 20,
                 "DJI30": 5,
                 "XAUUSD": 100
             }
-
-            if instrument["name"] not in pip_values:
-                raise ValueError(f"Invalid index type: {instrument['name']}")
-
-            pip_value = pip_values[instrument["name"]]
-
+            # Check if the base name (without suffix) is in the pip_values dictionary
+            if base_name not in pip_values:
+                logger.error(f"Invalid index type: {base_name} from {instrument_name}")
+                raise ValueError(f"Invalid index type: {base_name}")
+            pip_value = pip_values[base_name]
+            logger.info(f"Using pip value {pip_value} for {instrument_name} (base: {base_name})")
         else:
             raise ValueError(f"Unsupported instrument type: {instrument['type']}")
-
         return pip_value
     except Exception as e:
         logger.error(f"Error calculating pip value: {e}")
-
         # Provide fallbacks for common instruments
         fallbacks = {
             "EURUSD": 10,
@@ -221,20 +226,21 @@ def calculate_pip_value(instrument: dict) -> float:
             "USDJPY": 9.33,
             "XAUUSD": 100,
             "NDX100": 20,
-            "DJI30": 5
+            "DJI30": 5,
+            "DOW": 5  # Add DOW to fallbacks too
         }
 
-        if instrument["name"] in fallbacks:
-            logger.warning(f"Using fallback pip value for {instrument['name']}")
-            return fallbacks[instrument["name"]]
+        # Try matching the base name (without suffix)
+        base_name = instrument["name"].split('.')[0]
+        if base_name in fallbacks:
+            logger.warning(f"Using fallback pip value for {base_name}: {fallbacks[base_name]}")
+            return fallbacks[base_name]
 
         # For other forex pairs, use a safe default
         if instrument["type"] == "FOREX":
             logger.warning(f"Using default pip value for {instrument['name']}")
             return 10.0
-
         raise ValueError(f"Cannot determine pip value for {instrument['name']}")
-
 
 # Determine the risk percentage based on account tiers
 def determine_risk_percentage(account_balance: float, instrument: dict, reduced_risk: bool = False) -> float:
@@ -279,6 +285,8 @@ def determine_risk_percentage(account_balance: float, instrument: dict, reduced_
 
 
 # Main function to calculate position size
+# Update this function in core/risk_management.py
+
 def calculate_position_size(
         instrument: dict,
         entry_point: float,
@@ -302,7 +310,13 @@ def calculate_position_size(
         tuple: (list of position sizes, total risk amount)
     """
     try:
+        # Ensure we have numeric data
         account_balance = float(account['accountBalance'])
+        entry_point = float(entry_point)
+        stop_loss = float(stop_loss)
+
+        # Convert take_profits to a list of floats
+        take_profits = [float(tp) for tp in take_profits]
 
         # Determine the risk percentage based on account tiers, instrument type, and risk flag
         risk_percentage = determine_risk_percentage(account_balance, instrument, reduced_risk)
@@ -316,14 +330,17 @@ def calculate_position_size(
 
         # Convert risk amount to base currency if necessary
         converted_risk_amount = risk_amount
+        # Extract base name without suffix
+        instrument_name = instrument['name'].split('.')[0]
+
         if instrument['type'] == "FOREX":
-            base_currency = instrument['name'][:3]
+            base_currency = instrument_name[:3]
 
             # MAJOR PAIRS
-            if base_currency != "USD" and "USD" in instrument['name']:
+            if base_currency != "USD" and "USD" in instrument_name:
                 conversion_rate = get_exchange_rate("USD", base_currency)
                 converted_risk_amount = risk_amount * conversion_rate
-            elif "USD" not in instrument['name']:
+            elif "USD" not in instrument_name:
                 # MINOR PAIRS
                 conversion_rate_to_usd = get_exchange_rate(base_currency, "USD")
                 converted_risk_amount = risk_amount / conversion_rate_to_usd
@@ -332,7 +349,7 @@ def calculate_position_size(
         if instrument['type'] == "EQUITY_CFD":
             # For CFD instruments, use the last 3 take profits
             if len(take_profits) > 3:
-                logger.info(f"For CFD instrument {instrument['name']}, using only the last 3 take profits")
+                logger.info(f"For CFD instrument {instrument_name}, using only the last 3 take profits")
                 filtered_take_profits = take_profits[-3:]  # Get last 3 take profits
             else:
                 filtered_take_profits = take_profits  # Use all if less than 3
@@ -363,7 +380,7 @@ def calculate_position_size(
             total_pos_in_units = converted_risk_amount / (stop_loss_pips * pip_value)
             total_pos_in_lots = total_pos_in_units / 100_000
             position_size_per_tp = round(total_pos_in_lots / len(take_profits),
-                                         2 if instrument['name'].endswith("JPY") else 1)
+                                         2 if instrument_name.endswith("JPY") else 1)
             position_sizes = [position_size_per_tp for _ in take_profits]
 
         logger.info(f"Calculated position sizes: {position_sizes}, Risk amount: {risk_amount}")
@@ -376,7 +393,7 @@ def calculate_position_size(
         position_sizes = [min_position for _ in take_profits]
 
         # Estimate risk based on small position sizes
-        est_risk = account['accountBalance'] * (0.0025 if reduced_risk else 0.005)  # Estimate 0.25% or 0.5% risk
+        est_risk = float(account['accountBalance']) * (0.0025 if reduced_risk else 0.005)  # Estimate 0.25% or 0.5% risk
 
         logger.warning(f"Using fallback position sizes due to error: {position_sizes}")
         return position_sizes, round(est_risk)

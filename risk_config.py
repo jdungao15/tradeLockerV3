@@ -22,7 +22,7 @@ RISK_PROFILES = {
         "management": {
             "auto_breakeven": False,  # Don't automatically move SL to breakeven
             "auto_close_early": False,  # Don't automatically close positions early
-            "confirmation_required": True,  # Require confirmation for management actions
+            "confirmation_required": False,  # Require confirmation for management actions
             "partial_closure_percent": 33  # Close 1/3 when partially closing
         }
     },
@@ -42,7 +42,7 @@ RISK_PROFILES = {
         "management": {
             "auto_breakeven": True,  # Automatically move SL to breakeven
             "auto_close_early": False,  # Don't automatically close positions early
-            "confirmation_required": True,  # Require confirmation for management actions
+            "confirmation_required": False,  # Require confirmation for management actions
             "partial_closure_percent": 50  # Close half when partially closing
         }
     },
@@ -249,6 +249,52 @@ def detect_current_profile():
 
     return "custom"
 
+
+def update_management_setting(setting_name, value):
+    """
+    Update a specific management setting
+
+    Args:
+        setting_name: Name of the setting to update (e.g., 'auto_breakeven')
+        value: New value for the setting (typically boolean)
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    if "management" not in risk_config:
+        risk_config["management"] = {}
+
+    # Update the setting
+    risk_config["management"][setting_name] = value
+
+    # Save to file
+    return save_risk_config()
+
+
+def toggle_management_setting(setting_name):
+    """
+    Toggle a boolean management setting
+
+    Args:
+        setting_name: Name of the setting to toggle
+
+    Returns:
+        bool: The new value of the setting
+    """
+    if "management" not in risk_config:
+        risk_config["management"] = {}
+
+    # Get current value (default to False if not set)
+    current_value = risk_config["management"].get(setting_name, False)
+
+    # Toggle value
+    new_value = not current_value
+
+    # Update and save
+    risk_config["management"][setting_name] = new_value
+    save_risk_config()
+
+    return new_value
 
 def apply_risk_profile(profile_name):
     """

@@ -48,7 +48,13 @@ def display_menu():
 
 
 def display_risk_menu():
-    """Display the risk management configuration menu"""
+    """Display the risk management configuration menu with management toggles"""
+    # Get current management settings
+    mgmt_settings = risk_config.get_management_settings()
+    auto_be = mgmt_settings.get("auto_breakeven", False)
+    auto_close = mgmt_settings.get("auto_close_early", False)
+    confirmation = mgmt_settings.get("confirmation_required", True)
+
     print(f"\n{Fore.CYAN}===== RISK MANAGEMENT CONFIGURATION ====={Style.RESET_ALL}")
     print(f"{Fore.YELLOW}1.{Style.RESET_ALL} View Current Risk Settings")
 
@@ -58,18 +64,26 @@ def display_risk_menu():
     print(f"{Fore.YELLOW}3.{Style.RESET_ALL} Apply {Fore.GREEN}Balanced{Style.RESET_ALL} Profile")
     print(f"{Fore.YELLOW}4.{Style.RESET_ALL} Apply {Fore.RED}Aggressive{Style.RESET_ALL} Profile")
 
+    # Management settings options (NEW)
+    print(f"\n{Fore.CYAN}-- Signal Management --{Style.RESET_ALL}")
+    print(
+        f"{Fore.YELLOW}5.{Style.RESET_ALL} Auto-Breakeven: [{Fore.GREEN if auto_be else Fore.RED}{'ON' if auto_be else 'OFF'}{Style.RESET_ALL}]")
+    print(
+        f"{Fore.YELLOW}6.{Style.RESET_ALL} Auto-Close Early: [{Fore.GREEN if auto_close else Fore.RED}{'ON' if auto_close else 'OFF'}{Style.RESET_ALL}]")
+    print(
+        f"{Fore.YELLOW}7.{Style.RESET_ALL} Require Confirmation: [{Fore.GREEN if confirmation else Fore.RED}{'ON' if confirmation else 'OFF'}{Style.RESET_ALL}]")
+
     # Custom configuration options
-    print(f"\n{Fore.CYAN}-- Custom Configuration --{Style.RESET_ALL}")
-    print(f"{Fore.YELLOW}5.{Style.RESET_ALL} Configure Forex Risk")
-    print(f"{Fore.YELLOW}6.{Style.RESET_ALL} Configure CFD Risk")
-    print(f"{Fore.YELLOW}7.{Style.RESET_ALL} Configure XAUUSD (Gold) Risk")
-    print(f"{Fore.YELLOW}8.{Style.RESET_ALL} Reset to Default Risk Settings")
-    print(f"{Fore.YELLOW}9.{Style.RESET_ALL} Return to Main Menu")
+    print(f"\n{Fore.CYAN}-- Custom Risk Percentages --{Style.RESET_ALL}")
+    print(f"{Fore.YELLOW}8.{Style.RESET_ALL} Configure Forex Risk")
+    print(f"{Fore.YELLOW}9.{Style.RESET_ALL} Configure CFD Risk")
+    print(f"{Fore.YELLOW}10.{Style.RESET_ALL} Configure XAUUSD (Gold) Risk")
+    print(f"{Fore.YELLOW}11.{Style.RESET_ALL} Reset to Default Risk Settings")
+    print(f"{Fore.YELLOW}12.{Style.RESET_ALL} Return to Main Menu")
     print(f"{Fore.CYAN}========================================={Style.RESET_ALL}\n")
 
-    choice = input(f"{Fore.GREEN}Enter your choice (1-9): {Style.RESET_ALL}")
+    choice = input(f"{Fore.GREEN}Enter your choice (1-12): {Style.RESET_ALL}")
     return choice
-
 
 def get_risk_percentage_input(instrument_type, is_reduced=False):
     """

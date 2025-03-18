@@ -31,7 +31,7 @@ from services.news_filter import NewsEventFilter
 from services.missed_signal_detection import MissedSignalHandler
 from services.signal_management import SignalManagementHandler
 import risk_config
-
+from core.signal_parser import find_matching_instrument
 
 class TradingBot:
     def __init__(self):
@@ -116,14 +116,12 @@ class TradingBot:
                 code = input("Please enter the code you received: ")
 
                 try:
+                    # Simple sign-in without 2FA handling
                     await self.client.sign_in(phone, code)
-                except SessionPasswordNeededError:
-                    # Handle two-step verification with masked password input
-                    self.logger.info("Two-step verification enabled. Password required.")
-                    password = getpass.getpass("Please enter your two-step verification password: ")
-                    await self.client.sign_in(password=password)
-
-                self.logger.info("Telegram authentication successful")
+                    self.logger.info("Telegram authentication successful")
+                except Exception as e:
+                    self.logger.error(f"Authentication error: {e}")
+                    return False
             else:
                 self.logger.info("Already authenticated with Telegram")
 
@@ -583,10 +581,10 @@ class TradingBot:
             latest_balance = float(self.selected_account['accountBalance'])
 
             # Get instrument details
-            instrument_data = await self.instruments_client.get_instrument_by_name_async(
-                self.selected_account['id'],
-                self.selected_account['accNum'],
-                parsed_signal['instrument']
+            instrument_data = await find_matching_instrument(
+                self.instruments_client,
+                self.selected_account,
+                parsed_signal
             )
 
             if not instrument_data:
@@ -792,7 +790,50 @@ async def handle_risk_configuration():
                 risk_config.display_current_risk_settings()
                 input("\nPress Enter to continue...")
 
+        # NEW OPTIONS FOR MANAGEMENT SETTINGS
         elif risk_choice == '5':
+            # Toggle Auto-Breakeven
+            new_value = risk_config.toggle_management_setting("auto_breakeven")
+            status = "ENABLED" if new_value else "DISABLED"
+            color = Fore.GREEN if new_value else Fore.RED
+            print(f"{color}Auto-Breakeven is now {status}{Style.RESET_ALL}")
+
+            # Note about profile impact
+            print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '6':
+            # Toggle Auto-Close Early
+            new_value = risk_config.toggle_management_setting("auto_close_early")
+            status = "ENABLED" if new_value else "DISABLED"
+            color = Fore.GREEN if new_value else Fore.RED
+            print(f"{color}Auto-Close Early is now {status}{Style.RESET_ALL}")
+
+            # Note about profile impact
+            print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '7':
+            # Toggle Confirmation Required
+            new_value = risk_config.toggle_management_setting("confirmation_required")
+            status = "ENABLED" if new_value else "DISABLED"
+            color = Fore.GREEN if new_value else Fore.RED
+            print(f"{color}Confirmation Requirement is now {status}{Style.RESET_ALL}")
+
+            # Warning if both auto features enabled and confirmation disabled
+            mgmt_settings = risk_config.get_management_settings()
+            if mgmt_settings.get("auto_breakeven", False) and mgmt_settings.get("auto_close_early",
+                                                                                False) and not new_value:
+                print(
+                    f"{Fore.RED}Warning: Both auto features are enabled with no confirmation requirement.{Style.RESET_ALL}")
+                print(
+                    f"{Fore.RED}The bot will execute all signal provider instructions automatically.{Style.RESET_ALL}")
+
+            # Note about profile impact
+            print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '8':
             # Configure Forex risk
             print(f"\n{Fore.CYAN}Configuring Forex Risk Percentages{Style.RESET_ALL}")
 
@@ -808,7 +849,7 @@ async def handle_risk_configuration():
 
             print(f"{Fore.GREEN}Forex risk settings updated.{Style.RESET_ALL}")
 
-        elif risk_choice == '6':
+        elif risk_choice == '9':
             # Configure CFD risk
             print(f"\n{Fore.CYAN}Configuring CFD Risk Percentages{Style.RESET_ALL}")
 
@@ -824,7 +865,7 @@ async def handle_risk_configuration():
 
             print(f"{Fore.GREEN}CFD risk settings updated.{Style.RESET_ALL}")
 
-        elif risk_choice == '7':
+        elif risk_choice == '10':
             # Configure XAUUSD risk
             print(f"\n{Fore.CYAN}Configuring XAUUSD (Gold) Risk Percentages{Style.RESET_ALL}")
 
@@ -840,7 +881,7 @@ async def handle_risk_configuration():
 
             print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
 
-        elif risk_choice == '8':
+        elif risk_choice == '11':
             # Reset to defaults
             confirmation = input(
                 f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
@@ -848,13 +889,12 @@ async def handle_risk_configuration():
                 risk_config.apply_risk_profile("balanced")
                 print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
 
-        elif risk_choice == '9':
+        elif risk_choice == '12':
             # Return to main menu
             return
 
         else:
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
-
 
 async def main():
     """Main entry point with Windows-compatible signal handling"""
