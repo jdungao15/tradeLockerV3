@@ -46,7 +46,45 @@ class MissedSignalHandler:
         # Convert message to lowercase for case-insensitive matching
         message_lower = message.lower()
 
-        # Common phrases that indicate TP hit
+        # ADDED: Special handling for Traders_HIVE format with emojis
+        traders_hive_pattern = r"tp(\d+)\s*[✅⭐]*\s*\+?\s*([\d,]+)?\s*pips?"
+        traders_hive_match = re.search(traders_hive_pattern, message_lower)
+
+        if traders_hive_match:
+            logger.info(f"Detected Traders_HIVE TP hit message format: {message[:50]}...")
+
+            # Extract TP level
+            tp_level = int(traders_hive_match.group(1))
+
+            # Extract instrument - For Traders_HIVE, it's typically US30/DJI30
+            instrument = extract_instrument_from_text(message_lower)
+            if not instrument and "us30" in message_lower:
+                instrument = "DJI30"  # Default to DJI30 for US30 mentions
+
+            # Get pip amount as a signal hint
+            signal_hint = None
+            if traders_hive_match.group(2):
+                signal_hint = traders_hive_match.group(2).replace(',', '')
+
+            return True, instrument, tp_level, None, signal_hint
+
+        # ADDED: Alternative format detection for messages like "TP1 hit" or similar simplified formats
+        alt_tp_pattern = r"\b(tp\s*[1-3]|take\s*profit\s*[1-3])\b.*?(hit|reached|secured|taken)"
+        alt_tp_match = re.search(alt_tp_pattern, message_lower)
+
+        if alt_tp_match:
+            logger.info(f"Detected alternative TP hit format: {message[:50]}...")
+
+            # Extract the TP level number
+            level_match = re.search(r"\d+", alt_tp_match.group(1))
+            tp_level = int(level_match.group(0)) if level_match else 1
+
+            # Extract instrument
+            instrument = extract_instrument_from_text(message_lower)
+
+            return True, instrument, tp_level, None, None
+
+        # Original TP hit detection patterns
         tp_indicators = [
             r"tp\s*1\s*hit",  # Matches exactly "tp1 hit" with variations in spacing
             r"tp1\s+hit",  # Matches "tp1 hit" with at least one space

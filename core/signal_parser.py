@@ -21,7 +21,7 @@ parsed_signal_cache = {}
 # This can be adjusted based on observed differences between signal provider and your broker
 BROKER_PRICE_ADJUSTMENTS = {
     "DJI30": 0,  # Adjustment from signal provider to your broker (42764 -> 42760)
-    "NDX100": 0,  # Add adjustment1s for other CFDs as needed
+    "NDX100": 0,  # Add adjustment 1s for other CFDs as needed
     "XAUUSD": 0  # Add adjustments for other instruments as needed
 }
 
@@ -583,4 +583,4 @@ def start_cache_maintenance():
 start_cache_maintenance()
 
 # Initialize with current observed pricing difference for DJI30
-update_broker_adjustment('DJI30', 41855, 41850)
+update_broker_adjustment('DJI30', 41858, 41850)
