@@ -284,6 +284,30 @@ class MissedSignalHandler:
         age_hours = (now - signal_time).total_seconds() / 3600
         return age_hours <= self.max_signal_age_hours
 
+    # Helper function to map canonical instrument names to platform instrument names
+    def map_to_platform_instrument(self, canonical_name):
+        """
+        Map canonical instrument names to platform-specific instrument names.
+
+        Args:
+            canonical_name (str): Canonical instrument name (e.g., "DJI30")
+
+        Returns:
+            str: Platform-specific instrument name or None if no mapping
+        """
+        if not canonical_name:
+            return None
+
+        # Define mappings from canonical names to platform names
+        mappings = {
+            "DJI30": "DOW.C",
+            "NDX100": "NSDQ.C",
+            "XAUUSD": "XAUUSD.C"
+        }
+
+        # Return the platform name if there's a mapping, otherwise return None
+        return mappings.get(canonical_name, None)
+
     async def has_open_positions(self, account, instrument_name):
         """
         Check if there are any open positions for the specified instrument.
@@ -296,32 +320,42 @@ class MissedSignalHandler:
             bool: True if open positions exist, False otherwise
         """
         try:
-            # Get instrument ID first
-            instrument = await self.instruments_client.get_instrument_by_name_async(
-                account['id'],
-                account['accNum'],
-                instrument_name
-            )
+            # Map standard instrument names to platform-specific variants
+            platform_instrument = self.map_to_platform_instrument(instrument_name)
+            logger.info(f"Checking for positions: Mapped {instrument_name} → {platform_instrument}")
 
-            if not instrument:
-                logger.warning(f"Instrument {instrument_name} not found")
-                return False
+            # Try each possible instrument name
+            instrument_variants = [instrument_name, platform_instrument]
 
-            instrument_id = instrument.get('tradableInstrumentId')
+            for variant in instrument_variants:
+                if not variant:
+                    continue
 
-            # Get current positions
-            positions = await self.accounts_client.get_current_position_async(
-                account['id'],
-                account['accNum']
-            )
+                # Get instrument ID
+                instrument = await self.instruments_client.get_instrument_by_name_async(
+                    account['id'],
+                    account['accNum'],
+                    variant
+                )
 
-            if not positions or 'd' not in positions or 'positions' not in positions['d']:
-                return False
+                if instrument:
+                    instrument_id = instrument.get('tradableInstrumentId')
+                    logger.info(f"Found instrument {variant} with ID {instrument_id}")
 
-            # Check if any position has this instrument ID
-            for position in positions['d']['positions']:
-                if str(position[1]) == str(instrument_id):
-                    return True
+                    # Get current positions
+                    positions = await self.accounts_client.get_current_position_async(
+                        account['id'],
+                        account['accNum']
+                    )
+
+                    if not positions or 'd' not in positions or 'positions' not in positions['d']:
+                        return False
+
+                    # Check if any position has this instrument ID
+                    for position in positions['d']['positions']:
+                        if str(position[1]) == str(instrument_id):
+                            logger.info(f"Found open position for {variant}")
+                            return True
 
             return False
 
@@ -341,38 +375,50 @@ class MissedSignalHandler:
             list: List of pending order IDs
         """
         try:
-            # Get instrument ID first
-            instrument = await self.instruments_client.get_instrument_by_name_async(
-                account['id'],
-                account['accNum'],
-                instrument_name
-            )
+            # Map standard instrument names to platform-specific variants
+            platform_instrument = self.map_to_platform_instrument(instrument_name)
+            logger.info(f"Checking for orders: Mapped {instrument_name} → {platform_instrument}")
 
-            if not instrument:
-                logger.warning(f"Instrument {instrument_name} not found")
-                return []
+            # Try each possible instrument name
+            instrument_variants = [instrument_name, platform_instrument]
 
-            instrument_id = instrument.get('tradableInstrumentId')
+            for variant in instrument_variants:
+                if not variant:
+                    continue
 
-            # Get all orders
-            orders_response = await self.orders_client.get_orders_async(
-                account['id'],
-                account['accNum']
-            )
+                # Get instrument ID
+                instrument = await self.instruments_client.get_instrument_by_name_async(
+                    account['id'],
+                    account['accNum'],
+                    variant
+                )
 
-            if not orders_response or 'd' not in orders_response or 'orders' not in orders_response['d']:
-                return []
+                if instrument:
+                    instrument_id = instrument.get('tradableInstrumentId')
+                    logger.info(f"Found instrument {variant} with ID {instrument_id}")
 
-            pending_orders = []
+                    # Get all orders
+                    orders_response = await self.orders_client.get_orders_async(
+                        account['id'],
+                        account['accNum']
+                    )
 
-            # Filter for pending orders with this instrument ID
-            for order in orders_response['d']['orders']:
-                # Check if order matches our instrument and is pending (not fully filled)
-                if (str(order[1]) == str(instrument_id) and
-                        order[6] in ['New', 'PartiallyFilled', 'Accepted', 'Working']):
-                    pending_orders.append(order[0])  # order ID
+                    if not orders_response or 'd' not in orders_response or 'orders' not in orders_response['d']:
+                        continue
 
-            return pending_orders
+                    pending_orders = []
+
+                    # Filter for pending orders with this instrument ID
+                    for order in orders_response['d']['orders']:
+                        # Check if order matches our instrument and is pending (not fully filled)
+                        if (str(order[1]) == str(instrument_id) and
+                                order[6] in ['New', 'PartiallyFilled', 'Accepted', 'Working']):
+                            pending_orders.append(order[0])  # order ID
+
+                    if pending_orders:
+                        return pending_orders
+
+            return []
 
         except Exception as e:
             logger.error(f"Error getting pending orders: {e}", exc_info=True)
@@ -608,7 +654,6 @@ class MissedSignalHandler:
             return True, {"action": "none", "reason": "no_pending_orders"}
 
         # Cancel the identified orders
-
         cancelled_count = await self.cancel_pending_orders(account, orders_to_cancel)
 
         result = {

@@ -71,6 +71,15 @@ class SignalManagementHandler:
 
         message_lower = message.lower()
 
+        # Handle single-word commands first
+        if message_lower.strip() == "breakeven" or message_lower.strip() == "be":
+            logger.info(f"Detected simple breakeven command: {message}")
+            return 'breakeven', None, {}
+
+        if message_lower.strip() == "close":
+            logger.info(f"Detected simple close command: {message}")
+            return 'close', None, {}
+
         # Check for breakeven instructions
         breakeven_patterns = [
             r"move\s+(?:sl|stop(?:\s+loss)?)\s+to\s+(?:be|b/?e|breakeven|entry)",
