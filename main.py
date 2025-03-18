@@ -25,6 +25,7 @@ from services.drawdown_manager import (
     schedule_daily_reset_async,
     max_drawdown_balance
 )
+from cli.display_menu import display_menu, display_risk_menu, get_risk_percentage_input, get_drawdown_percentage_input
 from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
@@ -790,15 +791,13 @@ async def handle_risk_configuration():
                 risk_config.display_current_risk_settings()
                 input("\nPress Enter to continue...")
 
-        # NEW OPTIONS FOR MANAGEMENT SETTINGS
+        # Management settings options
         elif risk_choice == '5':
             # Toggle Auto-Breakeven
             new_value = risk_config.toggle_management_setting("auto_breakeven")
             status = "ENABLED" if new_value else "DISABLED"
             color = Fore.GREEN if new_value else Fore.RED
             print(f"{color}Auto-Breakeven is now {status}{Style.RESET_ALL}")
-
-            # Note about profile impact
             print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
 
@@ -808,8 +807,6 @@ async def handle_risk_configuration():
             status = "ENABLED" if new_value else "DISABLED"
             color = Fore.GREEN if new_value else Fore.RED
             print(f"{color}Auto-Close Early is now {status}{Style.RESET_ALL}")
-
-            # Note about profile impact
             print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
 
@@ -829,7 +826,6 @@ async def handle_risk_configuration():
                 print(
                     f"{Fore.RED}The bot will execute all signal provider instructions automatically.{Style.RESET_ALL}")
 
-            # Note about profile impact
             print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
 
@@ -882,6 +878,21 @@ async def handle_risk_configuration():
             print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
 
         elif risk_choice == '11':
+            # NEW OPTION: Configure Daily Drawdown percentage
+            print(f"\n{Fore.CYAN}Configuring Daily Drawdown Percentage{Style.RESET_ALL}")
+
+            # Get new drawdown percentage
+            new_drawdown = get_drawdown_percentage_input()
+            if new_drawdown:
+                risk_config.update_drawdown_percentage(new_drawdown)
+                print(f"{Fore.GREEN}Daily drawdown percentage updated to {new_drawdown:.1f}%.{Style.RESET_ALL}")
+                print(
+                    f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}The new setting will apply after the next daily reset.{Style.RESET_ALL}")
+
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '12':
             # Reset to defaults
             confirmation = input(
                 f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
@@ -889,7 +900,7 @@ async def handle_risk_configuration():
                 risk_config.apply_risk_profile("balanced")
                 print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
 
-        elif risk_choice == '12':
+        elif risk_choice == '13':
             # Return to main menu
             return
 
