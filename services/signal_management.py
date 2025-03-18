@@ -126,36 +126,10 @@ class SignalManagementHandler:
 
     def _extract_instrument(self, message):
         """Extract instrument name from message"""
-        # Check for common forex pairs and instruments
-        instrument_patterns = [
-            r'\b(EUR/?USD)\b',
-            r'\b(GBP/?USD)\b',
-            r'\b(USD/?JPY)\b',
-            r'\b(USD/?CAD)\b',
-            r'\b(AUD/?USD)\b',
-            r'\b(NZD/?USD)\b',
-            r'\b(USD/?CHF)\b',
-            r'\b(XAUUSD|GOLD)\b',
-            r'\b(DJI30|US30)\b',
-            r'\b(NDX100|NAS100)\b'
-        ]
+        from utils.instrument_utils import extract_instrument_from_text
 
-        for pattern in instrument_patterns:
-            match = re.search(pattern, message.upper())
-            if match:
-                instr = match.group(1).replace('/', '')
-
-                # Normalize instrument names
-                if instr == 'GOLD':
-                    instr = 'XAUUSD'
-                elif instr == 'US30':
-                    instr = 'DJI30'
-                elif instr == 'NAS100':
-                    instr = 'NDX100'
-
-                return instr
-
-        return None
+        # Use the centralized utility function to extract instrument
+        return extract_instrument_from_text(message)
 
     async def find_matching_positions(self, account, instrument=None):
         """Find currently open positions matching the instrument"""

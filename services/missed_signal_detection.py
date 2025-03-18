@@ -40,6 +40,9 @@ class MissedSignalHandler:
         Returns:
             tuple: (is_tp_hit, instrument, tp_level, tp_price, signal_hint) if it's a TP hit message
         """
+        # Import the utility function
+        from utils.instrument_utils import extract_instrument_from_text
+
         # Convert message to lowercase for case-insensitive matching
         message_lower = message.lower()
 
@@ -72,45 +75,8 @@ class MissedSignalHandler:
                 tp_level = int(match.group(1))
                 break
 
-        # Try to extract the instrument from the message
-        instrument_patterns = [
-            # Common forex pairs
-            r"(eur/?usd)",
-            r"(gbp/?usd)",
-            r"(usd/?jpy)",
-            r"(aud/?usd)",
-            r"(usd/?cad)",
-            r"(nzd/?usd)",
-            r"(usd/?chf)",
-            # Commodities
-            r"(gold|xauusd)",
-            r"(silver|xagusd)",
-            # Indices
-            r"(dji30|us30)",
-            r"(ndx100|nas100)"
-        ]
-
-        instrument = None
-        for pattern in instrument_patterns:
-            match = re.search(pattern, message_lower)
-            if match:
-                # Normalize instrument name
-                instr = match.group(1).upper()
-
-                # Handle aliases and formatting
-                if instr == "GOLD":
-                    instr = "XAUUSD"
-                elif instr == "SILVER":
-                    instr = "XAGUSD"
-                elif instr == "US30":
-                    instr = "DJI30"
-                elif instr == "NAS100":
-                    instr = "NDX100"
-
-                # Remove slash if present
-                instr = instr.replace("/", "")
-                instrument = instr
-                break
+        # Use the utility function to extract the instrument
+        instrument = extract_instrument_from_text(message_lower)
 
         # Try to extract the TP price (useful for matching with correct signal)
         tp_price = None

@@ -6,6 +6,7 @@ import logging
 import asyncio
 import re
 from dotenv import load_dotenv
+from utils.instrument_utils import normalize_instrument_name, find_instrument_in_platform, get_available_instruments
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -215,6 +216,12 @@ def parse_signal(message: str):
                 parsed_signal_cache[message] = None
                 return None
 
+            # Normalize instrument name
+            if 'instrument' in result:
+                canonical_name = normalize_instrument_name(result['instrument'])
+                logger.debug(f"Normalized instrument name from {result['instrument']} to {canonical_name}")
+                result['instrument'] = canonical_name
+
         except json.JSONDecodeError as e:
             logger.error(f"Error parsing OpenAI response: {e}")
             parsed_signal_cache[message] = None
@@ -359,6 +366,12 @@ async def parse_signal_async(message: str):
                     if result['reduced_risk']:
                         logger.info(f"Signal identified as reduced risk: {message[:100]}...")
 
+                    # Normalize instrument name to canonical form
+                    if 'instrument' in result:
+                        canonical_name = normalize_instrument_name(result['instrument'])
+                        logger.debug(f"Normalized instrument name from {result['instrument']} to {canonical_name}")
+                        result['instrument'] = canonical_name
+
                 except json.JSONDecodeError as e:
                     logger.error(f"Error parsing OpenAI response: {e}")
                     parsed_signal_cache[message] = None
@@ -375,6 +388,78 @@ async def parse_signal_async(message: str):
         logger.error(f"Error parsing signal: {e}", exc_info=True)
         parsed_signal_cache[message] = None
         return None
+
+
+async def find_matching_instrument(instruments_client, account, parsed_signal):
+    """
+    Find the matching instrument in the platform for the signal.
+
+    Args:
+        instruments_client: TradeLocker instruments client
+        account: Account information dictionary
+        parsed_signal: Parsed signal with normalized instrument name
+
+    Returns:
+        dict: Instrument data from the platform or None if not found
+    """
+    canonical_name = parsed_signal['instrument']
+
+    # First try direct match with the canonical name
+    instrument_data = await instruments_client.get_instrument_by_name_async(
+        account['id'],
+        account['accNum'],
+        canonical_name
+    )
+
+    if instrument_data:
+        logger.info(f"Found exact match for instrument {canonical_name}")
+        return instrument_data
+
+    # If not found, get available instruments and find a match
+    available_instruments = await get_available_instruments(instruments_client, account)
+
+    # Find the platform-specific instrument name using our utility
+    platform_instrument = find_instrument_in_platform(canonical_name, available_instruments)
+
+    if platform_instrument and platform_instrument != canonical_name:
+        logger.info(f"Using platform instrument {platform_instrument} instead of {canonical_name}")
+
+        # Get the instrument data using the platform-specific name
+        instrument_data = await instruments_client.get_instrument_by_name_async(
+            account['id'],
+            account['accNum'],
+            platform_instrument
+        )
+
+        if instrument_data:
+            return instrument_data
+
+    # If we still haven't found it, try some common variations as a last resort
+    if canonical_name.endswith(".C") or canonical_name.endswith(".X") or canonical_name.endswith(".Z"):
+        # Try without suffix
+        base_name = canonical_name.split('.')[0]
+        instrument_data = await instruments_client.get_instrument_by_name_async(
+            account['id'],
+            account['accNum'],
+            base_name
+        )
+        if instrument_data:
+            logger.info(f"Found match by removing suffix: {base_name}")
+            return instrument_data
+    elif not canonical_name.endswith(".C"):
+        # Try with .C suffix
+        instrument_data = await instruments_client.get_instrument_by_name_async(
+            account['id'],
+            account['accNum'],
+            f"{canonical_name}.C"
+        )
+        if instrument_data:
+            logger.info(f"Found match by adding .C suffix: {canonical_name}.C")
+            return instrument_data
+
+    logger.warning(f"No matching instrument found for {canonical_name}")
+    return None
+
 
 # Helper function to extract price points from complex messages
 def extract_price_points(text: str):
@@ -498,4 +583,4 @@ def start_cache_maintenance():
 start_cache_maintenance()
 
 # Initialize with current observed pricing difference for DJI30
-update_broker_adjustment('DJI30', 42760, 42760)
+update_broker_adjustment('DJI30', 41850, 41855)
