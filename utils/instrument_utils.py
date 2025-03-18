@@ -1,253 +1,240 @@
-"""
-Utility functions for instrument name normalization and detection.
-Centralizes the logic for handling different symbol representations.
-"""
 import re
+import time
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Mapping of instrument aliases to their canonical names
-# This is used for internal normalization of signal provider names
-INSTRUMENT_ALIASES = {
-    # Indices
-    "US30": "DJI30",
-    "DOW.C": "DJI30",
-    "DOW.X": "DJI30",
-    "DOW.Z": "DJI30",
-    "DOW": "DJI30",
-
-    # Nasdaq variations
-    "NAS100": "NDX100",
-    "NSDQ": "NDX100",
-    "NSDQ.C": "NDX100",
-    "NSDQ.X": "NDX100",
-    "NSDQ.Z": "NDX100",
-
-    # Commodities
-    "GOLD": "XAUUSD",
-    "SILVER": "XAGUSD"
-}
-
-# Platform-specific instrument codes based on your screenshots
-# Maps canonical names to possible instrument names in your platform
-PLATFORM_INSTRUMENT_MAP = {
-    "NDX100": ["NDX100", "NAS100", "NSDQ.C"],
-    "DJI30": ["DJI30", "US30", "DOW.C", "DOW"],
-    "XAUUSD": ["XAUUSD", "GOLD"],
-    "XAGUSD": ["XAGUSD", "SILVER"]
-}
-
-# Standard forex pairs and commodity pairs that might have suffixes
-STANDARD_INSTRUMENTS = [
-    "EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF",
-    "XAUUSD", "XAGUSD", "DJI30", "NDX100"
-]
-
-# Extended regex patterns for instrument detection
-INSTRUMENT_PATTERNS = [
-    # Forex pairs with optional suffix
-    r"\b(eur/?usd(?:\.[cxz])?)\b",
-    r"\b(gbp/?usd(?:\.[cxz])?)\b",
-    r"\b(usd/?jpy(?:\.[cxz])?)\b",
-    r"\b(aud/?usd(?:\.[cxz])?)\b",
-    r"\b(usd/?cad(?:\.[cxz])?)\b",
-    r"\b(nzd/?usd(?:\.[cxz])?)\b",
-    r"\b(usd/?chf(?:\.[cxz])?)\b",
-
-    # Commodities with optional suffix
-    r"\b(gold|xauusd(?:\.[cxz])?)\b",
-    r"\b(silver|xagusd(?:\.[cxz])?)\b",
-
-    # Indices with various aliases and optional suffixes
-    r"\b(dji30|us30|dow(?:\.?[cxz])?)\b",
-    r"\b(ndx100|nas100|nsdq(?:\.[cxz])?)\b"
-]
+# Global cache for instruments
+_instruments_cache = {}
 
 
 def normalize_instrument_name(instrument_name):
     """
-    Normalize various instrument name formats to a standard canonical format.
+    Normalize instrument names to canonical form.
+    Maps common variants to standard names.
 
     Args:
         instrument_name (str): The instrument name to normalize
 
     Returns:
-        str: The normalized instrument name
+        str: Normalized instrument name
     """
     if not instrument_name:
         return None
 
-    # Convert to uppercase and remove any whitespace
-    instr = instrument_name.upper().replace(" ", "")
+    # Convert to uppercase for consistency
+    instrument = instrument_name.upper()
 
-    # Remove slash if present
-    instr = instr.replace("/", "")
+    # Common mappings dictionary - expanded with Traders_HIVE specific mappings
+    mappings = {
+        # Indices
+        "US30": "DJI30",
+        "DOW": "DJI30",
+        "DOW JONES": "DJI30",
+        "DOWJONES": "DJI30",
+        "DJI": "DJI30",
+        "US500": "SPX500",
+        "SP500": "SPX500",
+        "S&P500": "SPX500",
+        "S&P": "SPX500",
+        "NAS100": "NDX100",
+        "NASDAQ": "NDX100",
+        "NASDAQ100": "NDX100",
+        "NAS": "NDX100",
+        "USTEC": "NDX100",
 
-    # Check direct mapping in aliases dictionary
-    if instr in INSTRUMENT_ALIASES:
-        return INSTRUMENT_ALIASES[instr]
+        # Metals
+        "GOLD": "XAUUSD",
+        "XAU": "XAUUSD",
+        "SILVER": "XAGUSD",
+        "XAG": "XAGUSD",
 
-    # Handle forex pairs and other instruments with suffixes (.C, .X, .Z)
-    for std_instr in STANDARD_INSTRUMENTS:
-        if instr.startswith(std_instr + "."):
-            return std_instr
+        # Oil
+        "OIL": "XTIUSD",
+        "CRUDE": "XTIUSD",
+        "CRUDEOIL": "XTIUSD",
+        "WTI": "XTIUSD",
+        "BRENT": "XBRUSD",
 
-    # If we couldn't normalize it but it matches a basic pattern, return as is
-    return instr
+        # Forex special cases
+        "EURO": "EURUSD"
+    }
+
+    # Handle cases with additional text like "sell gold" or "buy nas100"
+    for key, value in mappings.items():
+        if key in instrument:
+            return value
+
+    # If it's already in canonical form, return as is
+    if instrument in mappings.values():
+        return instrument
+
+    # For standard forex pairs, ensure proper format
+    if len(instrument) == 6 and instrument.isalpha():
+        # It's likely a forex pair like EURUSD
+        return instrument
+
+    # If nothing matches, return the original
+    return instrument
 
 
 def find_instrument_in_platform(canonical_name, available_instruments):
     """
-    Find the matching instrument name in your platform's available instruments.
+    Find the platform-specific instrument name for a canonical instrument name.
 
     Args:
-        canonical_name (str): The canonical instrument name (e.g., "NDX100")
-        available_instruments (list): List of available instruments from API
+        canonical_name (str): Canonical instrument name (e.g., "DJI30")
+        available_instruments (list): List of available instruments from the platform
 
     Returns:
-        str: The matching platform instrument name or None if not found
+        str: Platform-specific instrument name or canonical_name if not found
     """
     if not canonical_name or not available_instruments:
-        return None
-
-    # Check if the canonical name itself is available
-    if canonical_name in available_instruments:
         return canonical_name
 
-    # Get possible platform names for this canonical name
-    possible_names = PLATFORM_INSTRUMENT_MAP.get(canonical_name, [])
+    # Direct platform mapping for common instruments
+    platform_mappings = {
+        "DJI30": ["DOW.C", "US30.C", "US30", "DJ30.C"],
+        "NDX100": ["NAS100.C", "NASDAQ.C", "USTEC.C", "NDX.C"],
+        "SPX500": ["SPX.C", "SP500.C", "S&P500.C"],
+        "XAUUSD": ["GOLD.C", "XAU.C", "XAUUSD.C", "XAUUSD"],
+        "XAGUSD": ["SILVER.C", "XAG.C", "XAGUSD.C", "XAGUSD"]
+    }
 
-    # Check each possible name against available instruments
-    for name in possible_names:
-        if name in available_instruments:
-            logger.info(f"Found match: {name} for canonical name {canonical_name}")
-            return name
+    # Check if we have a direct mapping for this instrument
+    if canonical_name in platform_mappings:
+        possible_names = platform_mappings[canonical_name]
 
-    # For forex pairs, try with all possible suffixes
-    if canonical_name in ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "NZDUSD", "USDCHF"]:
-        suffixes = ["", ".C", ".X", ".Z"]
-        for suffix in suffixes:
-            test_name = canonical_name + suffix
-            if test_name in available_instruments:
-                logger.info(f"Found forex match with suffix: {test_name}")
-                return test_name
+        # Check each possible platform name against available instruments
+        for name in possible_names:
+            for instrument in available_instruments:
+                # Get name from instrument object
+                instrument_name = instrument.get('name', '')
+                if instrument_name == name:
+                    logger.info(f"Found platform instrument {name} for {canonical_name}")
+                    return name
 
-    # If no exact match, try case-insensitive matching
-    canonical_lower = canonical_name.lower()
-    for instr in available_instruments:
-        if instr.lower() == canonical_lower:
-            logger.info(f"Found case-insensitive match: {instr}")
-            return instr
+    # If not found in mappings, search directly in available instruments
+    for instrument in available_instruments:
+        instrument_name = instrument.get('name', '')
 
-    logger.warning(f"No match found for {canonical_name}")
-    return None
+        # Try exact match
+        if instrument_name == canonical_name:
+            return canonical_name
+
+        # Try without suffix
+        base_name = canonical_name.split('.')[0]
+        if instrument_name == base_name:
+            return base_name
+
+        # Try with common suffixes
+        for suffix in ['.C', '.X', '.Z']:
+            if instrument_name == f"{canonical_name}{suffix}":
+                return instrument_name
+
+    # If still not found, return the canonical name
+    logger.warning(f"Could not find platform instrument for {canonical_name}")
+    return canonical_name
+
+
+async def get_available_instruments(instruments_client, account):
+    """
+    Get available instruments for the account with caching.
+
+    Args:
+        instruments_client: TradeLocker instruments client
+        account: Account information dictionary
+
+    Returns:
+        list: List of available instruments
+    """
+    # Create cache key for this account
+    cache_key = f"{account['id']}:{account['accNum']}"
+
+    # Return cached result if available and not too old (cache for 1 hour)
+    if cache_key in _instruments_cache:
+        cache_entry = _instruments_cache[cache_key]
+        cache_time = cache_entry.get('time', 0)
+        if time.time() - cache_time < 3600:  # 1 hour cache
+            logger.debug(f"Using cached instruments list ({len(cache_entry['instruments'])} instruments)")
+            return cache_entry['instruments']
+
+    # Fetch instruments from API
+    try:
+        instruments = await instruments_client.get_instruments_async(
+            account['id'],
+            account['accNum']
+        )
+
+        if instruments:
+            # Cache the result
+            _instruments_cache[cache_key] = {
+                'instruments': instruments,
+                'time': time.time()
+            }
+            logger.info(f"Cached {len(instruments)} instruments from API")
+            return instruments
+        else:
+            logger.warning("Failed to get instruments from API")
+            # Return cached instruments if available (even if expired)
+            if cache_key in _instruments_cache:
+                return _instruments_cache[cache_key]['instruments']
+            return []
+
+    except Exception as e:
+        logger.error(f"Error fetching instruments: {e}")
+        # Return cached instruments if available
+        if cache_key in _instruments_cache:
+            return _instruments_cache[cache_key]['instruments']
+        return []
 
 
 def extract_instrument_from_text(text):
     """
-    Extract instrument name from text using comprehensive regex patterns.
+    Extract instrument name from text.
+    Enhanced to handle text with emojis and Traders_HIVE specific formats.
 
     Args:
-        text (str): The text to extract instrument from
+        text (str): The text to analyze
 
     Returns:
-        str: Normalized instrument name or None if not found
+        str: Extracted canonical instrument name or None if not found
     """
     if not text:
         return None
 
-    text_lower = text.lower()
+    # Convert to lowercase for consistent matching
+    text = text.lower()
 
-    for pattern in INSTRUMENT_PATTERNS:
-        match = re.search(pattern, text_lower)
+    # Try to match common instrument identifiers
+    patterns = [
+        # Forex pairs
+        r'\b(eur/?usd|gbp/?usd|usd/?jpy|aud/?usd|nzd/?usd|usd/?cad|usd/?chf|eur/?gbp|eur/?jpy)\b',
+
+        # Stock indices
+        r'\b(us30|dji30|dow|dow jones|spx500|sp500|s&p|nasdaq|nas100|ndx100)\b',
+
+        # Commodities
+        r'\b(gold|xauusd|silver|xagusd|oil|crude|wti|brent)\b'
+    ]
+
+    # Check each pattern
+    for pattern in patterns:
+        match = re.search(pattern, text)
         if match:
-            # Extract the matched instrument and normalize it
-            matched_instr = match.group(1).upper()
-            return normalize_instrument_name(matched_instr)
+            extracted = match.group(1)
+            # Normalize to canonical form
+            return normalize_instrument_name(extracted)
+
+    # Special handling for Traders_HIVE format with US30 references
+    if 'us30' in text:
+        return 'DJI30'
 
     return None
 
 
-def get_instrument_display_names(canonical_name):
-    """
-    Get all possible display names for a canonical instrument name.
-
-    Args:
-        canonical_name (str): The canonical instrument name (e.g., DJI30)
-
-    Returns:
-        list: List of all possible display names
-    """
-    if not canonical_name:
-        return []
-
-    # Start with the canonical name itself
-    display_names = [canonical_name]
-
-    # Add all aliases that map to this canonical name
-    for alias, canon in INSTRUMENT_ALIASES.items():
-        if canon == canonical_name:
-            display_names.append(alias)
-
-    # Add platform-specific names
-    if canonical_name in PLATFORM_INSTRUMENT_MAP:
-        display_names.extend(PLATFORM_INSTRUMENT_MAP[canonical_name])
-
-    # Remove duplicates while preserving order
-    unique_names = []
-    for name in display_names:
-        if name not in unique_names:
-            unique_names.append(name)
-
-    return unique_names
-
-
-# Cache of available instruments from the API
-_cached_instruments = None
-_instrument_cache_time = 0
-
-async def get_available_instruments(instruments_client, account, refresh=False):
-    """
-    Get available instruments from the API with caching.
-
-    Args:
-        instruments_client: The TradeLocker instruments client
-        account: Account information dictionary
-        refresh (bool): Whether to force refresh the cache
-
-    Returns:
-        list: List of available instrument names
-    """
-    global _cached_instruments, _instrument_cache_time
-    import time
-
-    current_time = time.time()
-    cache_ttl = 3600  # 1 hour cache
-
-    # Return cached result if available and not expired
-    if not refresh and _cached_instruments and current_time - _instrument_cache_time < cache_ttl:
-        return _cached_instruments
-
-    try:
-        instruments = await instruments_client.get_instruments_async(
-            account_id=account['id'],
-            acc_num=account['accNum']
-        )
-
-        if not instruments:
-            logger.warning("No instruments returned from API")
-            return []
-
-        instrument_names = [instr.get('name') for instr in instruments]
-
-        # Update cache
-        _cached_instruments = instrument_names
-        _instrument_cache_time = current_time
-
-        logger.info(f"Cached {len(instrument_names)} instruments from API")
-        return instrument_names
-
-    except Exception as e:
-        logger.error(f"Error fetching instruments: {e}")
-        return _cached_instruments or []  # Return cached if available, otherwise empty list
+def clear_instruments_cache():
+    """Clear the instruments cache"""
+    global _instruments_cache
+    _instruments_cache.clear()
+    logger.info("Instruments cache cleared")

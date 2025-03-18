@@ -18,10 +18,12 @@ def calculate_pip_difference(entry_price, current_price, instrument_name):
     else:
         return round(abs(current_price - entry_price) / 0.0001)
 
+
+    # This function runs indefinitely until the bot is shut down
 async def monitor_existing_position(accounts_client, instruments_client, quotes_client,
                                     selected_account, base_url, auth_token):
     """
-    Function to check and monitor any existing open positions asynchronously.
+    Function to check and monitor any existing open positions asynchronously with improved error handling.
     """
     account_id = selected_account['id']
     acc_num = selected_account['accNum']
@@ -29,6 +31,13 @@ async def monitor_existing_position(accounts_client, instruments_client, quotes_
     # Local cache to avoid repeated lookups
     instrument_cache = {}
     position_tracking = {}  # Track position updates to avoid redundant API calls
+
+    # Add counters for error handling and backoff
+    failure_counter = 0
+    max_failures = 10  # Maximum consecutive failures before backing off
+    backoff_time = 300  # 5 minutes backoff after max failures
+    normal_poll_interval = 10  # 10 seconds when no positions
+    active_poll_interval = 3  # 3 seconds when positions exist
 
     logger.info("Starting position monitoring service")
 
@@ -40,6 +49,9 @@ async def monitor_existing_position(accounts_client, instruments_client, quotes_
             positions = await accounts_client.get_current_position_async(account_id, acc_num)
 
             if positions and positions.get('d', {}).get('positions'):
+                # Reset failure counter on success
+                failure_counter = 0
+
                 position_data_list = positions['d']['positions']
 
                 # Process positions in parallel for efficiency
@@ -53,17 +65,49 @@ async def monitor_existing_position(accounts_client, instruments_client, quotes_
                     instrument_cache,
                     position_tracking
                 )
+
+                # Short polling interval when positions exist
+                await asyncio.sleep(active_poll_interval)
             else:
-                logger.debug("No open positions found")
+                # Check if it's a valid empty response or an error
+                if positions is not None:
+                    # Valid response with no positions
+                    logger.debug("No open positions found")
+                    failure_counter = 0
+                    await asyncio.sleep(normal_poll_interval)
+                else:
+                    # Error response (positions is None)
+                    failure_counter += 1
+                    logger.warning(f"Position monitoring failure: {failure_counter}/{max_failures}")
+
+                    # Implement progressive backoff based on failure counter
+                    if failure_counter >= max_failures:
+                        logger.error(f"Too many position monitoring failures. Backing off for {backoff_time} seconds")
+                        await asyncio.sleep(backoff_time)
+                        # Reset counter after backoff
+                        failure_counter = max(0, failure_counter - 5)  # Reduce but don't fully reset
+                    else:
+                        # Incremental backoff for intermittent failures
+                        backoff = min(30, 2 ** failure_counter)  # Exponential backoff with max of 30 seconds
+                        await asyncio.sleep(backoff)
 
         except Exception as e:
             logger.error(f"Error in position monitoring: {e}", exc_info=True)
+            failure_counter += 1
 
-        # Adaptive polling interval: check more frequently when positions exist
-        if positions and positions.get('d', {}).get('positions'):
-            await asyncio.sleep(3)  # 3 seconds when positions exist
-        else:
-            await asyncio.sleep(10)  # 10 seconds when no positions
+            # Implement backoff for exceptions
+            if failure_counter >= max_failures:
+                logger.error(
+                    f"Position monitoring backing off for {backoff_time} seconds after {failure_counter} consecutive failures")
+                await asyncio.sleep(backoff_time)
+                # Partially reset counter after backoff
+                failure_counter = max(0, failure_counter - 5)
+            else:
+                # Incremental backoff
+                backoff = min(60, 3 ** (failure_counter // 2))  # More aggressive backoff for exceptions
+                await asyncio.sleep(backoff)
+
+
 
 
 async def process_positions_parallel(positions, instruments_client, quotes_client,
