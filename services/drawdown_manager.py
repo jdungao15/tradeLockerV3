@@ -5,6 +5,7 @@ import asyncio
 import logging
 from datetime import datetime, timedelta
 import pytz
+import risk_config
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -145,17 +146,22 @@ async def reset_daily_drawdown_async(accounts_client, selected_account):
             # Determine the correct tier size based on realized balance
             tier_size, upper_limit = get_tier_size(account_balance)
 
-            # Calculate drawdown limit (4% of tier size)
-            drawdown_limit = tier_size * 0.04
+            # Get the configurable drawdown percentage from risk config (as a percentage)
+            drawdown_percentage = risk_config.get_drawdown_percentage()
+
+            # Convert percentage to decimal for calculation (e.g., 4.0% -> 0.04)
+            drawdown_decimal = drawdown_percentage / 100.0
+
+            # Calculate drawdown limit using the configurable percentage
+            drawdown_limit = tier_size * drawdown_decimal
 
             # Set starting balance (total equity) and max drawdown balance
             starting_balance = total_equity
             max_drawdown_balance = starting_balance - drawdown_limit
 
-            tier_size, _ = get_tier_size(account_balance)
             logger.info(
                 f"Daily drawdown limits for today: Account Balance=${account_balance:.2f}, "
-                f"Tier=${tier_size}, Drawdown Limit=${drawdown_limit:.2f}, "
+                f"Tier=${tier_size}, Drawdown={drawdown_percentage:.1f}%, Drawdown Limit=${drawdown_limit:.2f}, "
                 f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
             )
 
@@ -191,14 +197,22 @@ def reset_daily_drawdown(accounts_client, selected_account):
             with _drawdown_lock:
                 account_balance = float(selected_account['accountBalance'])
                 tier_size, _ = get_tier_size(account_balance)
-                drawdown_limit = tier_size * 0.04
+
+                # Get the configurable drawdown percentage
+                drawdown_percentage = risk_config.get_drawdown_percentage()
+                drawdown_decimal = drawdown_percentage / 100.0
+
+                # Calculate using configurable percentage
+                drawdown_limit = tier_size * drawdown_decimal
 
                 starting_balance = account_balance
                 max_drawdown_balance = starting_balance - drawdown_limit
 
                 logger.info(
                     f"Balance=${account_balance:.2f}, Tier=${tier_size}, "
-                    f"Drawdown=${drawdown_limit:.2f}, Max Drawdown Balance=${max_drawdown_balance:.2f}"
+                    f"Drawdown={drawdown_percentage:.1f}%, "
+                    f"Drawdown Limit=${drawdown_limit:.2f}, "
+                    f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
                 )
 
                 save_drawdown_data()
@@ -216,14 +230,21 @@ def reset_daily_drawdown(accounts_client, selected_account):
         with _drawdown_lock:
             account_balance = float(selected_account['accountBalance'])
             tier_size, _ = get_tier_size(account_balance)
-            drawdown_limit = tier_size * 0.04
+
+            # Get the configurable drawdown percentage even in fallback
+            drawdown_percentage = risk_config.get_drawdown_percentage()
+            drawdown_decimal = drawdown_percentage / 100.0
+
+            # Calculate using configurable percentage
+            drawdown_limit = tier_size * drawdown_decimal
 
             starting_balance = account_balance
             max_drawdown_balance = starting_balance - drawdown_limit
 
             logger.info(
                 f"Daily drawdown reset (fallback): Balance=${account_balance:.2f}, "
-                f"Tier=${tier_size}, Drawdown=${drawdown_limit:.2f}, "
+                f"Tier=${tier_size}, Drawdown={drawdown_percentage:.1f}%, "
+                f"Drawdown Limit=${drawdown_limit:.2f}, "
                 f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
             )
 
@@ -268,6 +289,7 @@ async def schedule_daily_reset_async(accounts_client, selected_account):
         await asyncio.sleep(3600)
         asyncio.create_task(schedule_daily_reset_async(accounts_client, selected_account))
 
+
 # Function to perform the scheduled reset
 def perform_daily_reset(accounts_client, selected_account):
     """
@@ -281,11 +303,11 @@ def perform_daily_reset(accounts_client, selected_account):
         logger.info("Performing scheduled daily drawdown reset")
         reset_daily_drawdown(accounts_client, selected_account)
         # Schedule the next reset
-        schedule_daily_reset(accounts_client, selected_account)
+        schedule_daily_reset_async(accounts_client, selected_account)
     except Exception as e:
         logger.error(f"Error in daily reset: {e}")
         # Fallback: Try again in 1 hour
-        threading.Timer(3600, schedule_daily_reset, args=[accounts_client, selected_account]).start()
+        threading.Timer(3600, schedule_daily_reset_async, args=[accounts_client, selected_account]).start()
 
 
 # Async version of reset for use in async contexts

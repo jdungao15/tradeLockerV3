@@ -22,8 +22,11 @@ RISK_PROFILES = {
         "management": {
             "auto_breakeven": False,  # Don't automatically move SL to breakeven
             "auto_close_early": False,  # Don't automatically close positions early
-            "confirmation_required": False,  # Require confirmation for management actions
+            "confirmation_required": True,  # Require confirmation for management actions
             "partial_closure_percent": 33  # Close 1/3 when partially closing
+        },
+        "drawdown": {
+            "daily_percentage": 3.0  # Conservative drawdown limit (3%)
         }
     },
     "balanced": {
@@ -42,8 +45,11 @@ RISK_PROFILES = {
         "management": {
             "auto_breakeven": True,  # Automatically move SL to breakeven
             "auto_close_early": False,  # Don't automatically close positions early
-            "confirmation_required": False,  # Require confirmation for management actions
+            "confirmation_required": True,  # Require confirmation for management actions
             "partial_closure_percent": 50  # Close half when partially closing
+        },
+        "drawdown": {
+            "daily_percentage": 4.0  # Standard drawdown limit (4%)
         }
     },
     "aggressive": {
@@ -64,6 +70,9 @@ RISK_PROFILES = {
             "auto_close_early": True,  # Automatically close positions early
             "confirmation_required": False,  # No confirmation needed for management actions
             "partial_closure_percent": 66  # Close 2/3 when partially closing
+        },
+        "drawdown": {
+            "daily_percentage": 5.0  # Aggressive drawdown limit (5%)
         }
     }
 }
@@ -175,6 +184,43 @@ def update_risk_percentage(instrument_type, risk_value, is_reduced=False):
     return save_risk_config()
 
 
+def get_drawdown_percentage():
+    """
+    Get the current daily drawdown percentage
+
+    Returns:
+        float: Drawdown percentage (e.g., 4.0 for 4%)
+    """
+    if "drawdown" in risk_config and "daily_percentage" in risk_config["drawdown"]:
+        return risk_config["drawdown"]["daily_percentage"]
+    else:
+        # Default to 4% if not specified
+        return 4.0
+
+
+def update_drawdown_percentage(percentage):
+    """
+    Update the daily drawdown percentage
+
+    Args:
+        percentage: Drawdown percentage (e.g., 4.0 for 4%)
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    if not 1.0 <= percentage <= 10.0:
+        logger.error(f"Invalid drawdown percentage: {percentage}. Must be between 1% and 10%")
+        return False
+
+    if "drawdown" not in risk_config:
+        risk_config["drawdown"] = {}
+
+    risk_config["drawdown"]["daily_percentage"] = percentage
+
+    # Save changes to file
+    return save_risk_config()
+
+
 def display_current_risk_settings():
     """Display the current risk settings in a formatted table"""
     # Determine current profile
@@ -185,10 +231,15 @@ def display_current_risk_settings():
     print("-" * 45)
 
     for instrument, settings in risk_config.items():
-        if instrument != "management":  # Skip the management settings in this display
+        if instrument not in ["management", "drawdown"]:  # Skip non-instrument settings
             default_risk = f"{settings['default'] * 100:.2f}%"
             reduced_risk = f"{settings['reduced'] * 100:.2f}%"
             print(f"{instrument:<15} {default_risk:<15} {reduced_risk:<15}")
+
+    # Display drawdown percentage
+    drawdown_pct = get_drawdown_percentage()
+    print(f"\n---- Daily Drawdown Limit ----")
+    print(f"Maximum daily drawdown: {drawdown_pct:.1f}% of tier size")
 
     print("\n---- Position Management Settings ----")
     if "management" in risk_config:
@@ -222,6 +273,8 @@ def detect_current_profile():
     # First, check for exact matches
     for profile_name, profile_settings in RISK_PROFILES.items():
         is_match = True
+
+        # Check each instrument type's settings
         for instrument, settings in profile_settings.items():
             if instrument not in risk_config:
                 is_match = False
@@ -237,6 +290,15 @@ def detect_current_profile():
                     if key not in risk_config["management"] or risk_config["management"][key] != value:
                         is_match = False
                         break
+            elif instrument == "drawdown":
+                # For drawdown settings, check the daily percentage
+                if "drawdown" not in risk_config:
+                    is_match = False
+                    break
+
+                if risk_config["drawdown"].get("daily_percentage") != settings.get("daily_percentage"):
+                    is_match = False
+                    break
             else:
                 # For risk settings
                 if risk_config[instrument]["default"] != settings["default"] or \
@@ -295,6 +357,7 @@ def toggle_management_setting(setting_name):
     save_risk_config()
 
     return new_value
+
 
 def apply_risk_profile(profile_name):
     """
