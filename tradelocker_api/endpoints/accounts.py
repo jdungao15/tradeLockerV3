@@ -152,3 +152,6 @@ class TradeLockerAccounts(ApiClient):
         except Exception as e:
             logger.error(f"Failed to refresh account balance: {e}")
             return None
+
+    def request(self, param, param1, cache_ttl):
+        pass

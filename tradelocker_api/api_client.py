@@ -24,6 +24,22 @@ class ApiClient:
         self._circuit_states = {}  # Track circuit breaker states
         self._cache = {}  # Simple time-based cache
         self._cache_ttl = {}  # TTL for each cached item
+        self._last_request_time = {}
+        self._endpoints_to_types = {
+            "trade/accounts/": "GET_ACCOUNTS",
+            "trade/positions": "GET_POSITIONS",
+            "trade/orders": "GET_ORDERS",
+            "trade/quotes": "QUOTES",
+            "trade/instruments": "GET_INSTRUMENTS"
+        }
+        self._rate_limit_config = {
+            "GET_POSITIONS": {"requests": 1, "per_seconds": 1},
+            "GET_ORDERS": {"requests": 1, "per_seconds": 1},
+            "GET_ACCOUNTS": {"requests": 2, "per_seconds": 1},
+            "GET_INSTRUMENTS": {"requests": 2, "per_seconds": 1},
+            "QUOTES": {"requests": 10, "per_seconds": 1},
+            "DEFAULT": {"requests": 1, "per_seconds": 1}
+        }
 
     # Circuit breaker methods
 
@@ -169,11 +185,41 @@ class ApiClient:
                 time.sleep(wait_time)
 
     # Asynchronous request method (for new code)
+    async def _enforce_rate_limit(self, endpoint):
+        """Enforce rate limits for API calls based on endpoint type"""
+        # Determine the endpoint type
+        endpoint_type = "DEFAULT"
+        for key, type_name in self._endpoints_to_types.items():
+            if key in endpoint:
+                endpoint_type = type_name
+                break
 
+        # Get rate limit config for this endpoint type
+        rate_config = self._rate_limit_config.get(endpoint_type, self._rate_limit_config["DEFAULT"])
+        requests_allowed = rate_config["requests"]
+        time_window = rate_config["per_seconds"]
+
+        # Calculate time since last request
+        now = time.time()
+        last_time = self._last_request_time.get(endpoint_type, 0)
+        time_passed = now - last_time
+
+        # If we've made a request recently, enforce the rate limit
+        if time_passed < time_window / requests_allowed:
+            # Calculate wait time needed
+            wait_time = (time_window / requests_allowed) - time_passed
+            wait_time = max(0.1, wait_time)  # At least 100ms delay
+
+            logger.debug(f"Rate limit enforced for {endpoint_type}: waiting {wait_time:.2f}s")
+            await asyncio.sleep(wait_time)
+
+        # Update last request time
+        self._last_request_time[endpoint_type] = time.time()
     async def request_async(self, method, endpoint, headers=None, params=None, json=None,
                             data=None, cache_ttl=0, retry_count=3):
         """Make an asynchronous API request with caching, rate limiting and circuit breaker"""
         # Check circuit breaker
+        await self._enforce_rate_limit(endpoint)
         if not self._can_execute(endpoint):
             logger.warning(f"Circuit breaker open for {endpoint}, request blocked")
             raise Exception(f"Service unavailable: {endpoint}")
@@ -239,6 +285,7 @@ class ApiClient:
                 wait_time = 0.5 * (2 ** attempt)
                 logger.warning(f"Request failed, retrying in {wait_time}s: {e}")
                 await asyncio.sleep(wait_time)
+
 
     # Cache management
 

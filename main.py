@@ -30,7 +30,7 @@ from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
 from services.missed_signal_detection import MissedSignalHandler
-from services.signal_management import SignalManagementHandler
+from services.signal_management import EnhancedSignalManagementHandler
 import risk_config
 from core.signal_parser import find_matching_instrument
 
@@ -162,8 +162,8 @@ class TradingBot:
                 consider_channel=True  # Consider channel source when matching signals
             )
 
-            # Initialize signal management handler
-            self.signal_manager = SignalManagementHandler(
+            # Initialize enhanced signal management handler
+            self.signal_manager = EnhancedSignalManagementHandler(
                 self.accounts_client,
                 self.orders_client,
                 self.instruments_client,
@@ -178,7 +178,6 @@ class TradingBot:
             # Link to the missed signal handler's history
             if self.missed_signal_handler:
                 self.signal_manager.set_signal_history(self.missed_signal_handler.signal_history)
-
             return True
         except Exception as e:
             self.logger.error(f"Initialization error: {e}", exc_info=True)
@@ -210,6 +209,50 @@ class TradingBot:
             f"Consider channel source: {'YES' if consider_channel else 'NO'}"
         )
         return True
+
+
+
+
+    #--------------------------------------------------------------------------
+    # Logging Methods
+    #--------------------------------------------------------------------------
+    def export_message_logs(self):
+        """Export signal management message logs for debugging"""
+        if hasattr(self, 'signal_manager') and hasattr(self.signal_manager, 'export_message_logs'):
+            return self.signal_manager.export_message_logs()
+        return "Message logging not available"
+
+    async def analyze_recent_signals(self):
+        """Analyze recent signals for debugging issues"""
+        if not hasattr(self, 'signal_manager'):
+            return "Signal manager not initialized"
+
+        # Get logs
+        logs = self.signal_manager.message_logs
+
+        # Basic statistics
+        management_count = sum(1 for log in logs if log.get('is_management', False))
+        success_count = sum(1 for log in logs if log.get('is_management', False) and
+                            log.get('success', False))
+
+        # Group by match method
+        match_methods = {}
+        for log in logs:
+            if log.get('is_management', False):
+                method = log.get('match_method', 'unknown')
+                match_methods[method] = match_methods.get(method, 0) + 1
+
+        # Format results
+        result = f"Recent Signal Analysis:\n"
+        result += f"Total messages: {len(logs)}\n"
+        result += f"Management instructions: {management_count}\n"
+        result += f"Successful executions: {success_count}\n\n"
+        result += "Match methods used:\n"
+
+        for method, count in match_methods.items():
+            result += f"- {method}: {count}\n"
+
+        return result
 
     # -------------------------------------------------------------------------
     # Monitoring Methods
@@ -448,6 +491,9 @@ class TradingBot:
                 reply_to_msg_id = str(event.message.reply_to.reply_to_msg_id)
                 self.logger.debug(f"Message is a reply to message ID: {reply_to_msg_id}")
 
+            # Log message details for debugging
+            self.logger.debug(f"Received message ID: {message_id}, Reply to: {reply_to_msg_id}, Channel: {channel_id}")
+
             # Convert the UTC time to local time zone
             message_time_local = message_time_utc.astimezone(self.local_timezone)
             formatted_time = message_time_local.strftime('%Y-%m-%d %H:%M:%S')
@@ -461,7 +507,8 @@ class TradingBot:
                     event,
                     channel_id=channel_id,
                     channel_name=channel_name,
-                    reply_to_msg_id=reply_to_msg_id
+                    reply_to_msg_id=reply_to_msg_id,
+                    message_id=message_id
                 )
             )
             self._tasks.add(task)
@@ -471,37 +518,35 @@ class TradingBot:
     # Trading Signal Processing Methods
     # -------------------------------------------------------------------------
 
-    async def process_message(self, message_text, colored_time, event=None, channel_id=None, channel_name=None,
-                              reply_to_msg_id=None):
+    async def process_message(self, message_text, colored_time, event=None, channel_id=None,
+                              channel_name=None, reply_to_msg_id=None, message_id=None):
         """Process a received Telegram message"""
         try:
-            # Extract message ID if available
-            message_id = str(event.message.id) if event and hasattr(event, 'message') else None
-
             # First, check if this is a management instruction (move SL to BE, close early)
             if self.signal_manager:
                 is_handled, result = await self.signal_manager.handle_message(
                     message_text,
                     self.selected_account,
                     colored_time,
-                    reply_to_msg_id  # Pass the reply_to_msg_id
+                    reply_to_msg_id
                 )
 
                 if is_handled:
-                    # If it was a management instruction and we handled it, we can stop processing
+                    # Log result information
                     instruction_type = result.get("instruction_type", "unknown")
+                    match_method = result.get("match_method", "unknown")
                     success = result.get("success", False)
                     instrument = result.get("instrument", "unknown instrument")
 
                     if success:
                         self.logger.info(
                             f"{colored_time}: {Fore.GREEN}Successfully executed {instruction_type} "
-                            f"instruction for {instrument}{Style.RESET_ALL}"
+                            f"instruction for {instrument} (match method: {match_method}){Style.RESET_ALL}"
                         )
                     else:
                         self.logger.warning(
                             f"{colored_time}: {Fore.YELLOW}Failed to execute {instruction_type} "
-                            f"instruction for {instrument}{Style.RESET_ALL}"
+                            f"instruction for {instrument} (match method: {match_method}){Style.RESET_ALL}"
                         )
                     return
 
