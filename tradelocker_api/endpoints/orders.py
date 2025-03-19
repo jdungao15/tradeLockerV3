@@ -1,4 +1,8 @@
+import asyncio
 import logging
+
+import aiohttp
+
 from tradelocker_api.endpoints.auth import TradeLockerAuth
 from tradelocker_api.api_client import ApiClient
 
@@ -94,22 +98,50 @@ class TradeLockerOrders(ApiClient):
             logger.error(f"Failed to fetch orders: {e}")
             return None
 
-    def cancel_order(self, account_id: int, acc_num: int, order_id: str):
+    async def cancel_order(self, account, order_id):
         """
-        Cancel an existing order.
+        Cancel a pending order using the correct API endpoint
+
+        Args:
+            account: Account information
+            order_id: Order ID to cancel
+
+        Returns:
+            bool: Success status
         """
         try:
-            headers = {"accNum": str(acc_num)}
-            endpoint = f"trade/accounts/{account_id}/orders/{order_id}"
+            # Use the correct API endpoint directly
+            url = f"{self.auth.base_url}/trade/orders/{order_id}"
+            headers = {
+                "Authorization": f"Bearer {await self.auth.get_access_token_async()}",
+                "accNum": str(account['accNum'])
+            }
 
-            response = self.request('DELETE', endpoint, headers=headers)
+            # Make direct API call instead of using orders_client
+            # This ensures we use exactly the right endpoint
+            async with aiohttp.ClientSession() as session:
+                async with session.delete(url, headers=headers) as response:
+                    if response.status == 200:
+                        logger.info(f"Successfully cancelled order {order_id}")
+                        return True
+                    elif response.status == 429:  # Too Many Requests
+                        # Special handling for rate limiting
+                        retry_after = response.headers.get("Retry-After", "5")
+                        wait_time = int(retry_after) if retry_after.isdigit() else 5
+                        logger.warning(f"Rate limit hit when cancelling order {order_id}. Waiting {wait_time}s")
+                        await asyncio.sleep(wait_time)
 
-            logger.info(f"Order {order_id} cancelled successfully")
-            return response
+                        # Try one more time after waiting
+                        async with session.delete(url, headers=headers) as retry_response:
+                            return retry_response.status == 200
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"Failed to cancel order {order_id}: {response.status} - {error_text}")
+                        return False
+
         except Exception as e:
-            logger.error(f"Failed to cancel order {order_id}: {e}")
-            return None
-
+            logger.error(f"Error cancelling order {order_id}: {e}")
+            return False
     # Asynchronous methods (for new code)
 
     async def create_order_async(self, account_id: int, acc_num: int, instrument: dict,
@@ -161,7 +193,7 @@ class TradeLockerOrders(ApiClient):
         """
         try:
             headers = {"accNum": str(acc_num)}
-            endpoint = f"trade/accounts/{account_id}/orders/{order_id}"
+            endpoint = f"trade/orders/{order_id}"
 
             response = await self.request_async('DELETE', endpoint, headers=headers)
 
