@@ -5,23 +5,10 @@ import time
 from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
-def calculate_pip_difference(entry_price, current_price, instrument_name):
-    """
-    Calculate pip difference based on the instrument type.
-    """
-    if instrument_name.endswith("JPY"):
-        return round(abs(current_price - entry_price) / 0.01)
-    elif instrument_name == "XAUUSD":  # For Gold
-        return round(abs(current_price - entry_price) / 0.1)
-    elif instrument_name in ["DJI30", "NDX100"]:  # For indices
-        return round(abs(current_price - entry_price) / 1.0)
-    else:
-        return round(abs(current_price - entry_price) / 0.0001)
 
 
-    # This function runs indefinitely until the bot is shut down
 async def monitor_existing_position(accounts_client, instruments_client, quotes_client,
-                                    selected_account, base_url, auth_token):
+                                    orders_client, selected_account, base_url, auth_token):
     """
     Function to check and monitor any existing open positions asynchronously with improved error handling.
     """
@@ -59,6 +46,7 @@ async def monitor_existing_position(accounts_client, instruments_client, quotes_
                     position_data_list,
                     instruments_client,
                     quotes_client,
+                    orders_client,
                     selected_account,
                     base_url,
                     auth_token,
@@ -108,10 +96,8 @@ async def monitor_existing_position(accounts_client, instruments_client, quotes_
                 await asyncio.sleep(backoff)
 
 
-
-
 async def process_positions_parallel(positions, instruments_client, quotes_client,
-                                     selected_account, base_url, auth_token,
+                                     orders_client, selected_account, base_url, auth_token,
                                      instrument_cache, position_tracking):
     """
     Process multiple positions in parallel for better efficiency
@@ -124,6 +110,7 @@ async def process_positions_parallel(positions, instruments_client, quotes_clien
                 position_data,
                 instruments_client,
                 quotes_client,
+                orders_client,
                 selected_account,
                 base_url,
                 auth_token,
@@ -139,7 +126,7 @@ async def process_positions_parallel(positions, instruments_client, quotes_clien
 
 
 async def monitor_single_position(position_data, instruments_client, quotes_client,
-                                  selected_account, base_url, auth_token,
+                                  orders_client, selected_account, base_url, auth_token,
                                   instrument_cache, position_tracking):
     """
     Monitor a single position with improved caching and rate limiting
@@ -191,7 +178,8 @@ async def monitor_single_position(position_data, instruments_client, quotes_clie
             selected_account,
             base_url,
             auth_token,
-            position_tracking
+            position_tracking,
+            orders_client
         )
 
     except Exception as e:
@@ -200,141 +188,249 @@ async def monitor_single_position(position_data, instruments_client, quotes_clie
 
 async def process_position_update(position_id, instrument_data, side, entry_price,
                                   quote_data, selected_account, base_url, auth_token,
-                                  position_tracking):
+                                  position_tracking, orders_client):
     """
-    Process position update with improved logic and tracking
+    Process position updates for the runner position (3rd position).
+    Applies trailing stop when first take profit is hit, using the distance
+    between entry and second take profit as the trailing offset.
     """
     try:
         instrument_name = instrument_data['name']
-        instrument_type = instrument_data.get('type', '')
-        ask_price = quote_data['d'].get('ap', 0)
-        bid_price = quote_data['d'].get('bp', 0)
+        instrument_id = instrument_data.get('tradableInstrumentId', '')
+        ask_price = float(quote_data['d'].get('ap', 0))
+        bid_price = float(quote_data['d'].get('bp', 0))
 
         # For a 'buy' position, the current price is the bid price (what you can sell for)
         # For a 'sell' position, the current price is the ask price (what you can buy for)
         current_price = bid_price if side.lower() == 'buy' else ask_price
 
-        # Calculate pip difference
-        pip_difference = calculate_pip_difference(entry_price, current_price, instrument_name)
-
-        # Get current position tracking data
+        # Get or initialize position tracking data
         tracking_data = position_tracking.get(position_id, {
             'last_update': 0,
-            'stop_loss_moved': False,
-            'pip_high': 0,
-            'is_runner': False  # Flag to identify runner positions
+            'trailing_activated': False,
+            'is_runner': False,
+            'take_profits': [],  # Store the take profit levels here
+            'original_order_id': ''  # Store original order ID for reference
         })
 
-        # Store instrument name and position ID for future reference
+        # Store basic position info
         tracking_data['instrument_name'] = instrument_name
         tracking_data['position_id'] = position_id
+        tracking_data['side'] = side
+        tracking_data['entry_price'] = entry_price
 
-        # Determine if this is a CFD runner position to apply selective trailing
-        is_cfd = instrument_type == "EQUITY_CFD"
-        is_gold = instrument_name == "XAUUSD"
-        is_index = instrument_name in ["DJI30", "NDX100"]
-
-        # CFD instruments (including gold) should have trailing, but with different rules
-        should_trail = is_cfd
-
-        # Additional check for runner position (third position)
-        # If this is the first time we're processing this position
-        if should_trail and 'is_runner_checked' not in tracking_data:
-            # Mark as checked to avoid repeated checks
+        # Check if this is the 3rd position (runner)
+        if 'is_runner_checked' not in tracking_data:
             tracking_data['is_runner_checked'] = True
 
-            # For simplicity, we identify runners by their order ID or position in the batch
-            # In production, you might want a more robust identification method
-            # Here we're checking for positions whose ID ends with specific characters
-            # or using other attributes that identify your "runner" positions
-
-            # Check if this is the "runner" position - the third position for indices
-            # You may need to customize this logic based on how your positions are created
-            if position_id.endswith('3') or tracking_data.get('is_third_position', False):
+            # Identify runner position (3rd position)
+            if position_id.endswith('3') or 'runner' in str(position_id).lower():
                 tracking_data['is_runner'] = True
-                logger.info(f"Position {position_id} ({instrument_name}) identified as runner - will apply trailing")
-            else:
-                logger.info(f"Position {position_id} ({instrument_name}) is not a runner - won't apply trailing")
-
-        # Check if this position should be trailed
-        should_trail = should_trail and tracking_data.get('is_runner', False)
-
-        # Track the highest pip movement in favor
-        if side.lower() == 'buy' and current_price > entry_price:
-            tracking_data['pip_high'] = max(tracking_data['pip_high'], pip_difference)
-        elif side.lower() == 'sell' and current_price < entry_price:
-            tracking_data['pip_high'] = max(tracking_data['pip_high'], pip_difference)
-
-        # Determine if stop loss update is needed
-        update_needed = False
-
-        # Only apply trailing to identified runner positions with appropriate pip difference
-        if should_trail:
-            # Set threshold based on instrument type
-            pip_threshold = 100 if is_index else 40  # 100 pips for indices, 40 pips for gold
-
-            # If price has moved beyond threshold pips in favor and stop loss hasn't been moved yet
-            if not tracking_data['stop_loss_moved'] and pip_difference >= pip_threshold:
-                if (side.lower() == 'buy' and current_price > entry_price) or \
-                        (side.lower() == 'sell' and current_price < entry_price):
-                    update_needed = True
-                    tracking_data['stop_loss_moved'] = True
-                    logger.info(
-                        f"Runner position {position_id} ({instrument_name}): Initiating trailing stop at {pip_difference} pips (threshold: {pip_threshold} pips)")
-
-            # If price has moved significantly further after initial stop loss move
-            # implement trailing stop logic with 20 pip pullback
-            elif tracking_data['stop_loss_moved'] and tracking_data['pip_high'] - pip_difference >= 20:
-                # Price has pulled back 20 pips from highest point, move stop loss again
-                update_needed = True
                 logger.info(
-                    f"Runner position {position_id} ({instrument_name}): Trailing stop - {tracking_data['pip_high'] - pip_difference} pip pullback from highest")
+                    f"Position {position_id} ({instrument_name}) identified as runner - will apply trailing stop when TP1 hit")
 
-        # For non-runner positions, apply the original logic (40 pip threshold)
-        # This keeps the existing behavior for non-CFD instruments and gold
-        elif not should_trail and not is_cfd:
-            # If price has moved 40+ pips in favor and stop loss hasn't been moved yet
-            if not tracking_data['stop_loss_moved'] and pip_difference >= 40:
-                if (side.lower() == 'buy' and current_price > entry_price) or \
-                        (side.lower() == 'sell' and current_price < entry_price):
-                    update_needed = True
-                    tracking_data['stop_loss_moved'] = True
+                # If take_profits not stored yet, we need to get them from order history
+                if not tracking_data.get('take_profits'):
+                    # Get take profit levels from your system
+                    take_profits = await get_take_profits_for_position(
+                        position_id, instrument_id, selected_account, orders_client
+                    )
 
-            # If price has moved significantly further after initial stop loss move
-            # implement trailing stop logic
-            elif tracking_data['stop_loss_moved'] and tracking_data['pip_high'] - pip_difference >= 20:
-                # Price has pulled back 20 pips from highest point, move stop loss again
-                update_needed = True
+                    if take_profits and len(take_profits) >= 2:
+                        tracking_data['take_profits'] = take_profits
+                        logger.info(f"Stored take profit levels for position {position_id}: {take_profits}")
+                    else:
+                        logger.warning(f"Could not retrieve take profit levels for position {position_id}")
 
-        if update_needed:
-            logger.info(f"Position {position_id} ({instrument_name}): Updating stop loss at {pip_difference} pips")
+        # Skip if not a runner position
+        if not tracking_data.get('is_runner', False):
+            position_tracking[position_id] = tracking_data
+            return
 
-            await update_stop_loss_async(
-                base_url,
-                auth_token,
-                selected_account['accNum'],
-                position_id,
-                entry_price
+        # Skip if no take profit levels stored
+        if not tracking_data.get('take_profits') or len(tracking_data['take_profits']) < 2:
+            # Even for runner positions, we need at least TP1 and TP2 to implement the strategy
+            position_tracking[position_id] = tracking_data
+            return
+
+        # Get take profit levels
+        tp1 = tracking_data['take_profits'][0]
+        tp2 = tracking_data['take_profits'][1]
+
+        # Current time for rate limiting
+        current_time = time.time()
+        last_update_time = tracking_data.get('last_update', 0)
+        time_since_update = current_time - last_update_time
+
+        # Only proceed if enough time has passed since last update (rate limiting)
+        if time_since_update < 30:  # 30 second minimum between updates
+            position_tracking[position_id] = tracking_data
+            return
+
+        # Check if TP1 has been hit
+        tp1_hit = False
+        if side.lower() == 'buy':
+            # For buy: TP1 is hit if current price >= TP1
+            tp1_hit = current_price >= tp1
+        else:  # 'sell'
+            # For sell: TP1 is hit if current price <= TP1
+            tp1_hit = current_price <= tp1
+
+        # Activate trailing stop when TP1 is hit and trailing stop not already activated
+        if tp1_hit and not tracking_data.get('trailing_activated', False):
+            logger.info(
+                f"Position {position_id} ({instrument_name}): First take profit hit. "
+                f"Current price: {current_price}, TP1: {tp1}. Activating trailing stop."
             )
 
-            # Update tracking data
-            tracking_data['last_update'] = time.time()
+            # Calculate trailing offset as the distance between entry and TP2
+            # This is the exact strategy you specified
+            price_distance = abs(tp2 - entry_price)
+
+            # Convert to points for the API
+            trailing_offset = calculate_trailing_offset(instrument_name, price_distance)
+
+            logger.info(
+                f"Calculated trailing offset: {trailing_offset} points "
+                f"(from entry-TP2 distance: {price_distance})"
+            )
+
+            # Make the API call to set up trailing stop
+            url = f"{base_url}/trade/positions/{position_id}"
+            headers = {
+                "Authorization": f"Bearer {auth_token}",
+                "accNum": str(selected_account['accNum']),
+                "Content-Type": "application/json"
+            }
+
+            # Set just the trailingOffset parameter - TradeLocker handles the rest
+            body = {
+                "trailingOffset": trailing_offset
+            }
+
+            # Make the API call
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.patch(url, headers=headers, json=body) as response:
+                        if response.status == 200:
+                            tracking_data['trailing_activated'] = True
+                            tracking_data['last_update'] = current_time
+                            logger.info(
+                                f"Successfully activated trailing stop for position {position_id} "
+                                f"with offset {trailing_offset}"
+                            )
+                        else:
+                            error_text = await response.text()
+                            logger.error(f"Failed to activate trailing stop: {response.status} - {error_text}")
+            except Exception as e:
+                logger.error(f"Error activating trailing stop: {e}")
 
         # Store updated tracking data
         position_tracking[position_id] = tracking_data
 
     except Exception as e:
         logger.error(f"Error processing position update: {e}", exc_info=True)
+
+
+async def get_take_profits_for_position(position_id, instrument_id, selected_account, orders_client):
+    """
+    Helper function to retrieve the take profit levels for a position.
+
+    This function gets the take profit levels by:
+    1. Looking for the orders that created this position
+    2. Extracting the take profit levels from these orders
+    3. Sorting them appropriately based on the order side
+    """
+    try:
+        # Get recent orders for this instrument
+        orders = await orders_client.get_orders_async(
+            selected_account['id'],
+            selected_account['accNum']
+        )
+
+        if not orders or 'd' not in orders or 'orders' not in orders['d']:
+            return None
+
+        # Find the order that created this position
+        position_orders = []
+        for order in orders['d']['orders']:
+            # Check if this order is related to the position
+            # You may need to adjust this logic based on how orders and positions are linked
+            if str(order.get('positionId', '')) == str(position_id):
+                position_orders.append(order)
+
+        # Extract take profit levels
+        take_profits = []
+        for order in position_orders:
+            # Extract take profit from order
+            tp = order.get('takeProfit')
+            if tp and tp not in take_profits:
+                take_profits.append(float(tp))
+
+        # Sort take profits appropriately based on side
+        # For buy orders: ascending order, for sell orders: descending order
+        side = position_orders[0].get('side', '').lower() if position_orders else 'buy'
+        take_profits.sort(reverse=(side == 'sell'))
+
+        return take_profits
+
+    except Exception as e:
+        logger.error(f"Error retrieving take profits for position {position_id}: {e}")
+        return None
+
+
 def calculate_pip_difference(entry_price, current_price, instrument_name):
     """
-    Calculate pip difference based on the instrument type.
+    Calculate pip difference based on the instrument type with broker-agnostic naming.
     """
-    if instrument_name.endswith("JPY"):
+    instrument_upper = instrument_name.upper()
+
+    # Check for JPY pairs (any instrument ending with JPY regardless of broker naming)
+    if instrument_upper.endswith("JPY"):
         return round(abs(current_price - entry_price) / 0.01)
-    elif instrument_name == "XAUUSD":  # For Gold
+
+    # Check for gold (multiple possible naming conventions)
+    elif any(gold_name in instrument_upper for gold_name in ["XAUUSD", "GOLD", "XAU"]):
         return round(abs(current_price - entry_price) / 0.1)
+
+    # Check for indices (multiple possible naming conventions)
+    elif any(index_name in instrument_upper for index_name in
+             ["DJI30", "DOW", "US30", "NDX100", "NAS100", "NASDAQ"]):
+        # Most indices use 1.0 as pip value
+        return round(abs(current_price - entry_price) / 1.0)
+
+    # Default to standard forex pip value
     else:
         return round(abs(current_price - entry_price) / 0.0001)
+
+
+def calculate_trailing_offset(instrument_name, price_distance):
+    """
+    Calculate trailing stop offset value for TradeLocker API.
+    Converts price distance to points as expected by the API.
+    """
+    instrument_upper = instrument_name.upper()
+
+    # Check for indices which often use different multipliers
+    if any(index_name in instrument_upper for index_name in
+           ["DJI30", "DOW", "US30", "NDX100", "NAS100", "NASDAQ"]):
+        # For indices, the trailing offset is often the same as price distance
+        return int(price_distance)
+
+    # For gold and silver
+    elif any(name in instrument_upper for name in ["XAUUSD", "GOLD", "XAU", "XAGUSD", "SILVER", "XAG"]):
+        # Convert gold price distance to points (usually * 100)
+        return int(price_distance * 100)
+
+    # For JPY pairs
+    elif instrument_upper.endswith("JPY"):
+        # Convert JPY price distance to points (usually * 100)
+        return int(price_distance * 100)
+
+    # For standard forex pairs
+    else:
+        # Convert standard forex price distance to points (usually * 10000)
+        return int(price_distance * 10000)
 
 
 async def update_stop_loss_async(base_url, auth_token, acc_num, position_id, new_stop_loss_price):
