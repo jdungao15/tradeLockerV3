@@ -271,6 +271,7 @@ class TradingBot:
                 self.accounts_client,
                 self.instruments_client,
                 self.quotes_client,
+                self.orders_client,  # Add this parameter
                 self.selected_account,
                 self.base_url,
                 auth_token
@@ -278,7 +279,6 @@ class TradingBot:
         )
         self._tasks.add(monitor_task)
         return monitor_task
-
     def _schedule_news_calendar_updates(self):
         """Schedule regular updates for the economic calendar"""
 
