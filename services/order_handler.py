@@ -8,6 +8,7 @@ init(autoreset=True)
 
 logger = logging.getLogger(__name__)
 
+
 def place_order(orders_client, selected_account, instrument_data, parsed_signal, position_sizes, colored_time):
     """
     Places orders for the given instrument and parsed signal - synchronous version.
@@ -38,36 +39,65 @@ def place_order(orders_client, selected_account, instrument_data, parsed_signal,
 
 
 async def place_order_async(orders_client, selected_account, instrument_data, parsed_signal, position_sizes,
-                            colored_time):
+                            colored_time, order_type='limit'):
     """
     Places orders for the given instrument and parsed signal - asynchronous version.
-
-    Args:
-        orders_client: Asynchronous orders client
-        selected_account: Account information dictionary
-        instrument_data: Instrument data dictionary
-        parsed_signal: Parsed trading signal
-        position_sizes: List of position sizes
-        colored_time: Formatted time string for logging
     """
     try:
-        # Prepare order batch
+        # Import risk config for TP selection
+        import risk_config
+
+        # Check if this is a CFD instrument (for logging purposes only)
+        is_cfd = instrument_data['type'] == "EQUITY_CFD" and instrument_data['name'] != "XAUUSD"
+        logger.info(f"{colored_time}: Instrument {instrument_data['name']} is {'CFD' if is_cfd else 'non-CFD/XAUUSD'}")
+
+        # Get valid positions with non-zero size
+        valid_positions = [(size, tp) for size, tp in zip(position_sizes, parsed_signal['take_profits']) if size > 0]
+
+        if not valid_positions:
+            logger.warning(f"{colored_time}: No valid positions to place orders for")
+            return None
+
+        # Get current TP selection preference
+        tp_selection = risk_config.get_tp_selection()
+        mode = tp_selection.get('mode', 'all')
+
+        # Log the TP selection mode
+        logger.info(f"{colored_time}: Using TP selection mode: {mode}")
+
+        # Prepare orders batch
         orders_batch = []
 
-        for position_size, take_profit in zip(position_sizes, parsed_signal['take_profits']):
+        # Calculate total position size
+        total_pos_size = sum(size for size, _ in valid_positions)
+
+        # Number of positions to create equals the number of valid positions
+        num_positions = len(valid_positions)
+
+        # Equal position size distribution
+        position_per_segment = round(total_pos_size / num_positions, 2)
+
+        # Create orders for each valid position
+        for i, (_, take_profit) in enumerate(valid_positions):
             order = {
                 'instrument': instrument_data,
-                'quantity': position_size,
+                'quantity': position_per_segment,
                 'side': parsed_signal['order_type'],
-                'order_type': 'limit',
-                'price': parsed_signal['entry_point'],
+                'order_type': order_type,
+                'price': parsed_signal['entry_point'] if order_type == 'limit' else None,
                 'stop_loss': parsed_signal['stop_loss'],
-                'take_profit': take_profit,
+                'take_profit': take_profit
             }
             orders_batch.append(order)
 
+            # If this is the last position and there are multiple positions, note it's a runner
+            runner_note = " (RUNNER)" if i == num_positions - 1 and num_positions > 1 else ""
+            logger.info(
+                f"{colored_time}: Position #{i + 1}{runner_note} (size: {position_per_segment}) with take profit: {take_profit}")
+
         # Place orders in parallel
-        logger.info(f"{colored_time}: Placing {len(orders_batch)} orders in parallel...")
+        logger.info(
+            f"{colored_time}: Placing {len(orders_batch)} {Fore.CYAN}{order_type.upper()}{Style.RESET_ALL} orders in parallel...")
 
         result = await orders_client.place_orders_batch_async(
             selected_account['id'],
@@ -77,11 +107,49 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
 
         if result:
             # Log results
-            for order, response in result.get('successful', []):
-                logger.info(f"{colored_time}: Order placed successfully: {response}")
+            successful_orders = result.get('successful', [])
+            for j, (order, response) in enumerate(successful_orders):
+                entry_point = parsed_signal['entry_point']
+                stop_loss = parsed_signal['stop_loss']
+                side = parsed_signal['order_type'].upper()
+
+                # Get take profit for this specific order
+                take_profit = order.get('take_profit', 'N/A')
+
+                # Determine if this is a runner position (last position when multiple positions)
+                is_runner = (j == len(successful_orders) - 1) and (len(successful_orders) > 1)
+                runner_text = f"{Fore.MAGENTA} (RUNNER){Style.RESET_ALL}" if is_runner else ""
+
+                logger.info(
+                    f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{runner_text} - "
+                    f"Instrument: {Fore.YELLOW}{instrument_data['name']}{Style.RESET_ALL}, "
+                    f"Side: {Fore.BLUE}{side}{Style.RESET_ALL}, "
+                    f"Size: {Fore.YELLOW}{order.get('quantity')}{Style.RESET_ALL}, "
+                    f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
+                    f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
+                    f"TP: {Fore.GREEN}{take_profit}{Style.RESET_ALL}"
+                )
+
+                # Extract position ID if available and mark as runner if it's the last position
+                if is_runner:
+                    position_id = None
+                    try:
+                        if isinstance(response, dict):
+                            if 'd' in response and 'orderId' in response.get('d', {}):
+                                position_id = response['d']['orderId']
+                            elif 'orderId' in response:
+                                position_id = response['orderId']
+                    except Exception:
+                        pass
+
+                    # If this is a CFD instrument and a runner, note it for position monitoring
+                    if is_cfd:
+                        logger.info(
+                            f"{colored_time}: {Fore.MAGENTA}Runner position{Style.RESET_ALL} (ID: {position_id}) created - "
+                            f"Position monitor will handle trailing stop")
 
             for order, error in result.get('failed', []):
-                logger.error(f"{colored_time}: Failed to place order: {error}")
+                logger.error(f"{colored_time}: {Fore.RED}Failed to place order{Style.RESET_ALL}: {error}")
 
             return result
         else:
@@ -91,7 +159,6 @@ async def place_order_async(orders_client, selected_account, instrument_data, pa
     except Exception as e:
         logger.error(f"{colored_time}: Error placing orders: {e}", exc_info=True)
         return None
-
 
 async def place_orders_with_risk_check(orders_client, accounts_client, quotes_client, selected_account,
                                        instrument_data, parsed_signal, position_sizes, risk_amount,
@@ -197,196 +264,4 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
 
     except Exception as e:
         logger.error(f"{colored_time}: Error in order placement with risk check: {e}", exc_info=True)
-        return None
-
-
-async def place_order_async(orders_client, selected_account, instrument_data, parsed_signal, position_sizes,
-                            colored_time, order_type='limit'):
-    """
-    Places orders for the given instrument and parsed signal - asynchronous version.
-    """
-    try:
-        # Prepare order batch - only include positions with non-zero size
-        orders_batch = []
-
-        # Check if this is a CFD instrument that should get special treatment
-        # XAUUSD should be excluded from special CFD handling, even though it's a CFD type
-        is_cfd = instrument_data['type'] == "EQUITY_CFD" and instrument_data['name'] != "XAUUSD"
-        logger.info(f"{colored_time}: Instrument {instrument_data['name']} is {'CFD' if is_cfd else 'non-CFD/XAUUSD'}")
-
-        if is_cfd:
-            # For CFD instruments (excluding XAUUSD), we need to place exactly 3 orders with specific take profits
-            logger.info(f"{colored_time}: Processing CFD instrument with custom take profit allocation")
-
-            # Get total position size (sum of all non-zero positions)
-            valid_positions = [(size, tp) for size, tp in zip(position_sizes, parsed_signal['take_profits']) if
-                               size > 0]
-            total_pos_size = sum(size for size, _ in valid_positions)
-
-            # Calculate position size per segment (equal allocation)
-            position_per_segment = round(total_pos_size / 3, 2)
-
-            # Get order direction
-            is_buy = parsed_signal['order_type'].lower() == 'buy'
-
-            # Sort take profits in the right order based on order type
-            # For SELL: We want lowest TPs first (ascending)
-            # For BUY: We want highest TPs first (descending)
-            sorted_tps = sorted(parsed_signal['take_profits'], reverse=is_buy)
-            logger.info(f"{colored_time}: Sorted TPs ({('descending' if is_buy else 'ascending')}): {sorted_tps}")
-
-            # Select the two most favorable take profits
-            # (For SELL: The two lowest values, for BUY: The two highest values)
-            if len(sorted_tps) >= 2:
-                tp1 = sorted_tps[0]  # First TP (closest to entry)
-                tp2 = sorted_tps[1]  # Second TP
-            elif len(sorted_tps) == 1:
-                tp1 = sorted_tps[0]
-                tp2 = sorted_tps[0]
-            else:
-                logger.error(f"{colored_time}: No take profits found in signal, cannot place orders")
-                return None
-
-            # Create order 1 with first TP
-            order1 = {
-                'instrument': instrument_data,
-                'quantity': position_per_segment,
-                'side': parsed_signal['order_type'],
-                'order_type': order_type,
-                'price': parsed_signal['entry_point'] if order_type == 'limit' else None,
-                'stop_loss': parsed_signal['stop_loss'],
-                'take_profit': tp1
-            }
-            orders_batch.append(order1)
-            logger.info(f"{colored_time}: Position #1 (size: {position_per_segment}) with take profit: {tp1}")
-
-            # Create order 2 with second TP
-            order2 = {
-                'instrument': instrument_data,
-                'quantity': position_per_segment,
-                'side': parsed_signal['order_type'],
-                'order_type': order_type,
-                'price': parsed_signal['entry_point'] if order_type == 'limit' else None,
-                'stop_loss': parsed_signal['stop_loss'],
-                'take_profit': tp2
-            }
-            orders_batch.append(order2)
-            logger.info(f"{colored_time}: Position #2 (size: {position_per_segment}) with take profit: {tp2}")
-
-            # Create order 3 (runner) with 500 pip distant take profit
-            side = parsed_signal['order_type'].lower()
-            entry = float(parsed_signal['entry_point'])
-
-            # Determine pip size based on instrument
-            if instrument_data['name'] == "DJI30":
-                pip_value = 1.0
-            elif instrument_data['name'] == "NDX100":
-                pip_value = 1.0
-            else:
-                pip_value = 1.0  # Default for other CFDs
-
-            # Set take profit 500 pips away from entry
-            pips_distance = 500 * pip_value
-
-            if side == 'buy':
-                far_tp = entry + pips_distance
-            else:  # 'sell'
-                far_tp = entry - pips_distance
-
-            order3 = {
-                'instrument': instrument_data,
-                'quantity': position_per_segment,
-                'side': parsed_signal['order_type'],
-                'order_type': order_type,
-                'price': parsed_signal['entry_point'] if order_type == 'limit' else None,
-                'stop_loss': parsed_signal['stop_loss'],
-                'take_profit': far_tp
-            }
-            orders_batch.append(order3)
-            logger.info(
-                f"{colored_time}: Position #3 (RUNNER) (size: {position_per_segment}) with 500 pip distant take profit: {far_tp}")
-
-        else:
-            # For non-CFD instruments and XAUUSD, process normally with original take profits
-            valid_positions = [(size, tp) for size, tp in zip(position_sizes, parsed_signal['take_profits']) if
-                               size > 0]
-
-            if not valid_positions:
-                logger.warning(f"{colored_time}: No valid positions to place orders for")
-                return None
-
-            logger.info(f"{colored_time}: Processing {len(valid_positions)} positions with non-zero size")
-
-            # Process each position
-            for i, (position_size, take_profit) in enumerate(valid_positions):
-                order = {
-                    'instrument': instrument_data,
-                    'quantity': position_size,
-                    'side': parsed_signal['order_type'],
-                    'order_type': order_type,
-                    'price': parsed_signal['entry_point'] if order_type == 'limit' else None,
-                    'stop_loss': parsed_signal['stop_loss'],
-                    'take_profit': take_profit
-                }
-                orders_batch.append(order)
-                logger.info(f"{colored_time}: Position #{i+1} (size: {position_size}) with take profit: {take_profit}")
-
-        # Place orders in parallel
-        logger.info(
-            f"{colored_time}: Placing {len(orders_batch)} {Fore.CYAN}{order_type.upper()}{Style.RESET_ALL} orders in parallel...")
-
-        result = await orders_client.place_orders_batch_async(
-            selected_account['id'],
-            selected_account['accNum'],
-            orders_batch
-        )
-
-        if result:
-            # Log results
-            successful_orders = result.get('successful', [])
-            for j, (order, response) in enumerate(successful_orders):
-                entry_point = parsed_signal['entry_point']
-                stop_loss = parsed_signal['stop_loss']
-                side = parsed_signal['order_type'].upper()
-
-                # Get take profit for this specific order
-                take_profit = order.get('take_profit', 'N/A')
-
-                logger.info(
-                    f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{Style.RESET_ALL} - "
-                    f"Instrument: {Fore.YELLOW}{instrument_data['name']}{Style.RESET_ALL}, "
-                    f"Side: {Fore.BLUE}{side}{Style.RESET_ALL}, "
-                    f"Size: {Fore.YELLOW}{order.get('quantity')}{Style.RESET_ALL}, "
-                    f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
-                    f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
-                    f"TP: {Fore.GREEN}{take_profit}{Style.RESET_ALL}"
-                )
-
-                # Check for runner position to log additional info (for CFD only)
-                if is_cfd and j == len(successful_orders) - 1:
-                    # Extract position ID if available
-                    position_id = None
-                    try:
-                        if isinstance(response, dict):
-                            if 'd' in response and 'orderId' in response.get('d', {}):
-                                position_id = response['d']['orderId']
-                            elif 'orderId' in response:
-                                position_id = response['orderId']
-                    except Exception:
-                        pass
-
-                    logger.info(
-                        f"{colored_time}: {Fore.MAGENTA}CFD Runner position{Style.RESET_ALL} (ID: {position_id}) created - "
-                        f"Position monitor will handle trailing stop")
-
-            for order, error in result.get('failed', []):
-                logger.error(f"{colored_time}: {Fore.RED}Failed to place order{Style.RESET_ALL}: {error}")
-
-            return result
-        else:
-            logger.error(f"{colored_time}: Failed to place orders batch.")
-            return None
-
-    except Exception as e:
-        logger.error(f"{colored_time}: Error placing orders: {e}", exc_info=True)
         return None

@@ -553,6 +553,45 @@ def update_broker_adjustment(instrument, provider_price, broker_price):
     return adjustment
 
 
+def filter_take_profits_by_preference(take_profits, selection_config):
+    """
+    Filter take profits based on user preferences
+
+    Args:
+        take_profits: List of take profits from signal
+        selection_config: Config dict from risk_config.get_tp_selection()
+
+    Returns:
+        list: Filtered take profits
+    """
+    mode = selection_config.get('mode', 'all')
+
+    if mode == 'all' or not take_profits:
+        return take_profits
+
+    if mode == 'first_only':
+        return take_profits[:1]
+
+    if mode == 'first_two':
+        return take_profits[:2]
+
+    if mode == 'last_two':
+        return take_profits[-2:] if len(take_profits) >= 2 else take_profits
+
+    if mode == 'odd':
+        return [tp for i, tp in enumerate(take_profits) if i % 2 == 0]  # 0-indexed, so even indices are odd TPs
+
+    if mode == 'even':
+        return [tp for i, tp in enumerate(take_profits) if i % 2 == 1]  # 0-indexed, so odd indices are even TPs
+
+    if mode == 'custom':
+        custom_indices = selection_config.get('custom_selection', [1, 2, 3, 4])
+        # Convert 1-based indices to 0-based for list access
+        indices_0_based = [i - 1 for i in custom_indices if 0 < i <= len(take_profits)]
+        return [take_profits[i] for i in indices_0_based]
+
+    return take_profits  # Default to all
+
 # Clear signal cache periodically (every 24 hours)
 async def cache_maintenance_task():
     """Background task to clear signal cache periodically"""

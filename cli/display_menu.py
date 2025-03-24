@@ -91,7 +91,8 @@ def display_risk_menu():
 
     # Moved these options down by one
     print(f"{Fore.YELLOW}12.{Style.RESET_ALL} Reset to Default Risk Settings")
-    print(f"{Fore.YELLOW}13.{Style.RESET_ALL} Return to Main Menu")
+    print(f"{Fore.YELLOW}13.{Style.RESET_ALL} Configure Take Profit Selection")
+    print(f"{Fore.YELLOW}14.{Style.RESET_ALL} Return to Main Menu")
     print(f"{Fore.CYAN}========================================={Style.RESET_ALL}\n")
 
     choice = input(f"{Fore.GREEN}Enter your choice (1-13): {Style.RESET_ALL}")
@@ -161,3 +162,28 @@ def get_drawdown_percentage_input():
         retry = input("Try again? (y/n): ").lower()
         if retry != 'y':
             return None
+
+
+def display_tp_selection_menu():
+    """Display the take profit selection configuration menu"""
+    current_tp_selection = risk_config.get_tp_selection()
+
+    print(f"\n{Fore.CYAN}===== TAKE PROFIT SELECTION CONFIGURATION ====={Style.RESET_ALL}")
+    print(f"Current selection method: {Fore.YELLOW}{current_tp_selection['mode']}{Style.RESET_ALL}")
+
+    if current_tp_selection['mode'] == 'custom':
+        tp_list = ', '.join([f'TP{i}' for i in current_tp_selection['custom_selection']])
+        print(f"Custom selection: {Fore.GREEN}{tp_list}{Style.RESET_ALL}")
+
+    # Print menu options
+    print(f"\n{Fore.YELLOW}1.{Style.RESET_ALL} Use all take profits (default)")
+    print(f"{Fore.YELLOW}2.{Style.RESET_ALL} Use only first take profit (TP1)")
+    print(f"{Fore.YELLOW}3.{Style.RESET_ALL} Use first two take profits (TP1 & TP2)")
+    print(f"{Fore.YELLOW}4.{Style.RESET_ALL} Use last two take profits")
+    print(f"{Fore.YELLOW}5.{Style.RESET_ALL} Use odd-numbered take profits (TP1, TP3, etc.)")
+    print(f"{Fore.YELLOW}6.{Style.RESET_ALL} Use even-numbered take profits (TP2, TP4, etc.)")
+    print(f"{Fore.YELLOW}7.{Style.RESET_ALL} Configure custom TP selection")
+    print(f"{Fore.YELLOW}8.{Style.RESET_ALL} Return to Risk Menu")
+
+    choice = input(f"{Fore.GREEN}Enter your choice (1-8): {Style.RESET_ALL}")
+    return choice
