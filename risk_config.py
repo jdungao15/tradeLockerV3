@@ -3,7 +3,15 @@ import os
 import logging
 
 logger = logging.getLogger(__name__)
-
+TP_SELECTION_OPTIONS = {
+    "all": "Use all take profits from signal",
+    "first_only": "Use only first take profit (TP1)",
+    "first_two": "Use only first two take profits (TP1 & TP2)",
+    "last_two": "Use only last two take profits (e.g., TP3 & TP4 in a 4-TP signal)",
+    "odd": "Use odd-numbered take profits (TP1, TP3, etc.)",
+    "even": "Use even-numbered take profits (TP2, TP4, etc.)",
+    "custom": "Use custom selection of take profits"
+}
 # Risk profile presets
 RISK_PROFILES = {
     "conservative": {
@@ -73,7 +81,11 @@ RISK_PROFILES = {
         },
         "drawdown": {
             "daily_percentage": 5.0  # Aggressive drawdown limit (5%)
-        }
+        },
+        "tp_selection": {
+            "mode": "all",  # Default to using all take profits
+            "custom_selection": [1, 2, 3, 4]  # Used only when mode is "custom"
+        },
     }
 }
 
@@ -386,6 +398,51 @@ def apply_risk_profile(profile_name):
 
     return success
 
+
+def get_tp_selection():
+    """
+    Get the current take profit selection configuration
+
+    Returns:
+        dict: TP selection configuration with 'mode' and 'custom_selection' keys
+    """
+    if "tp_selection" not in risk_config:
+        risk_config["tp_selection"] = {
+            "mode": "all",
+            "custom_selection": [1, 2, 3, 4]
+        }
+
+    return risk_config["tp_selection"]
+
+
+def update_tp_selection(mode, custom_selection=None):
+    """
+    Update the take profit selection configuration
+
+    Args:
+        mode: Selection mode ('all', 'first_only', 'first_two', 'last_two', 'odd', 'even', 'custom')
+        custom_selection: List of TP indices to use when mode is 'custom'
+
+    Returns:
+        bool: Success status
+    """
+    if mode not in TP_SELECTION_OPTIONS:
+        logger.error(f"Invalid TP selection mode: {mode}")
+        return False
+
+    if "tp_selection" not in risk_config:
+        risk_config["tp_selection"] = {}
+
+    risk_config["tp_selection"]["mode"] = mode
+
+    if mode == "custom" and custom_selection:
+        # Ensure all values are positive integers
+        risk_config["tp_selection"]["custom_selection"] = [
+            i for i in custom_selection if isinstance(i, int) and i > 0
+        ]
+
+    # Save to file
+    return save_risk_config()
 
 # Initialize by loading config at module import
 load_risk_config()

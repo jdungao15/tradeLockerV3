@@ -607,6 +607,30 @@ class TradingBot:
                 f"Take profits: {Fore.GREEN}{', '.join(map(str, parsed_signal['take_profits']))}{Style.RESET_ALL}")
             self.logger.info(f"Using account ID: {self.selected_account['id']}")
 
+            # Store original TPs
+            original_tps = parsed_signal['take_profits'].copy()
+
+            # Apply TP filtering based on user preferences
+            from core.signal_parser import filter_take_profits_by_preference
+            tp_selection = risk_config.get_tp_selection()
+            filtered_tps = filter_take_profits_by_preference(original_tps, tp_selection)
+
+            # Update the parsed signal with filtered TPs
+            parsed_signal['take_profits'] = filtered_tps
+
+            # Log the TP selection if it's different from original
+            if len(filtered_tps) < len(original_tps):
+                # Log which TPs we're using
+                original_tp_str = ', '.join([f"TP{i + 1}: {original_tps[i]}" for i in range(len(original_tps))])
+                filtered_tp_str = ', '.join([f"TP{original_tps.index(tp) + 1}: {tp}" for tp in filtered_tps])
+
+                self.logger.info(
+                    f"{colored_time}: {Fore.CYAN}Using {len(filtered_tps)} of {len(original_tps)} take profits "
+                    f"based on {tp_selection['mode']} configuration{Style.RESET_ALL}"
+                )
+                self.logger.info(f"Original TPs: {original_tp_str}")
+                self.logger.info(f"Selected TPs: {filtered_tp_str}")
+
             # Check news restrictions if enabled
             if self.enable_news_filter:
                 current_time = datetime.now(pytz.UTC)
@@ -795,6 +819,64 @@ async def shutdown(loop):
     logging.info("Shutdown complete.")
 
 
+async def handle_tp_selection():
+    """Handle take profit selection configuration"""
+    while True:
+        from cli.display_menu import display_tp_selection_menu
+        import risk_config
+        from colorama import Fore, Style
+
+        tp_choice = display_tp_selection_menu()
+
+        if tp_choice == '1':
+            risk_config.update_tp_selection("all")
+            print(f"{Fore.GREEN}Now using all take profits from signals.{Style.RESET_ALL}")
+
+        elif tp_choice == '2':
+            risk_config.update_tp_selection("first_only")
+            print(f"{Fore.GREEN}Now using only the first take profit (TP1).{Style.RESET_ALL}")
+
+        elif tp_choice == '3':
+            risk_config.update_tp_selection("first_two")
+            print(f"{Fore.GREEN}Now using only the first two take profits.{Style.RESET_ALL}")
+
+        elif tp_choice == '4':
+            risk_config.update_tp_selection("last_two")
+            print(f"{Fore.GREEN}Now using only the last two take profits.{Style.RESET_ALL}")
+
+        elif tp_choice == '5':
+            risk_config.update_tp_selection("odd")
+            print(f"{Fore.GREEN}Now using odd-numbered take profits (TP1, TP3, etc.).{Style.RESET_ALL}")
+
+        elif tp_choice == '6':
+            risk_config.update_tp_selection("even")
+            print(f"{Fore.GREEN}Now using even-numbered take profits (TP2, TP4, etc.).{Style.RESET_ALL}")
+
+        elif tp_choice == '7':
+            # Custom selection interface
+            custom_input = input(
+                f"{Fore.YELLOW}Enter TP numbers to use, separated by commas (e.g., 1,3,4): {Style.RESET_ALL}")
+            try:
+                # Parse the input into a list of integers
+                custom_selection = [int(x.strip()) for x in custom_input.split(',')]
+                if not custom_selection:
+                    print(f"{Fore.RED}Invalid selection. Must include at least one TP.{Style.RESET_ALL}")
+                    continue
+
+                risk_config.update_tp_selection("custom", custom_selection)
+                tp_list = ', '.join([f'TP{i}' for i in custom_selection])
+                print(f"{Fore.GREEN}Now using custom selection: {tp_list}{Style.RESET_ALL}")
+
+            except ValueError:
+                print(f"{Fore.RED}Invalid input. Please enter numbers separated by commas.{Style.RESET_ALL}")
+
+        elif tp_choice == '8':
+            return
+
+        else:
+            print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
+
+        input("\nPress Enter to continue...")
 async def handle_risk_configuration():
     """Handle risk management configuration menu"""
     while True:
@@ -923,7 +1005,7 @@ async def handle_risk_configuration():
             print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
 
         elif risk_choice == '11':
-            # NEW OPTION: Configure Daily Drawdown percentage
+            # Configure Daily Drawdown percentage
             print(f"\n{Fore.CYAN}Configuring Daily Drawdown Percentage{Style.RESET_ALL}")
 
             # Get new drawdown percentage
@@ -944,10 +1026,14 @@ async def handle_risk_configuration():
             if confirmation == 'y':
                 risk_config.apply_risk_profile("balanced")
                 print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
-
         elif risk_choice == '13':
+            # Configure Take Profit Selection
+            await handle_tp_selection()
+        elif risk_choice == '14':
             # Return to main menu
             return
+
+
 
         else:
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
