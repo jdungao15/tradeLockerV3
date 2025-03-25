@@ -203,58 +203,68 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
         order_type = 'limit'
         adjusted_stop_loss = parsed_signal['stop_loss']
 
+        # IMPORTANT FIX: Use the matched broker instrument name, not the canonical name
         # Get current market price to decide between limit and market order
-        quote = await quotes_client.get_quote_async(updated_account, parsed_signal['instrument'])
+        try:
+            # Use instrument_data['name'] (the broker's actual instrument name) instead of parsed_signal['instrument']
+            broker_instrument_name = instrument_data['name']
+            quote = await quotes_client.get_quote_async(updated_account, broker_instrument_name)
 
-        if quote and 'd' in quote:
-            # Extract bid and ask prices
-            bid_price = float(quote['d'].get('bp', 0))
-            ask_price = float(quote['d'].get('ap', 0))
+            if quote and 'd' in quote:
+                # Extract bid and ask prices
+                bid_price = float(quote['d'].get('bp', 0))
+                ask_price = float(quote['d'].get('ap', 0))
 
-            # Determine current price based on order type (buy/sell)
-            side = parsed_signal['order_type'].lower()
-            current_price = ask_price if side == 'buy' else bid_price
+                # Determine current price based on order type (buy/sell)
+                side = parsed_signal['order_type'].lower()
+                current_price = ask_price if side == 'buy' else bid_price
 
-            # Determine pip value based on instrument
-            if instrument_data['name'].endswith("JPY"):
-                pip_value = 0.01
-            elif instrument_data['name'] == "DJI30":
-                pip_value = 1.0
-            elif instrument_data['name'] == "XAUUSD":
-                pip_value = 0.1
+                # Determine pip value based on instrument
+                if broker_instrument_name.upper().endswith("JPY") or "JPY" in broker_instrument_name.upper():
+                    pip_value = 0.01
+                elif broker_instrument_name.upper() in ["DJI30", "DOW", "US30"]:
+                    pip_value = 1.0
+                elif any(gold in broker_instrument_name.upper() for gold in ["XAUUSD", "GOLD"]):
+                    pip_value = 0.1
+                else:
+                    pip_value = 0.0001
+
+                # Calculate price difference
+                price_diff = abs(parsed_signal['entry_point'] - current_price)
+
+                # Convert to pips
+                pip_diff = round(price_diff / pip_value)
+
+                # Check if within threshold for market order
+                threshold_pips = 10  # If within 10 pips, use market order
+                if pip_diff <= threshold_pips:
+                    order_type = 'market'
+
+                    # Adjust stop loss: add diff for buy, subtract for sell
+                    if side == 'buy':
+                        adjusted_stop_loss = parsed_signal['stop_loss'] + price_diff
+                    else:  # sell
+                        adjusted_stop_loss = parsed_signal['stop_loss'] - price_diff
+
+                    logger.info(
+                        f"{colored_time}: Using {Fore.GREEN}MARKET {side.upper()}{Style.RESET_ALL} instead of limit. "
+                        f"Current price: {Fore.YELLOW}{current_price}{Style.RESET_ALL}, "
+                        f"Entry: {Fore.YELLOW}{parsed_signal['entry_point']}{Style.RESET_ALL}, "
+                        f"Diff: {Fore.CYAN}{pip_diff} pips{Style.RESET_ALL}, "
+                        f"Adjusted SL: {Fore.MAGENTA}{adjusted_stop_loss}{Style.RESET_ALL}"
+                    )
             else:
-                pip_value = 0.0001
-
-            # Calculate price difference
-            price_diff = abs(parsed_signal['entry_point'] - current_price)
-
-            # Convert to pips
-            pip_diff = round(price_diff / pip_value)
-
-            # Check if within threshold for market order
-            threshold_pips = 10  # If within 10 pips, use market order
-            if pip_diff <= threshold_pips:
-                order_type = 'market'
-
-                # Adjust stop loss: add diff for buy, subtract for sell
-                if side == 'buy':
-                    adjusted_stop_loss = parsed_signal['stop_loss'] + price_diff
-                else:  # sell
-                    adjusted_stop_loss = parsed_signal['stop_loss'] - price_diff
-
-                logger.info(
-                    f"{colored_time}: Using {Fore.GREEN}MARKET {side.upper()}{Style.RESET_ALL} instead of limit. "
-                    f"Current price: {Fore.YELLOW}{current_price}{Style.RESET_ALL}, "
-                    f"Entry: {Fore.YELLOW}{parsed_signal['entry_point']}{Style.RESET_ALL}, "
-                    f"Diff: {Fore.CYAN}{pip_diff} pips{Style.RESET_ALL}, "
-                    f"Adjusted SL: {Fore.MAGENTA}{adjusted_stop_loss}{Style.RESET_ALL}"
-                )
-        else:
-            logger.warning(f"{colored_time}: Could not get current price. Using limit order.")
+                logger.warning(f"{colored_time}: Could not get current price. Using limit order.")
+        except Exception as e:
+            logger.warning(f"{colored_time}: Error getting current price: {e}. Using limit order.")
 
         # Create a copy of parsed_signal with adjusted stop loss
         modified_signal = parsed_signal.copy()
         modified_signal['stop_loss'] = adjusted_stop_loss
+
+        # IMPORTANT FIX: Update instrument name in modified_signal to use broker's name
+        # This ensures all downstream functions use the correct broker instrument name
+        modified_signal['instrument'] = instrument_data['name']
 
         # Proceed with order placement
         return await place_order_async(

@@ -392,7 +392,8 @@ async def parse_signal_async(message: str):
 
 async def find_matching_instrument(instruments_client, account, parsed_signal):
     """
-    Find the matching instrument in the platform for the signal.
+    Find the matching instrument in the platform for the signal using
+    a bidirectional matching system for maximum flexibility across brokers.
 
     Args:
         instruments_client: TradeLocker instruments client
@@ -402,9 +403,64 @@ async def find_matching_instrument(instruments_client, account, parsed_signal):
     Returns:
         dict: Instrument data from the platform or None if not found
     """
-    canonical_name = parsed_signal['instrument']
+    from utils.instrument_utils import (
+        get_available_instruments,
+        identify_instrument_group,
+        score_instrument_match
+    )
 
-    # First try direct match with the canonical name
+    canonical_name = parsed_signal['instrument']
+    logger.info(f"Looking for instrument: {canonical_name}")
+
+    # Get all available instruments first to avoid multiple API calls
+    available_instruments = await get_available_instruments(instruments_client, account)
+    if not available_instruments:
+        logger.warning("Failed to retrieve available instruments")
+        return None
+
+    # Display all available instruments to help with debugging
+    if logger.level <= logging.DEBUG:
+        instrument_names = [i.get('name', '') for i in available_instruments]
+        logger.debug(f"Available instruments: {instrument_names}")
+
+    # Identify which instrument group the signal belongs to
+    group_name, target_nicknames = identify_instrument_group(canonical_name)
+
+    if group_name:
+        logger.info(f"Signal instrument '{canonical_name}' identified as '{group_name}'")
+        logger.info(f"Will try these nicknames for matching: {target_nicknames}")
+    else:
+        logger.warning(f"Could not identify a known instrument group for '{canonical_name}'")
+        # In this case, target_nicknames will just contain the original name
+
+    # Score and sort all available instruments
+    scored_instruments = []
+    for instrument in available_instruments:
+        instr_name = instrument.get('name', '')
+        score = score_instrument_match(instr_name, target_nicknames)
+        if score > 0:
+            scored_instruments.append((score, instr_name, instrument))
+
+    # Sort by score descending
+    scored_instruments.sort(reverse=True)
+
+    # Try each potential match in order of score
+    for score, instr_name, _ in scored_instruments:
+        logger.info(f"Trying potential match: {instr_name} (score: {score})")
+
+        instrument_data = await instruments_client.get_instrument_by_name_async(
+            account['id'],
+            account['accNum'],
+            instr_name
+        )
+
+        if instrument_data:
+            logger.info(f"Successfully matched {canonical_name} to broker instrument: {instr_name}")
+            return instrument_data
+
+    # If no matches were found via nickname matching, try the fallback approaches
+
+    # 1. Try exact canonical name (might have been skipped if not in any group)
     instrument_data = await instruments_client.get_instrument_by_name_async(
         account['id'],
         account['accNum'],
@@ -415,47 +471,60 @@ async def find_matching_instrument(instruments_client, account, parsed_signal):
         logger.info(f"Found exact match for instrument {canonical_name}")
         return instrument_data
 
-    # If not found, get available instruments and find a match
-    available_instruments = await get_available_instruments(instruments_client, account)
+    # 2. Try common suffixes
+    for suffix in ['.C', '.X', '.Z', '+', '-', '_']:
+        test_name = f"{canonical_name}{suffix}"
 
-    # Find the platform-specific instrument name using our utility
-    platform_instrument = find_instrument_in_platform(canonical_name, available_instruments)
-
-    if platform_instrument and platform_instrument != canonical_name:
-        logger.info(f"Using platform instrument {platform_instrument} instead of {canonical_name}")
-
-        # Get the instrument data using the platform-specific name
         instrument_data = await instruments_client.get_instrument_by_name_async(
             account['id'],
             account['accNum'],
-            platform_instrument
+            test_name
         )
 
         if instrument_data:
+            logger.info(f"Found match by adding suffix: {test_name}")
             return instrument_data
 
-    # If we still haven't found it, try some common variations as a last resort
-    if canonical_name.endswith(".C") or canonical_name.endswith(".X") or canonical_name.endswith(".Z"):
-        # Try without suffix
-        base_name = canonical_name.split('.')[0]
+    # 3. Try without suffix if the original name has one
+    if any(char in canonical_name for char in ['.', '+', '-', '_']):
+        # Extract base name by removing any suffix
+        base_name = re.sub(r'[.+\-_].*$', '', canonical_name)
+
         instrument_data = await instruments_client.get_instrument_by_name_async(
             account['id'],
             account['accNum'],
             base_name
         )
+
         if instrument_data:
             logger.info(f"Found match by removing suffix: {base_name}")
             return instrument_data
-    elif not canonical_name.endswith(".C"):
-        # Try with .C suffix
-        instrument_data = await instruments_client.get_instrument_by_name_async(
-            account['id'],
-            account['accNum'],
-            f"{canonical_name}.C"
-        )
-        if instrument_data:
-            logger.info(f"Found match by adding .C suffix: {canonical_name}.C")
-            return instrument_data
+
+    # 4. Last resort - loop through all instruments and do a manual substring check
+    # This handles cases where the instrument name is completely different but might contain
+    # some identifying part
+    for instrument in available_instruments:
+        instr_name = instrument.get('name', '').upper()
+        base_canonical = canonical_name.upper()
+
+        # Clean up both names for comparison (remove special chars)
+        clean_instr = re.sub(r'[^A-Z0-9]', '', instr_name)
+        clean_canonical = re.sub(r'[^A-Z0-9]', '', base_canonical)
+
+        # Check for substantial overlap
+        if (clean_canonical in clean_instr or
+                clean_instr in clean_canonical or
+                any(part for part in clean_canonical.split() if len(part) > 2 and part in clean_instr)):
+
+            instrument_data = await instruments_client.get_instrument_by_name_async(
+                account['id'],
+                account['accNum'],
+                instrument.get('name', '')
+            )
+
+            if instrument_data:
+                logger.info(f"Found match using substring matching: {instrument.get('name', '')}")
+                return instrument_data
 
     logger.warning(f"No matching instrument found for {canonical_name}")
     return None

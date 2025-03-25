@@ -82,6 +82,7 @@ class TradeLockerQuotes(ApiClient):
     async def get_quote_async(self, account: dict, instrument_name: str):
         """
         Fetch the current price (quote) of the instrument - async version.
+        Enhanced to handle different instrument naming conventions.
         """
         try:
             acc_num = account['accNum']
@@ -101,7 +102,35 @@ class TradeLockerQuotes(ApiClient):
 
                 if not instrument_data:
                     logger.warning(f"Instrument {instrument_name} not found.")
-                    return None
+
+                    # ENHANCED FALLBACK: Try to find by alternate names if this is a known instrument
+                    from utils.instrument_utils import identify_instrument_group
+
+                    # Check if this is a known instrument type with alternate names
+                    group_name, alternate_names = identify_instrument_group(instrument_name)
+
+                    if group_name and alternate_names:
+                        logger.info(f"Trying alternate names for {instrument_name}: {alternate_names}")
+
+                        # Try each alternate name
+                        for alt_name in alternate_names:
+                            if alt_name == instrument_name:
+                                continue  # Skip the original name
+
+                            alt_instrument = await self.instrument_client.get_instrument_by_name_async(
+                                account_id=account_id,
+                                acc_num=acc_num,
+                                name=alt_name
+                            )
+
+                            if alt_instrument:
+                                logger.info(f"Found instrument using alternate name: {alt_name}")
+                                instrument_data = alt_instrument
+                                break
+
+                    # If still not found after trying alternates
+                    if not instrument_data:
+                        return None
 
                 # Find the INFO route
                 info_route = next((route['id'] for route in instrument_data['routes'] if route['type'] == 'INFO'), None)
@@ -138,22 +167,26 @@ class TradeLockerQuotes(ApiClient):
     async def get_quotes_batch_async(self, account: dict, instrument_names: list):
         """
         Fetch quotes for multiple instruments in parallel - async version.
+        Enhanced to handle different instrument naming conventions.
         """
         import asyncio
 
         try:
-            tasks = [self.get_quote_async(account, name) for name in instrument_names]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            tasks = []
+            for name in instrument_names:
+                # Create a task for each instrument
+                task = self.get_quote_async(account, name)
+                tasks.append((name, asyncio.create_task(task)))
 
             # Process results
             quotes = {}
-            for i, result in enumerate(results):
-                instrument_name = instrument_names[i]
-                if isinstance(result, Exception):
-                    logger.error(f"Error fetching quote for {instrument_name}: {result}")
-                    quotes[instrument_name] = None
-                else:
-                    quotes[instrument_name] = result
+            for name, task in tasks:
+                try:
+                    result = await task
+                    quotes[name] = result
+                except Exception as e:
+                    logger.error(f"Error fetching quote for {name}: {e}")
+                    quotes[name] = None
 
             return quotes
         except Exception as e:
