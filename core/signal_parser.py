@@ -691,4 +691,4 @@ def start_cache_maintenance():
 start_cache_maintenance()
 
 # Initialize with current observed pricing difference for DJI30
-update_broker_adjustment('DJI30', 41858, 41850)
+update_broker_adjustment('DJI30', 42439, 42442)
