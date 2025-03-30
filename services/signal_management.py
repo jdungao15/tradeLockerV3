@@ -51,7 +51,8 @@ class SignalManager:
 
     def is_command_message(self, message):
         """
-        Detect if a message contains a trading command
+        Detect if a message contains a trading command using simple pattern matching
+        without requiring AI processing.
 
         Args:
             message: Message text
@@ -64,19 +65,22 @@ class SignalManager:
 
         message_lower = message.lower().strip()
 
-        # Simple single-word commands
-        if message_lower in ["breakeven", "be"]:
-            return 'breakeven', None
-
-        if message_lower in ["close", "cancel", "exit"]:
-            return 'close', None
-
-        # Check for TP hit/close pattern
+        # Check for specific TP hit/close pattern with number (e.g., "TP1", "close TP2")
         tp_pattern = r"(?:close|hit|take|tp)\s*(?:tp|target|profit)?\s*(\d+)"
         tp_match = re.search(tp_pattern, message_lower)
         if tp_match:
             tp_level = int(tp_match.group(1))
             return 'tp', tp_level
+
+        # Simple single-word commands
+        if any(x in message_lower for x in ["breakeven", "be", "b/e", "b e"]):
+            return 'breakeven', None
+
+        if message_lower in ["close", "close all", "exit", "exit all"]:
+            return 'close', None
+
+        if message_lower in ["cancel", "cancel all"]:
+            return 'cancel', None
 
         # Check for breakeven patterns
         breakeven_patterns = [
@@ -103,6 +107,16 @@ class SignalManager:
             if re.search(pattern, message_lower):
                 return 'close', None
 
+        # Check for cancel patterns
+        cancel_patterns = [
+            r"cancel\s+(?:all|your|the)?\s+orders?",
+            r"cancel\s+(?:all|your|the)?\s+trades?"
+        ]
+
+        for pattern in cancel_patterns:
+            if re.search(pattern, message_lower):
+                return 'cancel', None
+
         # Not a recognized command
         return None, None
 
@@ -112,50 +126,10 @@ class SignalManager:
             message_id, order_ids, take_profits, instrument
         )
 
-    async def check_order_status(self, account, order_id):
-        """
-        Check if an order is still pending or has become an active position
-
-        Args:
-            account: Account information
-            order_id: Order ID to check
-
-        Returns:
-            tuple: (status, order_type) - status: 'pending'|'active'|'unknown', order_type: 'order'|'position'|None
-        """
-        try:
-            # First try to get it as a pending order
-            url = f"{self.auth.base_url}/trade/orders/{order_id}"
-            headers = {
-                "Authorization": f"Bearer {await self.auth.get_access_token_async()}",
-                "accNum": str(account['accNum'])
-            }
-
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=headers) as response:
-                    if response.status == 200:
-                        # Order exists
-                        return 'pending', 'order'
-
-            # If not found as pending order, try as active position
-            url = f"{self.auth.base_url}/trade/positions/{order_id}"
-
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=headers) as response:
-                    if response.status == 200:
-                        # Position exists
-                        return 'active', 'position'
-
-            # Not found as either order or position
-            return 'unknown', None
-
-        except Exception as e:
-            logger.error(f"Error checking order status: {e}")
-            return 'unknown', None
-
     async def cancel_order(self, account, order_id):
         """
         Cancel a pending order using direct API call
+        Note: This method attempts to cancel without checking status first
 
         Args:
             account: Account information
@@ -177,8 +151,12 @@ class SignalManager:
                     if success:
                         logger.info(f"Successfully cancelled order {order_id}")
                     else:
-                        error_text = await response.text()
-                        logger.error(f"Failed to cancel order {order_id}: {response.status} - {error_text}")
+                        # Don't treat as error if 404 - just means it was already executed or cancelled
+                        if response.status == 404:
+                            logger.info(f"Order {order_id} not found - may have been executed or already cancelled")
+                        else:
+                            error_text = await response.text()
+                            logger.warning(f"Failed to cancel order {order_id}: {response.status} - {error_text}")
                     return success
         except Exception as e:
             logger.error(f"Error cancelling order {order_id}: {e}")
@@ -187,6 +165,7 @@ class SignalManager:
     async def close_position(self, account, position_id):
         """
         Close a position using direct API call
+        Note: This method attempts to close without checking status first
 
         Args:
             account: Account information
@@ -209,8 +188,12 @@ class SignalManager:
                     if success:
                         logger.info(f"Successfully closed position {position_id}")
                     else:
-                        error_text = await response.text()
-                        logger.error(f"Failed to close position {position_id}: {response.status} - {error_text}")
+                        # Don't treat as error if 404 - just means it was already closed
+                        if response.status == 404:
+                            logger.info(f"Position {position_id} not found - may have been already closed")
+                        else:
+                            error_text = await response.text()
+                            logger.warning(f"Failed to close position {position_id}: {response.status} - {error_text}")
                     return success
         except Exception as e:
             logger.error(f"Error closing position {position_id}: {e}")
@@ -239,8 +222,11 @@ class SignalManager:
                     if response.status == 200:
                         data = await response.json()
                         return data.get('d', {})
+                    elif response.status == 404:
+                        logger.info(f"Position {position_id} not found - may have been already closed")
+                        return None
                     else:
-                        logger.error(f"Failed to get position details for {position_id}: {response.status}")
+                        logger.warning(f"Failed to get position details for {position_id}: {response.status}")
                         return None
         except Exception as e:
             logger.error(f"Error getting position details: {e}")
@@ -262,12 +248,12 @@ class SignalManager:
             position_details = await self.get_position_details(account, position_id)
 
             if not position_details:
-                logger.error(f"Could not get position details for {position_id}")
+                logger.warning(f"Could not get position details for {position_id}")
                 return False
 
             # Extract necessary data
             if 'position' not in position_details:
-                logger.error(f"No position data found for {position_id}")
+                logger.warning(f"No position data found for {position_id}")
                 return False
 
             position_data = position_details['position']
@@ -275,7 +261,7 @@ class SignalManager:
             # Get entry price and side
             entry_price = float(position_data.get('entryPrice', 0))
             if entry_price == 0:
-                logger.error(f"Invalid entry price 0 for position {position_id}")
+                logger.warning(f"Invalid entry price 0 for position {position_id}")
                 return False
 
             side = position_data.get('side', '').lower()
@@ -298,13 +284,14 @@ class SignalManager:
             # Format the new SL to match instrument precision
             new_sl = round(new_sl, 5)
 
-            # Update the stop loss via API
+            # Update the stop loss via API - using PATCH with only stopLoss parameter
             url = f"{self.auth.base_url}/trade/positions/{position_id}"
             headers = {
                 "Authorization": f"Bearer {await self.auth.get_access_token_async()}",
                 "accNum": str(account['accNum']),
                 "Content-Type": "application/json"
             }
+            # Send only the stopLoss in the body as per API requirements
             body = {"stopLoss": new_sl}
 
             async with aiohttp.ClientSession() as session:
@@ -314,7 +301,7 @@ class SignalManager:
                         logger.info(f"Successfully moved SL to breakeven for position {position_id}: {new_sl}")
                     else:
                         error_text = await response.text()
-                        logger.error(
+                        logger.warning(
                             f"Failed to update SL for position {position_id}: {response.status} - {error_text}")
                     return success
 
@@ -346,16 +333,7 @@ class SignalManager:
     async def handle_message(self, message, account, colored_time, reply_to_msg_id=None, message_id=None):
         """
         Process an incoming message to check for trading commands
-
-        Args:
-            message: Message text
-            account: Account information
-            colored_time: Formatted time for logging
-            reply_to_msg_id: ID of the message this is replying to
-            message_id: ID of this message
-
-        Returns:
-            tuple: (is_handled, result_info)
+        When a TP command is received, cancel ALL pending orders for the message
         """
         # Log the message for debugging
         message_log = {
@@ -380,14 +358,20 @@ class SignalManager:
         # Check if we have a reply_to_msg_id to associate with orders
         if not reply_to_msg_id:
             logger.info(f"{colored_time}: Command detected but no reply-to message ID")
+            message_log['match_method'] = 'none_no_reply_id'
             self.log_message(message_log)
             return False, None
+
+        # Log detailed information about the IDs we're working with
+        logger.info(
+            f"{colored_time}: Looking for cached orders with reply_to_msg_id: {reply_to_msg_id} (type: {type(reply_to_msg_id).__name__})")
 
         # Try to get orders associated with the original message
         cached_orders = self.order_cache.get_orders(reply_to_msg_id)
 
         if not cached_orders:
             logger.info(f"{colored_time}: No cached orders found for message ID {reply_to_msg_id}")
+            message_log['match_method'] = 'none_no_cached_orders'
             self.log_message(message_log)
             return False, None
 
@@ -401,52 +385,111 @@ class SignalManager:
             f"Command: {command_type}{' TP' + str(tp_level) if tp_level else ''}{Style.RESET_ALL}"
         )
 
-        # Execute the appropriate command for each order
+        # Initialize counters
         success_count = 0
         total_count = len(order_ids)
+        message_log['match_method'] = 'cached_orders'
 
-        for order_index, order_id in enumerate(order_ids):
-            # If command is to close a specific TP level, check if this order corresponds to that TP
-            if command_type == 'tp' and tp_level and take_profits:
-                # Check if the number of orders matches number of TPs
-                if len(order_ids) == len(take_profits):
-                    # If order index doesn't match TP level-1, skip it
-                    if order_index != (tp_level - 1):
-                        logger.info(f"Skipping order {order_id} as it doesn't match TP{tp_level}")
+        # HANDLE COMMANDS DIFFERENTLY
+
+        if command_type == 'tp':
+            # For TP commands (with or without level), cancel ALL pending orders
+            # Don't close active positions
+
+            logger.info(
+                f"{colored_time}: TP command received - attempting to cancel ALL {len(order_ids)} pending orders")
+
+            # Process all orders in parallel for speed
+            cancel_tasks = []
+            for order_id in order_ids:
+                task = asyncio.create_task(self.cancel_order(account, order_id))
+                cancel_tasks.append((order_id, task))
+
+            # Wait for all cancel operations to complete
+            for order_id, task in cancel_tasks:
+                try:
+                    success = await task
+                    if success:
+                        # Remove the order from cache after successful cancellation
+                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled pending order {order_id}{Style.RESET_ALL}")
+                        success_count += 1
+                    else:
+                        logger.info(f"{colored_time}: Order {order_id} is not a pending order or already executed")
+                except Exception as e:
+                    logger.error(f"{colored_time}: Error cancelling order {order_id}: {e}")
+
+            # If all orders were successfully cancelled, remove the message
+            if success_count > 0:
+                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                if remaining_orders == 0:
+                    self.order_cache.remove_message(reply_to_msg_id)
+                    logger.info(
+                        f"{colored_time}: {Fore.GREEN}All orders cancelled, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+
+        elif command_type == 'close':
+            # For close command, process each order sequentially
+            # Try both pending order cancellation and active position closing
+            for order_id in order_ids:
+                # First try as pending order
+                cancel_success = await self.cancel_order(account, order_id)
+                if cancel_success:
+                    self.order_cache.remove_order(reply_to_msg_id, order_id)
+                    logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
+                    success_count += 1
+                    continue
+
+                # Then try as active position
+                close_success = await self.close_position(account, order_id)
+                if close_success:
+                    self.order_cache.remove_order(reply_to_msg_id, order_id)
+                    logger.info(f"{colored_time}: {Fore.GREEN}Closed position {order_id}{Style.RESET_ALL}")
+                    success_count += 1
+                    continue
+
+                logger.warning(f"{colored_time}: Failed to close/cancel order or position {order_id}")
+
+            # Check if we should remove the message
+            if success_count == total_count and total_count > 0:
+                self.order_cache.remove_message(reply_to_msg_id)
+                logger.info(
+                    f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+
+        elif command_type == 'cancel':
+            # For cancel command, process each order sequentially
+            # Only try pending order cancellation
+            for order_id in order_ids:
+                cancel_success = await self.cancel_order(account, order_id)
+                if cancel_success:
+                    self.order_cache.remove_order(reply_to_msg_id, order_id)
+                    logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
+                    success_count += 1
+                    continue
+
+                logger.info(f"{colored_time}: Order {order_id} is not a pending order")
+
+            # Check if we should remove the message
+            if success_count == total_count and total_count > 0:
+                self.order_cache.remove_message(reply_to_msg_id)
+                logger.info(
+                    f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+
+        elif command_type == 'breakeven':
+            # For breakeven command, process each order sequentially
+            # Only affects active positions
+            for order_id in order_ids:
+                position_details = await self.get_position_details(account, order_id)
+                if position_details:
+                    be_success = await self.set_breakeven(account, order_id)
+                    if be_success:
+                        logger.info(
+                            f"{colored_time}: {Fore.CYAN}Set breakeven for position {order_id}{Style.RESET_ALL}")
+                        success_count += 1
                         continue
 
-            # Check if order is pending or active
-            status, order_type = await self.check_order_status(account, order_id)
-
-            if status == 'unknown':
-                logger.warning(f"Order/position {order_id} not found - may have been already closed")
-                continue
-
-            # Handle based on command type and order status
-            if command_type in ['close', 'tp']:
-                if status == 'pending':
-                    # Cancel pending order
-                    cancel_success = await self.cancel_order(account, order_id)
-                    if cancel_success:
-                        success_count += 1
-                        self.order_cache.update_order_status(reply_to_msg_id, order_id, 'cancelled')
-                        logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
-
-                elif status == 'active':
-                    # Close active position
-                    close_success = await self.close_position(account, order_id)
-                    if close_success:
-                        success_count += 1
-                        self.order_cache.update_order_status(reply_to_msg_id, order_id, 'closed')
-                        logger.info(f"{colored_time}: {Fore.GREEN}Closed position {order_id}{Style.RESET_ALL}")
-
-            elif command_type == 'breakeven' and status == 'active':
-                # Set breakeven only for active positions
-                be_success = await self.set_breakeven(account, order_id)
-                if be_success:
-                    success_count += 1
-                    self.order_cache.update_order_status(reply_to_msg_id, order_id, 'breakeven')
-                    logger.info(f"{colored_time}: {Fore.CYAN}Set breakeven for position {order_id}{Style.RESET_ALL}")
+                    logger.warning(f"{colored_time}: Failed to set breakeven for position {order_id}")
+                else:
+                    logger.info(f"{colored_time}: Cannot set breakeven - {order_id} is not an active position")
 
         # Return the result
         result = {
@@ -458,8 +501,19 @@ class SignalManager:
             "instrument": instrument
         }
 
+        message_log['success'] = success_count > 0
+        message_log['success_count'] = success_count
+        message_log['total_count'] = total_count
         self.log_message(message_log)
+
         return True, result
+
+    async def get_remaining_orders_count(self, message_id):
+        """Helper to check how many orders remain for a message"""
+        orders_data = self.order_cache.get_orders(message_id)
+        if not orders_data:
+            return 0
+        return len(orders_data.get('orders', []))
 
     def export_message_logs(self, limit=None):
         """Export message logs for debugging/analysis"""
