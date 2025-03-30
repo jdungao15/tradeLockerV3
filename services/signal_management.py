@@ -51,8 +51,8 @@ class SignalManager:
 
     def is_command_message(self, message):
         """
-        Detect if a message contains a trading command using simple pattern matching
-        without requiring AI processing.
+        Detect if a message contains a trading command using robust pattern matching
+        that can handle natural language variations used by signal providers.
 
         Args:
             message: Message text
@@ -65,59 +65,119 @@ class SignalManager:
 
         message_lower = message.lower().strip()
 
-        # Check for specific TP hit/close pattern with number (e.g., "TP1", "close TP2")
-        tp_pattern = r"(?:close|hit|take|tp)\s*(?:tp|target|profit)?\s*(\d+)"
+        # Log the message we're trying to detect
+        logger.info(f"Checking if message is a command: '{message_lower}'")
+
+        # 1. SIMPLE KEYWORD DETECTION (Most reliable)
+        # Check for the presence of simple command keywords at the beginning of the message
+
+        # Close detection - look for "close" at the beginning
+        if message_lower.startswith("close"):
+            logger.info(f"Detected CLOSE command: '{message_lower}'")
+            return 'close', None
+
+        # Cancel detection - look for "cancel" at the beginning
+        if message_lower.startswith("cancel"):
+            logger.info(f"Detected CANCEL command: '{message_lower}'")
+            return 'cancel', None
+
+        # Breakeven detection - look for "be" or "breakeven" at the beginning
+        if message_lower.startswith(("be ", "breakeven")):
+            logger.info(f"Detected BREAKEVEN command: '{message_lower}'")
+            return 'breakeven', None
+
+        # 2. CHECK FOR TP COMMANDS (HIGHEST PRIORITY)
+
+        # Check for specific TP hit/close pattern with number (e.g., "TP1", "close TP2", "Take Profit 3 hit")
+        tp_pattern = r"(?:close|hit|take|tp|target|profit)[\s\-_.]*(?:tp|target|profit)?[\s\-_.]*(\d+)"
         tp_match = re.search(tp_pattern, message_lower)
         if tp_match:
             tp_level = int(tp_match.group(1))
+            logger.info(f"Detected TP command with level {tp_level}: '{message_lower}'")
             return 'tp', tp_level
 
-        # Simple single-word commands
-        if any(x in message_lower for x in ["breakeven", "be", "b/e", "b e"]):
-            return 'breakeven', None
+        # 3. CHECK FOR DETAILED COMMAND PATTERNS
 
-        if message_lower in ["close", "close all", "exit", "exit all"]:
-            return 'close', None
-
-        if message_lower in ["cancel", "cancel all"]:
-            return 'cancel', None
-
-        # Check for breakeven patterns
-        breakeven_patterns = [
-            r"move\s+(?:sl|stop(?:\s+loss)?)\s+to\s+(?:be|b/?e|breakeven|entry)",
-            r"sl\s+(?:to\s+)?(?:be|b/?e|breakeven|entry)",
-            r"(?:be|b/?e|breakeven)\s+(?:your\s+|the\s+)?(?:sl|stop(?:\s+loss)?)",
-            r"lock\s+(?:in\s+)?profits",
-            r"secure\s+(?:your\s+)?profits"
+        # More comprehensive patterns for breakeven
+        be_keywords = [
+            r"break[\s\-_.]*even",
+            r"\bbe\b",
+            r"b[/\s\-_.]*e",
+            r"move[\s\-_.]*(?:sl|stop|loss)[\s\-_.]*to[\s\-_.]*(?:entry|be|breakeven)",
+            r"(?:sl|stop|loss)[\s\-_.]*(?:at|to)[\s\-_.]*(?:entry|be|breakeven)",
+            r"lock[\s\-_.]*(?:in)?[\s\-_.]*profits?",
+            r"secure[\s\-_.]*(?:your|the)?[\s\-_.]*profits?"
         ]
 
-        for pattern in breakeven_patterns:
+        for pattern in be_keywords:
             if re.search(pattern, message_lower):
+                logger.info(f"Detected BREAKEVEN command (detailed pattern): '{message_lower}'")
                 return 'breakeven', None
 
-        # Check for close patterns
-        close_patterns = [
-            r"close\s+(?:all|your|the)?\s+positions?",
-            r"close\s+(?:all|your|the)?\s+trades?",
-            r"exit\s+(?:all|your|the)?\s+positions?",
-            r"exit\s+(?:all|your|the)?\s+trades?"
+        # More comprehensive patterns for closing
+        close_keywords = [
+            r"close[\s\-_.]*(?:all|your|the|this|early|now)?[\s\-_.]*(?:positions?|trades?|orders?)",
+            r"exit[\s\-_.]*(?:all|your|the|this|early|now)?[\s\-_.]*(?:positions?|trades?|orders?)",
+            r"get[\s\-_.]*out",
+            r"take[\s\-_.]*profit[\s\-_.]*now",
+            r"exit[\s\-_.]*(?:all|now|market|immediately)",
+            r"close[\s\-_.]*(?:all|now|market|immediately|early)",  # Added explicit "close early" pattern
+            r"market[\s\-_.]*(?:doesn't|not|isn't)[\s\-_.]*(?:look|seem)[\s\-_.]*good"
         ]
 
-        for pattern in close_patterns:
+        for pattern in close_keywords:
             if re.search(pattern, message_lower):
+                logger.info(f"Detected CLOSE command (detailed pattern): '{message_lower}'")
                 return 'close', None
 
-        # Check for cancel patterns
-        cancel_patterns = [
-            r"cancel\s+(?:all|your|the)?\s+orders?",
-            r"cancel\s+(?:all|your|the)?\s+trades?"
+        # More comprehensive patterns for cancelling
+        cancel_keywords = [
+            r"cancel[\s\-_.]*(?:all|your|the|this|now)?[\s\-_.]*(?:positions?|trades?|orders?)?",
+            r"abort[\s\-_.]*(?:all|your|the|this|now)?[\s\-_.]*(?:positions?|trades?|orders?)?",
+            r"remove[\s\-_.]*(?:all|your|the|this|now)?[\s\-_.]*(?:positions?|trades?|orders?)?",
+            r"delete[\s\-_.]*(?:all|your|the|this|now)?[\s\-_.]*(?:positions?|trades?|orders?)?",
+            r"stop[\s\-_.]*(?:all|your|the|this|now)?[\s\-_.]*(?:positions?|trades?|orders?)?",
+            r"missed[\s\-_.]*(?:the|this)?[\s\-_.]*(?:entry|signal|opportunity)"
         ]
 
-        for pattern in cancel_patterns:
+        for pattern in cancel_keywords:
             if re.search(pattern, message_lower):
+                logger.info(f"Detected CANCEL command (detailed pattern): '{message_lower}'")
                 return 'cancel', None
 
+        # 4. CHECK FOR GENERIC TP COMMAND WITHOUT NUMBER
+
+        # Generic TP patterns without specific number
+        generic_tp_patterns = [
+            r"\btp\b",
+            r"take[\s\-_.]*profit",
+            r"target[\s\-_.]*hit",
+            r"target[\s\-_.]*reached"
+        ]
+
+        for pattern in generic_tp_patterns:
+            if re.search(pattern, message_lower):
+                # If we find a generic TP pattern without a number
+                logger.info(f"Detected generic TP command: '{message_lower}'")
+                return 'tp', None
+
+        # 5. SUPER SIMPLE WORD MATCHING (FALLBACK)
+
+        # Last resort - check if the key command words appear anywhere in the message
+        if "close" in message_lower:
+            logger.info(f"Detected CLOSE command (simple word match): '{message_lower}'")
+            return 'close', None
+
+        if "cancel" in message_lower:
+            logger.info(f"Detected CANCEL command (simple word match): '{message_lower}'")
+            return 'cancel', None
+
+        if "breakeven" in message_lower or " be " in message_lower:
+            logger.info(f"Detected BREAKEVEN command (simple word match): '{message_lower}'")
+            return 'breakeven', None
+
         # Not a recognized command
+        logger.info(f"No command detected in message: '{message_lower}'")
         return None, None
 
     async def store_orders(self, message_id, order_ids, take_profits, instrument=None):
