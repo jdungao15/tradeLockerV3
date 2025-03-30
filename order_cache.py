@@ -73,9 +73,16 @@ class OrderCache:
             logger.error(f"Error saving order cache: {e}")
             return False
 
-    def store_orders(self, message_id, order_ids, take_profits, instrument=None):
+    def store_orders(self, message_id, order_ids, take_profits, instrument=None, entry_price=None):
         """
-        Store order IDs with message ID and take profits in global memory first
+        Store order IDs with message ID, take profits, and entry price in global memory first
+
+        Args:
+            message_id: Telegram message ID (will be converted to string)
+            order_ids: List of order IDs
+            take_profits: List of take profit levels
+            instrument: Optional instrument name
+            entry_price: Entry price for breakeven functionality
         """
         global GLOBAL_ORDER_CACHE
 
@@ -97,6 +104,7 @@ class OrderCache:
             'orders': str_order_ids,
             'take_profits': take_profits,
             'instrument': instrument,
+            'entry_price': entry_price,  # Store entry price
             'timestamp': datetime.now().isoformat()
         }
 

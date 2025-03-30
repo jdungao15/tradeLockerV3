@@ -232,73 +232,42 @@ class SignalManager:
             logger.error(f"Error getting position details: {e}")
             return None
 
-    async def set_breakeven(self, account, position_id):
+    async def set_breakeven(self, account, position_id, entry_price=None):
         """
-        Set stop loss to breakeven for a position
+        Set stop loss to breakeven for a position - simplified implementation
 
         Args:
             account: Account information
             position_id: Position ID
+            entry_price: Optional entry price from cache
 
         Returns:
             bool: Success status
         """
         try:
-            # First get position details to find the entry price
-            position_details = await self.get_position_details(account, position_id)
-
-            if not position_details:
-                logger.warning(f"Could not get position details for {position_id}")
-                return False
-
-            # Extract necessary data
-            if 'position' not in position_details:
-                logger.warning(f"No position data found for {position_id}")
-                return False
-
-            position_data = position_details['position']
-
-            # Get entry price and side
-            entry_price = float(position_data.get('entryPrice', 0))
-            if entry_price == 0:
-                logger.warning(f"Invalid entry price 0 for position {position_id}")
-                return False
-
-            side = position_data.get('side', '').lower()
-            instrument_data = position_data.get('tradableInstrument', {})
-            instrument_name = instrument_data.get('name', '')
-
-            # Determine pip size based on instrument
-            pip_size = self._get_pip_size(instrument_name)
-
-            # Calculate buffer (default 2 pips)
-            buffer_pips = 2
-            buffer_amount = buffer_pips * pip_size
-
-            # Calculate new SL with buffer
-            if side == 'buy':
-                new_sl = entry_price - buffer_amount
-            else:
-                new_sl = entry_price + buffer_amount
-
-            # Format the new SL to match instrument precision
-            new_sl = round(new_sl, 5)
-
-            # Update the stop loss via API - using PATCH with only stopLoss parameter
+            # Create API request for setting stop loss to entry price
             url = f"{self.auth.base_url}/trade/positions/{position_id}"
             headers = {
                 "Authorization": f"Bearer {await self.auth.get_access_token_async()}",
                 "accNum": str(account['accNum']),
                 "Content-Type": "application/json"
             }
-            # Send only the stopLoss in the body as per API requirements
-            body = {"stopLoss": new_sl}
 
+            # Use provided entry price or default to 0 (which will fail)
+            stop_loss = entry_price
+            if not stop_loss:
+                logger.error(f"No entry price available for position {position_id}")
+                return False
+
+            # Send only the stopLoss in the body as per API requirements
+            body = {"stopLoss": stop_loss}
+
+            # Execute the PATCH request
             async with aiohttp.ClientSession() as session:
                 async with session.patch(url, headers=headers, json=body) as response:
                     success = response.status == 200
                     if success:
-                        logger.info(f"Successfully moved SL to breakeven for position {position_id}: {new_sl}")
+                        logger.info(f"Successfully moved SL to breakeven for position {position_id}: {stop_loss}")
                     else:
                         error_text = await response.text()
                         logger.warning(
@@ -474,23 +443,22 @@ class SignalManager:
                 logger.info(
                     f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
 
+
         elif command_type == 'breakeven':
-            # For breakeven command, process each order sequentially
-            # Only affects active positions
+            # For breakeven command, use entry price from cache
+            # Get the entry price from the cached data
+            entry_price = cached_orders.get('entry_price')
+
+            if not entry_price:
+                logger.warning(f"{colored_time}: No entry price found in cache for message {reply_to_msg_id}")
+            # Process each order
             for order_id in order_ids:
-                position_details = await self.get_position_details(account, order_id)
-                if position_details:
-                    be_success = await self.set_breakeven(account, order_id)
-                    if be_success:
-                        logger.info(
-                            f"{colored_time}: {Fore.CYAN}Set breakeven for position {order_id}{Style.RESET_ALL}")
-                        success_count += 1
-                        continue
-
-                    logger.warning(f"{colored_time}: Failed to set breakeven for position {order_id}")
-                else:
-                    logger.info(f"{colored_time}: Cannot set breakeven - {order_id} is not an active position")
-
+                be_success = await self.set_breakeven(account, order_id, entry_price)
+                if be_success:
+                    logger.info(f"{colored_time}: {Fore.CYAN}Set breakeven for position {order_id}{Style.RESET_ALL}")
+                    success_count += 1
+                    continue
+                logger.warning(f"{colored_time}: Failed to set breakeven for position {order_id}")
         # Return the result
         result = {
             "command_type": command_type,
