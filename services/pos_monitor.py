@@ -378,32 +378,6 @@ async def get_take_profits_for_position(position_id, instrument_id, selected_acc
         logger.error(f"Error retrieving take profits for position {position_id}: {e}")
         return None
 
-
-def calculate_pip_difference(entry_price, current_price, instrument_name):
-    """
-    Calculate pip difference based on the instrument type with broker-agnostic naming.
-    """
-    instrument_upper = instrument_name.upper()
-
-    # Check for JPY pairs (any instrument ending with JPY regardless of broker naming)
-    if instrument_upper.endswith("JPY"):
-        return round(abs(current_price - entry_price) / 0.01)
-
-    # Check for gold (multiple possible naming conventions)
-    elif any(gold_name in instrument_upper for gold_name in ["XAUUSD", "GOLD", "XAU"]):
-        return round(abs(current_price - entry_price) / 0.1)
-
-    # Check for indices (multiple possible naming conventions)
-    elif any(index_name in instrument_upper for index_name in
-             ["DJI30", "DOW", "US30", "NDX100", "NAS100", "NASDAQ"]):
-        # Most indices use 1.0 as pip value
-        return round(abs(current_price - entry_price) / 1.0)
-
-    # Default to standard forex pip value
-    else:
-        return round(abs(current_price - entry_price) / 0.0001)
-
-
 def calculate_trailing_offset(instrument_name, price_distance):
     """
     Calculate trailing stop offset value for TradeLocker API.
@@ -431,38 +405,3 @@ def calculate_trailing_offset(instrument_name, price_distance):
     else:
         # Convert standard forex price distance to points (usually * 10000)
         return int(price_distance * 10000)
-
-
-async def update_stop_loss_async(base_url, auth_token, acc_num, position_id, new_stop_loss_price):
-    """
-    Update stop loss asynchronously with retry logic
-    """
-    url = f"{base_url}/trade/positions/{position_id}"
-    headers = {
-        "Authorization": f"Bearer {auth_token}",
-        "accNum": str(acc_num),
-        "Content-Type": "application/json"
-    }
-    body = {"stopLoss": new_stop_loss_price}
-
-    # Retry up to 3 times with exponential backoff
-    for attempt in range(3):
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.patch(url, headers=headers, json=body) as response:
-                    response.raise_for_status()
-                    result = await response.json()
-                    logger.info(f"Stop loss updated for position {position_id} to {new_stop_loss_price}")
-                    return result
-        except aiohttp.ClientError as e:
-            if attempt == 2:  # Last attempt
-                logger.error(f"Failed to update stop loss after 3 attempts: {e}")
-                return None
-
-            # Exponential backoff
-            wait_time = 0.5 * (2 ** attempt)
-            logger.warning(f"Stop loss update failed, retrying in {wait_time}s: {e}")
-            await asyncio.sleep(wait_time)
-        except Exception as e:
-            logger.error(f"Error updating stop loss: {e}")
-            return None
