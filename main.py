@@ -29,8 +29,7 @@ from cli.display_menu import display_menu, display_risk_menu, get_risk_percentag
 from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
-from services.missed_signal_detection import MissedSignalHandler
-from services.signal_management import EnhancedSignalManagementHandler
+from services.signal_management import SignalManager
 import risk_config
 from core.signal_parser import find_matching_instrument
 
@@ -147,37 +146,21 @@ class TradingBot:
                 # Schedule regular updates
                 self._schedule_news_calendar_updates()
 
-            # Initialize missed signal handler
-            self.missed_signal_handler = MissedSignalHandler(
+            # Initialize new Signal Manager
+            from services.signal_management import SignalManager
+
+            self.signal_manager = SignalManager(
                 self.accounts_client,
                 self.orders_client,
                 self.instruments_client,
                 self.auth
             )
 
-            # Configure the missed signal handler
-            await self.configure_missed_signal_handler(
-                enable_fallback=False,  # Default: Don't cancel unrelated orders
-                max_signal_age_hours=48,  # Only consider signals from last 48 hours
-                consider_channel=True  # Consider channel source when matching signals
-            )
+            self.logger.info("Signal manager initialized with reply-based command handling")
 
-            # Initialize enhanced signal management handler
-            self.signal_manager = EnhancedSignalManagementHandler(
-                self.accounts_client,
-                self.orders_client,
-                self.instruments_client,
-                self.quotes_client,
-                self.auth
-            )
+            # We don't need to configure any settings as the new implementation
+            # handles everything automatically through the reply mechanism
 
-            # Apply current risk profile settings to signal manager
-            current_profile = risk_config.detect_current_profile()
-            self.signal_manager.set_risk_profile_settings(current_profile)
-
-            # Link to the missed signal handler's history
-            if self.missed_signal_handler:
-                self.signal_manager.set_signal_history(self.missed_signal_handler.signal_history)
             return True
         except Exception as e:
             self.logger.error(f"Initialization error: {e}", exc_info=True)
@@ -520,77 +503,46 @@ class TradingBot:
 
     async def process_message(self, message_text, colored_time, event=None, channel_id=None,
                               channel_name=None, reply_to_msg_id=None, message_id=None):
-        """Process a received Telegram message"""
+        """
+        Process a received Telegram message - updated to ensure message_id is passed for caching
+        """
         try:
-            # First, check if this is a management instruction (move SL to BE, close early)
+            # Log the message ID for debugging
+            self.logger.debug(f"Processing message with ID {message_id}, replying to {reply_to_msg_id}")
+
+            # First, check if this is a command message via SignalManager
             if self.signal_manager:
                 is_handled, result = await self.signal_manager.handle_message(
                     message_text,
                     self.selected_account,
                     colored_time,
-                    reply_to_msg_id
+                    reply_to_msg_id,
+                    message_id
                 )
 
                 if is_handled:
                     # Log result information
-                    instruction_type = result.get("instruction_type", "unknown")
-                    match_method = result.get("match_method", "unknown")
-                    success = result.get("success", False)
-                    instrument = result.get("instrument", "unknown instrument")
+                    command_type = result.get("command_type", "unknown")
+                    success_count = result.get("success_count", 0)
+                    total_count = result.get("total_count", 0)
 
-                    if success:
+                    if success_count > 0:
                         self.logger.info(
-                            f"{colored_time}: {Fore.GREEN}Successfully executed {instruction_type} "
-                            f"instruction for {instrument} (match method: {match_method}){Style.RESET_ALL}"
+                            f"{colored_time}: {Fore.GREEN}Successfully executed {command_type} "
+                            f"command on {success_count}/{total_count} orders{Style.RESET_ALL}"
                         )
                     else:
                         self.logger.warning(
-                            f"{colored_time}: {Fore.YELLOW}Failed to execute {instruction_type} "
-                            f"instruction for {instrument} (match method: {match_method}){Style.RESET_ALL}"
+                            f"{colored_time}: {Fore.YELLOW}Failed to execute {command_type} command. "
+                            f"No orders were successfully processed.{Style.RESET_ALL}"
                         )
                     return
 
-            # Then, check if this is a TP hit message using the missed signal handler
-            if self.missed_signal_handler:
-                is_handled, result = await self.missed_signal_handler.handle_message(
-                    message_text,
-                    self.selected_account,
-                    colored_time,
-                    message_id,
-                    channel_id,
-                    channel_name,
-                    reply_to_msg_id  # Pass the reply_to_msg_id
-                )
-
-                if is_handled:
-                    # If it was a TP hit message and we handled it, we can stop processing
-                    if result and result.get("action") == "cancelled":
-                        matched_signal = f"with signal_id {result.get('matched_signal_id')}" if result.get(
-                            'matched_signal_id') else ""
-                        fallback_note = " (using fallback protection)" if result.get("fallback_used") else ""
-                        self.logger.warning(
-                            f"{colored_time}: {Fore.RED}Cancelled {result.get('cancelled_count')} pending orders "
-                            f"for {result.get('instrument')} due to missed signal (TP{result.get('tp_level')} hit) "
-                            f"{matched_signal}{fallback_note}{Style.RESET_ALL}"
-                        )
-                    return
-
-            # Parse signal from Telegram message
+            # If not a command, parse as a trading signal
             parsed_signal = await parse_signal_async(message_text)
             if parsed_signal is None:
                 self.logger.info(f"{colored_time} Received invalid signal: {message_text}")
                 return
-
-            # Store the parsed signal in history for future reference
-            signal_id = None
-            if self.missed_signal_handler:
-                signal_id = self.missed_signal_handler.add_signal_to_history(
-                    parsed_signal,
-                    message_id=message_id,
-                    raw_message=message_text,
-                    channel_id=channel_id,
-                    channel_name=channel_name
-                )
 
             # Check if this is a reduced risk signal
             reduced_risk = parsed_signal.get('reduced_risk', False)
@@ -607,15 +559,13 @@ class TradingBot:
                 f"Take profits: {Fore.GREEN}{', '.join(map(str, parsed_signal['take_profits']))}{Style.RESET_ALL}")
             self.logger.info(f"Using account ID: {self.selected_account['id']}")
 
-            # Store original TPs
-            original_tps = parsed_signal['take_profits'].copy()
-
             # Apply TP filtering based on user preferences
             from core.signal_parser import filter_take_profits_by_preference
             tp_selection = risk_config.get_tp_selection()
-            filtered_tps = filter_take_profits_by_preference(original_tps, tp_selection)
+            filtered_tps = filter_take_profits_by_preference(parsed_signal['take_profits'], tp_selection)
 
             # Update the parsed signal with filtered TPs
+            original_tps = parsed_signal['take_profits'].copy()
             parsed_signal['take_profits'] = filtered_tps
 
             # Log the TP selection if it's different from original
@@ -642,7 +592,6 @@ class TradingBot:
                             f"{colored_time}: {Fore.RED}Cannot place trade for {parsed_signal['instrument']}: {reason}{Style.RESET_ALL}")
                         return
                 except AttributeError as e:
-                    # Handle the case where the method might not be available
                     self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.")
                     return
 
@@ -676,11 +625,15 @@ class TradingBot:
             self.logger.info(f"{colored_time}: Position sizes: {Fore.YELLOW}{position_sizes}{Style.RESET_ALL}")
 
             # Display risk information
-            risk_percentage = "0.75%" if reduced_risk else "1.5%"  # Approximate values for display
-            self.logger.info(f"{colored_time}: {Fore.CYAN}Risk percentage: {risk_percentage} " +
+            risk_percentage = "0.5%" if reduced_risk else "1.0%"  # Approximate values for display
+            risk_profile = risk_config.detect_current_profile()
+            self.logger.info(f"{colored_time}: {Fore.CYAN}Using {risk_profile} risk profile: {risk_percentage} " +
                              f"({Fore.RED}REDUCED{Style.RESET_ALL} due to signal keywords)" if reduced_risk else "")
 
-            # Place the order with risk checks
+            # Place the order with risk checks - IMPORTANT: Pass the message_id for caching
+            from services.order_handler import place_orders_with_risk_check
+
+            # Ensure we're passing message_id - this is the key change
             result = await place_orders_with_risk_check(
                 self.orders_client,
                 self.accounts_client,
@@ -691,24 +644,9 @@ class TradingBot:
                 position_sizes,
                 risk_amount,
                 max_drawdown_balance,
-                colored_time
+                colored_time,
+                message_id=message_id  # Pass message_id for caching
             )
-
-            # Register orders with the missed signal handler
-            if self.missed_signal_handler and signal_id and result and instrument_data:
-                order_ids = []
-                for order_info, response in result.get('successful', []):
-                    if isinstance(response, dict) and 'd' in response and 'orderId' in response['d']:
-                        order_ids.append(response['d']['orderId'])
-                    elif isinstance(response, dict) and 'orderId' in response:
-                        order_ids.append(response['orderId'])
-
-                if order_ids:
-                    self.missed_signal_handler.register_orders_for_signal(
-                        parsed_signal['instrument'],
-                        signal_id,
-                        order_ids
-                    )
 
         except KeyError as e:
             self.logger.error(
