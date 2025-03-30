@@ -1,16 +1,9 @@
 import logging
-import asyncio
-import aiohttp
-from typing import List, Dict, Any
 from colorama import init, Fore, Style
-
 from order_cache import OrderCache
-
 # Initialize colorama
 init(autoreset=True)
-
 logger = logging.getLogger(__name__)
-
 # Create a global order cache instance
 order_cache = OrderCache()
 
@@ -47,6 +40,7 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                                    position_sizes, colored_time, order_type='limit', message_id=None):
     """
     Places orders and stores them in the order cache for future reference.
+    Includes entry price in cached data for breakeven functionality.
 
     Args:
         orders_client: Orders API client
@@ -72,6 +66,9 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
         if not take_profits:
             logger.error("No take profits found in signal")
             return None
+
+        # Extract entry price from the signal for caching
+        entry_price = parsed_signal.get('entry_point')
 
         # Log the message ID we're working with
         logger.info(f"{colored_time}: Processing order with message_id: {message_id}")
@@ -184,17 +181,18 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                 from order_cache import OrderCache
                 order_cache = OrderCache()
 
-                # Store in cache with explicit call
+                # Store in cache with explicit call including entry price
                 cached = order_cache.store_orders(
                     message_id=str(message_id),  # Ensure it's a string
                     order_ids=order_ids,
                     take_profits=take_profits,
-                    instrument=instrument_data['name']
+                    instrument=instrument_data['name'],
+                    entry_price=entry_price  # Store entry price for breakeven functionality
                 )
 
                 if cached:
                     logger.info(
-                        f"{colored_time}: {Fore.CYAN}Successfully cached {len(order_ids)} orders for message {message_id}{Style.RESET_ALL}"
+                        f"{colored_time}: {Fore.CYAN}Successfully cached {len(order_ids)} orders for message {message_id} with entry price {entry_price}{Style.RESET_ALL}"
                     )
                 else:
                     logger.warning(f"{colored_time}: Failed to cache orders for message {message_id}")

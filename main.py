@@ -5,7 +5,7 @@ import pytz
 import platform
 import signal
 import sys
-import getpass
+
 from colorama import init, Fore, Style
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
