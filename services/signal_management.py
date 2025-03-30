@@ -175,7 +175,7 @@ class SignalManager:
             bool: Success status
         """
         try:
-            url = f"{self.auth.base_url}/trade/positions/{position_id}/close"
+            url = f"{self.auth.base_url}/trade/positions/{position_id}"
             headers = {
                 "Authorization": f"Bearer {await self.auth.get_access_token_async()}",
                 "accNum": str(account['accNum']),
@@ -199,38 +199,6 @@ class SignalManager:
             logger.error(f"Error closing position {position_id}: {e}")
             return False
 
-    async def get_position_details(self, account, position_id):
-        """
-        Get position details for a specific position ID
-
-        Args:
-            account: Account information
-            position_id: Position ID
-
-        Returns:
-            dict: Position details or None if not found
-        """
-        try:
-            url = f"{self.auth.base_url}/trade/positions/{position_id}"
-            headers = {
-                "Authorization": f"Bearer {await self.auth.get_access_token_async()}",
-                "accNum": str(account['accNum'])
-            }
-
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=headers) as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        return data.get('d', {})
-                    elif response.status == 404:
-                        logger.info(f"Position {position_id} not found - may have been already closed")
-                        return None
-                    else:
-                        logger.warning(f"Failed to get position details for {position_id}: {response.status}")
-                        return None
-        except Exception as e:
-            logger.error(f"Error getting position details: {e}")
-            return None
 
     async def set_breakeven(self, account, position_id, entry_price=None):
         """
@@ -396,52 +364,102 @@ class SignalManager:
                     logger.info(
                         f"{colored_time}: {Fore.GREEN}All orders cancelled, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
 
+
         elif command_type == 'close':
-            # For close command, process each order sequentially
-            # Try both pending order cancellation and active position closing
+            # Use the same parallel processing logic that works for TP and cancel
+
+            logger.info(
+                f"{colored_time}: Close command received - attempting to close ALL {len(order_ids)} orders/positions")
+
+            # Process all orders in parallel for speed
+            close_tasks = []
+
             for order_id in order_ids:
-                # First try as pending order
-                cancel_success = await self.cancel_order(account, order_id)
-                if cancel_success:
-                    self.order_cache.remove_order(reply_to_msg_id, order_id)
-                    logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
-                    success_count += 1
-                    continue
+                # For close command, we first try cancel_order to handle pending orders
 
-                # Then try as active position
-                close_success = await self.close_position(account, order_id)
-                if close_success:
-                    self.order_cache.remove_order(reply_to_msg_id, order_id)
-                    logger.info(f"{colored_time}: {Fore.GREEN}Closed position {order_id}{Style.RESET_ALL}")
-                    success_count += 1
-                    continue
+                task = asyncio.create_task(self.cancel_order(account, order_id))
+                close_tasks.append(('cancel', order_id, task))
 
-                logger.warning(f"{colored_time}: Failed to close/cancel order or position {order_id}")
+            # Wait for all cancel operations to complete
+            for op_type, order_id, task in close_tasks:
 
-            # Check if we should remove the message
-            if success_count == total_count and total_count > 0:
-                self.order_cache.remove_message(reply_to_msg_id)
-                logger.info(
-                    f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+                try:
+                    success = await task
+                    if success:
+                        # Successfully cancelled as pending order
+
+                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled pending order {order_id}{Style.RESET_ALL}")
+                        success_count += 1
+
+                    else:
+                        # If not a pending order, try to close as position
+                        close_success = await self.close_position(account, order_id)
+
+                        if close_success:
+                            self.order_cache.remove_order(reply_to_msg_id, order_id)
+                            logger.info(
+                                f"{colored_time}: {Fore.GREEN}Closed active position {order_id}{Style.RESET_ALL}")
+                            success_count += 1
+                        else:
+                            logger.info(f"{colored_time}: Failed to close/cancel order/position {order_id}")
+
+                except Exception as e:
+                    logger.error(f"{colored_time}: Error processing order {order_id}: {e}")
+
+            # If we successfully processed any orders, check if we should remove the message
+            if success_count > 0:
+                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                if remaining_orders == 0:
+                    self.order_cache.remove_message(reply_to_msg_id)
+                    logger.info(
+                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+
+
 
         elif command_type == 'cancel':
-            # For cancel command, process each order sequentially
-            # Only try pending order cancellation
+            # Use the same logic that works for TP command
+            # Process all orders in parallel for efficiency
+
+            logger.info(f"{colored_time}: Cancel command received - attempting to cancel ALL {len(order_ids)} orders")
+
+            # Process all orders in parallel for speed
+
+            cancel_tasks = []
             for order_id in order_ids:
-                cancel_success = await self.cancel_order(account, order_id)
-                if cancel_success:
-                    self.order_cache.remove_order(reply_to_msg_id, order_id)
-                    logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
-                    success_count += 1
-                    continue
+                task = asyncio.create_task(self.cancel_order(account, order_id))
 
-                logger.info(f"{colored_time}: Order {order_id} is not a pending order")
+                cancel_tasks.append((order_id, task))
 
-            # Check if we should remove the message
-            if success_count == total_count and total_count > 0:
-                self.order_cache.remove_message(reply_to_msg_id)
-                logger.info(
-                    f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+            # Wait for all cancel operations to complete
+            for order_id, task in cancel_tasks:
+                try:
+                    success = await task
+                    if success:
+                        # Remove the order from cache after successful cancellation
+                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
+                        success_count += 1
+
+                    else:
+                        # If cancellation didn't work, try to close as position
+                        close_success = await self.close_position(account, order_id)
+                        if close_success:
+                            self.order_cache.remove_order(reply_to_msg_id, order_id)
+                            logger.info(f"{colored_time}: {Fore.GREEN}Closed position {order_id}{Style.RESET_ALL}")
+                            success_count += 1
+                        else:
+                            logger.info(f"{colored_time}: Failed to cancel order or close position {order_id}")
+                except Exception as e:
+                    logger.error(f"{colored_time}: Error processing order {order_id}: {e}")
+
+            # If we successfully processed any orders, check if we should remove the message
+            if success_count > 0:
+                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                if remaining_orders == 0:
+                    self.order_cache.remove_message(reply_to_msg_id)
+                    logger.info(
+                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
 
 
         elif command_type == 'breakeven':
