@@ -212,118 +212,6 @@ def calculate_stop_loss_pips(stop_loss: float, entry_point: float, instrument: d
         # Safe fallback: Use a default calculation
         return abs(stop_loss - entry_point) * 10000
 
-def calculate_pip_value(instrument: dict) -> float:
-    """
-    Calculate pip value for a given instrument.
-    Enhanced to handle various broker naming conventions including suffixes.
-
-    Args:
-        instrument: Instrument data dictionary
-    Returns:
-        float: Value of 1 pip in account currency
-    Raises:
-        ValueError: If unable to calculate pip value
-    """
-    try:
-        # Get the instrument name and convert to uppercase for consistency
-        instrument_name = instrument["name"].upper()
-
-        # Clean the instrument name by removing suffixes and special characters
-        # This handles variations like XAUUSD+, GOLD.C, etc.
-        base_name = re.sub(r'[.+\-_].*$', '', instrument_name)
-
-        logger.info(f"Calculating pip value for instrument: {instrument_name} (base name: {base_name})")
-
-        # ENHANCED INSTRUMENT TYPE DETECTION
-
-        # Check for Gold
-        if "XAU" in base_name or "GOLD" in base_name:
-            pip_value = 0.1  # Standard gold pip value
-            logger.info(f"Identified {instrument_name} as GOLD/XAUUSD, using pip value: {pip_value}")
-            return pip_value
-
-        # Check for Silver
-        if "XAG" in base_name or "SILVER" in base_name:
-            pip_value = 0.01
-            logger.info(f"Identified {instrument_name} as SILVER/XAGUSD, using pip value: {pip_value}")
-            return pip_value
-
-        # Check for Dow Jones / US30
-        if any(idx in base_name for idx in ["DOW", "DJI", "US30", "DJ30"]):
-            pip_value = 5
-            logger.info(f"Identified {instrument_name} as DOW/US30, using pip value: {pip_value}")
-            return pip_value
-
-        # Check for Nasdaq
-        if any(idx in base_name for idx in ["NDX", "NAS", "NASDAQ", "TECH"]):
-            pip_value = 20
-            logger.info(f"Identified {instrument_name} as NASDAQ/NDX100, using pip value: {pip_value}")
-            return pip_value
-
-        # Check for S&P 500
-        if any(idx in base_name for idx in ["SPX", "SP500", "S&P"]):
-            pip_value = 10
-            logger.info(f"Identified {instrument_name} as S&P 500, using pip value: {pip_value}")
-            return pip_value
-
-        # Standard forex pairs logic
-        if instrument["type"] == "FOREX" or (len(base_name) == 6 and base_name.isalpha()):
-            # FOREX instrument - determine if it's a JPY pair
-            if "JPY" in base_name:
-                pip_value = 0.01 / get_exchange_rate("USD", "JPY")
-                logger.info(f"Identified {instrument_name} as JPY pair, calculated pip value: {pip_value}")
-            else:
-                pip_value = 0.0001 / get_exchange_rate("USD", base_name[:3])
-                logger.info(f"Identified {instrument_name} as standard forex pair, calculated pip value: {pip_value}")
-            return pip_value
-
-        # If we reach here, we couldn't identify the instrument type - use backup logic
-        if instrument["type"] == "EQUITY_CFD":
-            # For any other CFD instrument not specifically handled above
-            logger.warning(f"Using default CFD pip value for {instrument_name}")
-            return 1.0  # Default value for unknown CFDs
-
-        # Last resort - look at the instrument name structure
-        if len(base_name) == 6 and base_name.isalpha():
-            # Looks like a forex pair
-            if base_name.endswith("JPY"):
-                return 0.01  # JPY pair
-            else:
-                return 0.0001  # Standard forex pair
-
-        # If we really can't determine it, use a safe default
-        logger.warning(f"Could not determine instrument type for {instrument_name}, using safe default pip value")
-        return 0.01  # Safe default that won't cause catastrophic position sizing
-
-    except Exception as e:
-        logger.error(f"Error calculating pip value for {instrument['name']}: {e}", exc_info=True)
-
-        # Provide fallbacks for common instruments
-        fallbacks = {
-            "EURUSD": 10,
-            "GBPUSD": 10,
-            "USDJPY": 9.33,
-            "XAUUSD": 100,
-            "GOLD": 100,
-            "NDX100": 20,
-            "DJI30": 5,
-            "DOW": 5
-        }
-
-        # Try matching against our fallbacks
-        for key, value in fallbacks.items():
-            if key in instrument["name"].upper():
-                logger.warning(f"Using fallback pip value for {instrument['name']} based on matching '{key}': {value}")
-                return value
-
-        # For standard forex pairs
-        if len(instrument["name"]) == 6 and instrument["name"].isalpha():
-            logger.warning(f"Using default forex pip value for {instrument['name']}")
-            return 10.0  # Safe default for forex
-
-        # Generic fallback
-        logger.warning(f"Using generic fallback pip value for {instrument['name']}")
-        return 1.0  # Extremely conservative default
 # Determine the risk percentage based on account tiers
 def determine_risk_percentage(account_balance: float, instrument: dict, reduced_risk: bool = False) -> float:
     """
@@ -449,7 +337,7 @@ def calculate_position_size(
             logger.info(f"Identified {instrument_name} as US30/DOW")
 
         # NASDAQ detection
-        elif any(idx in base_name for idx in ["NAS", "NDX", "NASDAQ"]):
+        elif any(idx in base_name for idx in ["NAS", "NDX", "NASDAQ", "NSDQ"]):
             is_nas100 = True
             logger.info(f"Identified {instrument_name} as NASDAQ")
 
@@ -498,7 +386,7 @@ def calculate_position_size(
         elif is_nas100:
             # NAS100 CALCULATION:
             # 0.01 lot (1 micro lot) = $0.2 risk per point
-            micro_lots = risk_per_position / (sl_distance * 0.2)
+            micro_lots = risk_per_position / (sl_distance * 0.05)
             lot_size = micro_lots / 100
             logger.info(
                 f"NAS100 calculation: ${risk_per_position} / ({sl_distance} * 0.2) = {micro_lots} micro lots = {lot_size:.2f} lots")
