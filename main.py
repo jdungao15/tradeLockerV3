@@ -831,7 +831,6 @@ async def handle_risk_configuration():
             if confirmation == 'y':
                 risk_config.apply_risk_profile("conservative")
                 print(f"{Fore.GREEN}Conservative risk profile applied.{Style.RESET_ALL}")
-                # Display the new settings
                 risk_config.display_current_risk_settings()
                 input("\nPress Enter to continue...")
 
@@ -841,60 +840,19 @@ async def handle_risk_configuration():
             if confirmation == 'y':
                 risk_config.apply_risk_profile("balanced")
                 print(f"{Fore.GREEN}Balanced risk profile applied.{Style.RESET_ALL}")
-                # Display the new settings
                 risk_config.display_current_risk_settings()
                 input("\nPress Enter to continue...")
 
         elif risk_choice == '4':
             # Apply aggressive profile
-            confirmation = input(
-                f"Apply {Fore.RED}Aggressive{Style.RESET_ALL} risk profile? This uses higher risk percentages. Are you sure? (y/n): ").lower()
+            confirmation = input(f"Apply {Fore.RED}Aggressive{Style.RESET_ALL} risk profile? (y/n): ").lower()
             if confirmation == 'y':
                 risk_config.apply_risk_profile("aggressive")
                 print(f"{Fore.GREEN}Aggressive risk profile applied.{Style.RESET_ALL}")
-                # Display the new settings
                 risk_config.display_current_risk_settings()
                 input("\nPress Enter to continue...")
 
-        # Management settings options
         elif risk_choice == '5':
-            # Toggle Auto-Breakeven
-            new_value = risk_config.toggle_management_setting("auto_breakeven")
-            status = "ENABLED" if new_value else "DISABLED"
-            color = Fore.GREEN if new_value else Fore.RED
-            print(f"{color}Auto-Breakeven is now {status}{Style.RESET_ALL}")
-            print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
-            input("\nPress Enter to continue...")
-
-        elif risk_choice == '6':
-            # Toggle Auto-Close Early
-            new_value = risk_config.toggle_management_setting("auto_close_early")
-            status = "ENABLED" if new_value else "DISABLED"
-            color = Fore.GREEN if new_value else Fore.RED
-            print(f"{color}Auto-Close Early is now {status}{Style.RESET_ALL}")
-            print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
-            input("\nPress Enter to continue...")
-
-        elif risk_choice == '7':
-            # Toggle Confirmation Required
-            new_value = risk_config.toggle_management_setting("confirmation_required")
-            status = "ENABLED" if new_value else "DISABLED"
-            color = Fore.GREEN if new_value else Fore.RED
-            print(f"{color}Confirmation Requirement is now {status}{Style.RESET_ALL}")
-
-            # Warning if both auto features enabled and confirmation disabled
-            mgmt_settings = risk_config.get_management_settings()
-            if mgmt_settings.get("auto_breakeven", False) and mgmt_settings.get("auto_close_early",
-                                                                                False) and not new_value:
-                print(
-                    f"{Fore.RED}Warning: Both auto features are enabled with no confirmation requirement.{Style.RESET_ALL}")
-                print(
-                    f"{Fore.RED}The bot will execute all signal provider instructions automatically.{Style.RESET_ALL}")
-
-            print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
-            input("\nPress Enter to continue...")
-
-        elif risk_choice == '8':
             # Configure Forex risk
             print(f"\n{Fore.CYAN}Configuring Forex Risk Percentages{Style.RESET_ALL}")
 
@@ -909,8 +867,9 @@ async def handle_risk_configuration():
                 risk_config.update_risk_percentage("FOREX", reduced_risk, is_reduced=True)
 
             print(f"{Fore.GREEN}Forex risk settings updated.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
 
-        elif risk_choice == '9':
+        elif risk_choice == '6':
             # Configure CFD risk
             print(f"\n{Fore.CYAN}Configuring CFD Risk Percentages{Style.RESET_ALL}")
 
@@ -925,8 +884,9 @@ async def handle_risk_configuration():
                 risk_config.update_risk_percentage("CFD", reduced_risk, is_reduced=True)
 
             print(f"{Fore.GREEN}CFD risk settings updated.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
 
-        elif risk_choice == '10':
+        elif risk_choice == '7':
             # Configure XAUUSD risk
             print(f"\n{Fore.CYAN}Configuring XAUUSD (Gold) Risk Percentages{Style.RESET_ALL}")
 
@@ -941,8 +901,9 @@ async def handle_risk_configuration():
                 risk_config.update_risk_percentage("XAUUSD", reduced_risk, is_reduced=True)
 
             print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
 
-        elif risk_choice == '11':
+        elif risk_choice == '8':
             # Configure Daily Drawdown percentage
             print(f"\n{Fore.CYAN}Configuring Daily Drawdown Percentage{Style.RESET_ALL}")
 
@@ -951,27 +912,26 @@ async def handle_risk_configuration():
             if new_drawdown:
                 risk_config.update_drawdown_percentage(new_drawdown)
                 print(f"{Fore.GREEN}Daily drawdown percentage updated to {new_drawdown:.1f}%.{Style.RESET_ALL}")
-                print(
-                    f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
                 print(f"{Fore.YELLOW}The new setting will apply after the next daily reset.{Style.RESET_ALL}")
 
             input("\nPress Enter to continue...")
 
-        elif risk_choice == '12':
+        elif risk_choice == '9':
             # Reset to defaults
-            confirmation = input(
-                f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
+            confirmation = input(f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
             if confirmation == 'y':
                 risk_config.apply_risk_profile("balanced")
                 print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
-        elif risk_choice == '13':
+                input("\nPress Enter to continue...")
+
+        elif risk_choice == '10':
             # Configure Take Profit Selection
             await handle_tp_selection()
-        elif risk_choice == '14':
+
+        elif risk_choice == '11':
             # Return to main menu
             return
-
-
 
         else:
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
