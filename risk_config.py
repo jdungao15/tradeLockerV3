@@ -209,27 +209,47 @@ def update_drawdown_percentage(percentage):
     """
     global risk_config
 
+    # Ensure drawdown section exists
     if "drawdown" not in risk_config:
         risk_config["drawdown"] = {}
 
+    # Update drawdown percentage
     risk_config["drawdown"]["daily_percentage"] = percentage
 
+    # Save to file
     return save_risk_config()
 
 
-def get_management_settings():
+def update_risk_percentage(instrument_type, percentage, is_reduced=False):
     """
-    Get default management settings (for backward compatibility with menu system)
+    Update risk percentage for a specific instrument type
+
+    Args:
+        instrument_type: Type of instrument (FOREX, CFD, XAUUSD)
+        percentage: Risk percentage as decimal (e.g., 0.01 for 1%)
+        is_reduced: Whether to update reduced risk or normal risk
 
     Returns:
-        dict: Management settings with defaults
+        bool: Success status
     """
-    return {
-        "auto_breakeven": True,  # Always enabled in new implementation
-        "auto_close_early": True,  # Always enabled in new implementation
-        "confirmation_required": False  # No confirmation in new implementation
-    }
+    global risk_config
 
+    # Ensure instrument type exists
+    if instrument_type not in risk_config:
+        risk_config[instrument_type] = {
+            "default": 0.01,
+            "reduced": 0.005
+        }
+
+    # Update the appropriate risk type
+    risk_type = "reduced" if is_reduced else "default"
+    risk_config[instrument_type][risk_type] = percentage
+
+    # Save to file
+    success = save_risk_config()
+
+    logger.info(f"Updated {instrument_type} {risk_type} risk to {percentage * 100:.2f}%")
+    return success
 
 def get_tp_selection():
     """
@@ -311,6 +331,7 @@ def display_current_risk_settings():
     print(f"TP Selection: {tp_selection['mode']}")
 
     print("=" * 45)
+
 
 
 # Initialize by loading config at module import
