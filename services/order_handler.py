@@ -40,7 +40,7 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                                    position_sizes, colored_time, order_type='limit', message_id=None):
     """
     Places orders and stores them in the order cache for future reference.
-    Includes entry price in cached data for breakeven functionality.
+    Includes entry price and stop loss in cached data for content matching.
 
     Args:
         orders_client: Orders API client
@@ -67,8 +67,9 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
             logger.error("No take profits found in signal")
             return None
 
-        # Extract entry price from the signal for caching
+        # Extract entry price and stop loss from the signal for caching
         entry_price = parsed_signal.get('entry_point')
+        stop_loss = parsed_signal.get('stop_loss')
 
         # Log the message ID we're working with
         logger.info(f"{colored_time}: Processing order with message_id: {message_id}")
@@ -181,18 +182,20 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                 from order_cache import OrderCache
                 order_cache = OrderCache()
 
-                # Store in cache with explicit call including entry price
+                # Store in cache with explicit call including entry price AND stop loss
                 cached = order_cache.store_orders(
                     message_id=str(message_id),  # Ensure it's a string
                     order_ids=order_ids,
                     take_profits=take_profits,
                     instrument=instrument_data['name'],
-                    entry_price=entry_price  # Store entry price for breakeven functionality
+                    entry_price=entry_price,     # Store entry price for breakeven functionality
+                    stop_loss=stop_loss          # Store stop loss for content matching
                 )
 
                 if cached:
                     logger.info(
-                        f"{colored_time}: {Fore.CYAN}Successfully cached {len(order_ids)} orders for message {message_id} with entry price {entry_price}{Style.RESET_ALL}"
+                        f"{colored_time}: {Fore.CYAN}Successfully cached {len(order_ids)} orders for message {message_id} "
+                        f"with entry price {entry_price} and stop loss {stop_loss}{Style.RESET_ALL}"
                     )
                 else:
                     logger.warning(f"{colored_time}: Failed to cache orders for message {message_id}")

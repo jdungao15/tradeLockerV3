@@ -21,6 +21,11 @@ RISK_PROFILES = {
         },
         "drawdown": {
             "daily_percentage": 3.0  # 3% for conservative profile
+        },
+        "management": {
+            "auto_breakeven": True,
+            "auto_close_early": True,
+            "confirmation_required": False
         }
     },
     "balanced": {
@@ -38,6 +43,11 @@ RISK_PROFILES = {
         },
         "drawdown": {
             "daily_percentage": 4.0  # 4% for balanced profile
+        },
+        "management": {
+            "auto_breakeven": True,
+            "auto_close_early": True,
+            "confirmation_required": False
         }
     },
     "aggressive": {
@@ -55,6 +65,11 @@ RISK_PROFILES = {
         },
         "drawdown": {
             "daily_percentage": 5.0  # 5% for aggressive profile
+        },
+        "management": {
+            "auto_breakeven": True,
+            "auto_close_early": True,
+            "confirmation_required": False
         }
     }
 }
@@ -122,6 +137,38 @@ def get_risk_percentage(instrument_type, reduced_risk=False):
     return risk_config[instrument_type][risk_type]
 
 
+def update_risk_percentage(instrument_type, percentage, is_reduced=False):
+    """
+    Update risk percentage for a specific instrument type
+
+    Args:
+        instrument_type: Type of instrument (FOREX, CFD, XAUUSD)
+        percentage: Risk percentage as decimal (e.g., 0.01 for 1%)
+        is_reduced: Whether updating reduced risk percentage
+
+    Returns:
+        bool: Success status
+    """
+    global risk_config
+
+    risk_type = "reduced" if is_reduced else "default"
+
+    # Create instrument type if not exists
+    if instrument_type not in risk_config:
+        risk_config[instrument_type] = {"default": 0.01, "reduced": 0.005}
+
+    # Update the value
+    risk_config[instrument_type][risk_type] = percentage
+
+    # Save changes
+    success = save_risk_config()
+
+    if success:
+        logger.info(f"Updated {risk_type} risk for {instrument_type} to {percentage * 100:.2f}%")
+
+    return success
+
+
 def detect_current_profile():
     """Detect which profile the current settings match, if any"""
     # Check for exact matches
@@ -130,8 +177,8 @@ def detect_current_profile():
 
         # Check each instrument type's settings
         for instrument, settings in profile_settings.items():
-            if instrument == "drawdown":
-                continue  # Skip drawdown when matching profiles
+            if instrument == "drawdown" or instrument == "management":
+                continue  # Skip drawdown and management when matching profiles
 
             if instrument not in risk_config:
                 is_match = False
@@ -192,9 +239,9 @@ def get_drawdown_percentage():
         if current_profile == "conservative":
             return 3.0
         elif current_profile == "aggressive":
-            return 3.0
+            return 5.0
         else:  # balanced or custom
-            return 3.0
+            return 4.0
 
 
 def update_drawdown_percentage(percentage):
@@ -224,11 +271,47 @@ def get_management_settings():
     Returns:
         dict: Management settings with defaults
     """
+    if "management" in risk_config:
+        return risk_config["management"]
+
+    # Default values if not in config
     return {
         "auto_breakeven": True,  # Always enabled in new implementation
         "auto_close_early": True,  # Always enabled in new implementation
         "confirmation_required": False  # No confirmation in new implementation
     }
+
+
+def toggle_management_setting(setting_name):
+    """
+    Toggle a management setting between True and False
+
+    Args:
+        setting_name: Name of the setting to toggle
+
+    Returns:
+        bool: New value of the setting after toggle
+    """
+    global risk_config
+
+    # Ensure management section exists
+    if "management" not in risk_config:
+        risk_config["management"] = {
+            "auto_breakeven": True,
+            "auto_close_early": True,
+            "confirmation_required": False
+        }
+
+    # Toggle the setting
+    current_value = risk_config["management"].get(setting_name, False)
+    risk_config["management"][setting_name] = not current_value
+
+    # Save changes
+    save_risk_config()
+
+    # Return new value
+    logger.info(f"Toggled {setting_name} to {not current_value}")
+    return not current_value
 
 
 def get_tp_selection():
@@ -295,7 +378,7 @@ def display_current_risk_settings():
     print("-" * 45)
 
     for instrument, settings in risk_config.items():
-        if instrument in ["drawdown", "tp_selection"]:
+        if instrument in ["drawdown", "tp_selection", "management"]:
             continue  # Skip non-instrument settings
 
         default_risk = f"{settings['default'] * 100:.2f}%"
@@ -309,6 +392,12 @@ def display_current_risk_settings():
     # Add TP selection info if available
     tp_selection = get_tp_selection()
     print(f"TP Selection: {tp_selection['mode']}")
+
+    # Add management settings
+    mgmt = get_management_settings()
+    print(f"Auto Breakeven: {'Enabled' if mgmt.get('auto_breakeven', True) else 'Disabled'}")
+    print(f"Auto Close Early: {'Enabled' if mgmt.get('auto_close_early', True) else 'Disabled'}")
+    print(f"Confirmation Required: {'Yes' if mgmt.get('confirmation_required', False) else 'No'}")
 
     print("=" * 45)
 

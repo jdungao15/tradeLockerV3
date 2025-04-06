@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 class SignalManager:
     """
-    Signal manager that handles trading commands through message replies.
-    Uses order caching to track which orders correspond to which signals.
+    Enhanced Signal manager that handles trading commands through message replies.
+    Now includes content-based fallback matching for forwarded signals.
     """
 
     def __init__(self, accounts_client, orders_client, instruments_client, auth_client):
@@ -25,6 +25,9 @@ class SignalManager:
         self.order_cache = OrderCache()
         self.message_logs = []
         self.max_log_size = 200
+        self.content_matching_enabled = True  # Flag to enable/disable content matching
+        self.max_content_match_age = 24  # Hours to search back for content matches
+        self.debug_mode = False  # Enable for verbose debug logging
 
         # Ensure initialization is complete
         self._init_complete = False
@@ -180,10 +183,95 @@ class SignalManager:
         logger.info(f"No command detected in message: '{message_lower}'")
         return None, None
 
-    async def store_orders(self, message_id, order_ids, take_profits, instrument=None):
+    def extract_trading_parameters(self, message):
+        """
+        Extract parameters from a message for content-based matching.
+        Extracts instrument, entry points, stop loss, take profits.
+
+        Args:
+            message: Command message text
+
+        Returns:
+            dict: Dictionary with extracted parameters
+        """
+        if not message:
+            return {}
+
+        message = message.lower()
+        result = {
+            'instrument': None,
+            'entry_price': None,
+            'stop_loss': None,
+            'take_profits': []
+        }
+
+        # Extract instrument
+        # Common instruments
+        common_instruments = [
+            "eurusd", "gbpusd", "usdjpy", "audusd", "usdcad", "usdchf", "nzdusd",
+            "gold", "xauusd", "silver", "xagusd",
+            "us30", "dji30", "dow", "nasdaq", "nas100", "ndx100", "spx", "sp500"
+        ]
+
+        # Find any instrument mentions
+        for instrument in common_instruments:
+            if instrument in message:
+                result['instrument'] = instrument.upper()
+                break
+
+        # Try to extract forex pairs (six alpha characters)
+        if not result['instrument']:
+            forex_pattern = r'\b([a-z]{3}[a-z]{3})\b'
+            match = re.search(forex_pattern, message)
+            if match:
+                result['instrument'] = match.group(1).upper()
+
+        # Extract prices - find all numbers in the message
+        price_pattern = r'\b(\d+\.?\d*)\b'
+        prices = re.findall(price_pattern, message)
+        prices = [float(p) for p in prices]
+
+        # If fewer than 2 prices found, return what we have
+        if len(prices) < 2:
+            return result
+
+        # Try to associate prices with entry, SL, TP
+        # Look for labeled prices
+        entry_pattern = r'entry[\s\-_.]*(?:price|point|level)?[\s\-_.]*(?:at|:)?[\s\-_.]*(\d+\.?\d*)'
+        sl_pattern = r'(?:sl|stop[\s\-_.]*loss)[\s\-_.]*(?:at|:)?[\s\-_.]*(\d+\.?\d*)'
+        tp_pattern = r'(?:tp|target|take[\s\-_.]*profit)[\s\-_.]*(?:at|:)?[\s\-_.]*(\d+\.?\d*)'
+
+        # Try to find labeled prices
+        entry_match = re.search(entry_pattern, message)
+        if entry_match:
+            result['entry_price'] = float(entry_match.group(1))
+
+        sl_match = re.search(sl_pattern, message)
+        if sl_match:
+            result['stop_loss'] = float(sl_match.group(1))
+
+        # Extract all take profits
+        tp_matches = re.findall(tp_pattern, message)
+        if tp_matches:
+            result['take_profits'] = [float(tp) for tp in tp_matches]
+
+        # If we didn't find labeled prices, make educated guesses
+        if not result['entry_price'] and len(prices) >= 2:
+            # In commands, entry price is often mentioned first
+            result['entry_price'] = prices[0]
+
+        if not result['stop_loss'] and len(prices) >= 2:
+            # Stop loss is often the lowest/highest price depending on the trade direction
+            # But without knowing the direction, we'll just use the second mentioned price
+            result['stop_loss'] = prices[1]
+
+        return result
+
+    async def store_orders(self, message_id, order_ids, take_profits, instrument=None, entry_price=None,
+                           stop_loss=None):
         """Store orders in the cache"""
         return self.order_cache.store_orders(
-            message_id, order_ids, take_profits, instrument
+            message_id, order_ids, take_profits, instrument, entry_price, stop_loss
         )
 
     async def cancel_order(self, account, order_id):
@@ -259,7 +347,6 @@ class SignalManager:
             logger.error(f"Error closing position {position_id}: {e}")
             return False
 
-
     async def set_breakeven(self, account, position_id, entry_price=None):
         """
         Set stop loss to breakeven for a position - simplified implementation
@@ -327,10 +414,66 @@ class SignalManager:
         else:
             return 0.0001  # Default for most forex pairs
 
+    async def find_matching_orders(self, command_message, account, reply_to_msg_id, colored_time):
+        """
+        Find orders that match the command message content
+        when direct message ID matching fails.
+
+        Args:
+            command_message: Command message content
+            account: Account information
+            reply_to_msg_id: Original message ID that was replied to
+            colored_time: Formatted time for logging
+
+        Returns:
+            tuple: (match_found, msg_id, cached_orders) or (False, None, None) if no match
+        """
+        # First try exact message ID match
+        cached_orders = self.order_cache.get_orders(reply_to_msg_id)
+        if cached_orders:
+            logger.info(f"{colored_time}: Found exact message ID match for {reply_to_msg_id}")
+            return True, reply_to_msg_id, cached_orders
+
+        # If no direct match and content matching is disabled, return early
+        if not self.content_matching_enabled:
+            logger.info(f"{colored_time}: No exact match and content matching is disabled")
+            return False, None, None
+
+        logger.info(f"{colored_time}: No exact message ID match. Attempting content-based matching...")
+
+        # Extract trading parameters from command message
+        params = self.extract_trading_parameters(command_message)
+
+        # Debug log extracted parameters
+        if self.debug_mode:
+            logger.debug(f"Extracted parameters: {json.dumps(params)}")
+
+        # Need at least an instrument to attempt matching
+        if not params.get('instrument'):
+            logger.info(f"{colored_time}: No instrument found in command. Content matching aborted.")
+            return False, None, None
+
+        # Use the OrderCache's find_orders_by_content method
+        message_id, cached_data = self.order_cache.find_orders_by_content(
+            instrument=params.get('instrument'),
+            entry_price=params.get('entry_price'),
+            stop_loss=params.get('stop_loss'),
+            take_profits=params.get('take_profits'),
+            max_age_hours=self.max_content_match_age
+        )
+
+        if message_id and cached_data:
+            logger.info(
+                f"{colored_time}: {Fore.GREEN}Found content match with message ID {message_id}{Style.RESET_ALL}")
+            return True, message_id, cached_data
+
+        logger.info(f"{colored_time}: {Fore.YELLOW}No content match found.{Style.RESET_ALL}")
+        return False, None, None
+
     async def handle_message(self, message, account, colored_time, reply_to_msg_id=None, message_id=None):
         """
         Process an incoming message to check for trading commands
-        When a TP command is received, cancel ALL pending orders for the message
+        Enhanced with content-based fallback matching for forwarded signals
         """
         # Log the message for debugging
         message_log = {
@@ -363,29 +506,40 @@ class SignalManager:
         logger.info(
             f"{colored_time}: Looking for cached orders with reply_to_msg_id: {reply_to_msg_id} (type: {type(reply_to_msg_id).__name__})")
 
-        # Try to get orders associated with the original message
-        cached_orders = self.order_cache.get_orders(reply_to_msg_id)
+        # Try to match orders - either by exact message ID or content
+        match_found, matched_msg_id, cached_orders = await self.find_matching_orders(
+            message, account, reply_to_msg_id, colored_time
+        )
 
-        if not cached_orders:
-            logger.info(f"{colored_time}: No cached orders found for message ID {reply_to_msg_id}")
-            message_log['match_method'] = 'none_no_cached_orders'
+        if not match_found:
+            logger.info(f"{colored_time}: No matching orders found for this command")
+            message_log['match_method'] = 'none_no_matches'
             self.log_message(message_log)
             return False, None
 
-        # We found cached orders, so we can process the command
+        # Get the matched data
         order_ids = cached_orders.get('orders', [])
         take_profits = cached_orders.get('take_profits', [])
         instrument = cached_orders.get('instrument')
+        entry_price = cached_orders.get('entry_price')
+        stop_loss = cached_orders.get('stop_loss')
 
         logger.info(
-            f"{colored_time}: {Fore.CYAN}Found {len(order_ids)} cached orders for message {reply_to_msg_id}. "
+            f"{colored_time}: {Fore.CYAN}Found {len(order_ids)} cached orders for message {matched_msg_id}. "
             f"Command: {command_type}{' TP' + str(tp_level) if tp_level else ''}{Style.RESET_ALL}"
         )
 
         # Initialize counters
         success_count = 0
         total_count = len(order_ids)
-        message_log['match_method'] = 'cached_orders'
+
+        # Set match method based on whether we matched directly or by content
+        if str(matched_msg_id) == str(reply_to_msg_id):
+            message_log['match_method'] = 'exact_message_id'
+        else:
+            message_log['match_method'] = 'content_match'
+            logger.info(
+                f"{colored_time}: {Fore.YELLOW}Using content-based match. Original message ID: {reply_to_msg_id}, Matched message ID: {matched_msg_id}{Style.RESET_ALL}")
 
         # HANDLE COMMANDS DIFFERENTLY
 
@@ -408,7 +562,7 @@ class SignalManager:
                     success = await task
                     if success:
                         # Remove the order from cache after successful cancellation
-                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        self.order_cache.remove_order(matched_msg_id, order_id)
                         logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled pending order {order_id}{Style.RESET_ALL}")
                         success_count += 1
                     else:
@@ -418,11 +572,11 @@ class SignalManager:
 
             # If all orders were successfully cancelled, remove the message
             if success_count > 0:
-                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                remaining_orders = await self.get_remaining_orders_count(matched_msg_id)
                 if remaining_orders == 0:
-                    self.order_cache.remove_message(reply_to_msg_id)
+                    self.order_cache.remove_message(matched_msg_id)
                     logger.info(
-                        f"{colored_time}: {Fore.GREEN}All orders cancelled, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+                        f"{colored_time}: {Fore.GREEN}All orders cancelled, removed message {matched_msg_id} from cache{Style.RESET_ALL}")
 
 
         elif command_type == 'close':
@@ -448,7 +602,7 @@ class SignalManager:
                     if success:
                         # Successfully cancelled as pending order
 
-                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        self.order_cache.remove_order(matched_msg_id, order_id)
                         logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled pending order {order_id}{Style.RESET_ALL}")
                         success_count += 1
 
@@ -457,7 +611,7 @@ class SignalManager:
                         close_success = await self.close_position(account, order_id)
 
                         if close_success:
-                            self.order_cache.remove_order(reply_to_msg_id, order_id)
+                            self.order_cache.remove_order(matched_msg_id, order_id)
                             logger.info(
                                 f"{colored_time}: {Fore.GREEN}Closed active position {order_id}{Style.RESET_ALL}")
                             success_count += 1
@@ -469,11 +623,11 @@ class SignalManager:
 
             # If we successfully processed any orders, check if we should remove the message
             if success_count > 0:
-                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                remaining_orders = await self.get_remaining_orders_count(matched_msg_id)
                 if remaining_orders == 0:
-                    self.order_cache.remove_message(reply_to_msg_id)
+                    self.order_cache.remove_message(matched_msg_id)
                     logger.info(
-                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {matched_msg_id} from cache{Style.RESET_ALL}")
 
 
 
@@ -497,7 +651,7 @@ class SignalManager:
                     success = await task
                     if success:
                         # Remove the order from cache after successful cancellation
-                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        self.order_cache.remove_order(matched_msg_id, order_id)
                         logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
                         success_count += 1
 
@@ -505,7 +659,7 @@ class SignalManager:
                         # If cancellation didn't work, try to close as position
                         close_success = await self.close_position(account, order_id)
                         if close_success:
-                            self.order_cache.remove_order(reply_to_msg_id, order_id)
+                            self.order_cache.remove_order(matched_msg_id, order_id)
                             logger.info(f"{colored_time}: {Fore.GREEN}Closed position {order_id}{Style.RESET_ALL}")
                             success_count += 1
                         else:
@@ -515,20 +669,19 @@ class SignalManager:
 
             # If we successfully processed any orders, check if we should remove the message
             if success_count > 0:
-                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                remaining_orders = await self.get_remaining_orders_count(matched_msg_id)
                 if remaining_orders == 0:
-                    self.order_cache.remove_message(reply_to_msg_id)
+                    self.order_cache.remove_message(matched_msg_id)
                     logger.info(
-                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {matched_msg_id} from cache{Style.RESET_ALL}")
 
 
         elif command_type == 'breakeven':
             # For breakeven command, use entry price from cache
             # Get the entry price from the cached data
-            entry_price = cached_orders.get('entry_price')
-
             if not entry_price:
-                logger.warning(f"{colored_time}: No entry price found in cache for message {reply_to_msg_id}")
+                logger.warning(f"{colored_time}: No entry price found in cache for message {matched_msg_id}")
+
             # Process each order
             for order_id in order_ids:
                 be_success = await self.set_breakeven(account, order_id, entry_price)
@@ -537,13 +690,14 @@ class SignalManager:
                     success_count += 1
                     continue
                 logger.warning(f"{colored_time}: Failed to set breakeven for position {order_id}")
+
         # Return the result
         result = {
             "command_type": command_type,
             "tp_level": tp_level,
             "success_count": success_count,
             "total_count": total_count,
-            "message_id": reply_to_msg_id,
+            "message_id": matched_msg_id,
             "instrument": instrument
         }
 
@@ -567,3 +721,13 @@ class SignalManager:
         if limit:
             logs_to_export = logs_to_export[-limit:]
         return json.dumps(logs_to_export, indent=2)
+
+    def configure_content_matching(self, enabled=True, max_age_hours=24, debug=False):
+        """Configure content matching behavior"""
+        self.content_matching_enabled = enabled
+        self.max_content_match_age = max_age_hours
+        self.debug_mode = debug
+
+        logger.info(f"Content matching {'enabled' if enabled else 'disabled'}, " +
+                    f"max age: {max_age_hours} hours, debug mode: {'on' if debug else 'off'}")
+        return True

@@ -76,13 +76,27 @@ def display_risk_menu():
     print(
         f"{Fore.YELLOW}8.{Style.RESET_ALL} Configure Daily Drawdown ({Fore.MAGENTA}{drawdown_percentage:.1f}%{Style.RESET_ALL})")
 
+    # Management options
+    print(f"\n{Fore.CYAN}-- Position Management --{Style.RESET_ALL}")
+
+    # Get current management settings
+    mgmt_settings = risk_config.get_management_settings()
+    be_status = "Enabled" if mgmt_settings.get("auto_breakeven", True) else "Disabled"
+    close_status = "Enabled" if mgmt_settings.get("auto_close_early", True) else "Disabled"
+    confirm_status = "Yes" if mgmt_settings.get("confirmation_required", False) else "No"
+
+    print(f"{Fore.YELLOW}9.{Style.RESET_ALL} Toggle Auto-Breakeven ({Fore.CYAN}{be_status}{Style.RESET_ALL})")
+    print(f"{Fore.YELLOW}10.{Style.RESET_ALL} Toggle Auto-Close Early ({Fore.CYAN}{close_status}{Style.RESET_ALL})")
+    print(
+        f"{Fore.YELLOW}11.{Style.RESET_ALL} Toggle Confirmation Required ({Fore.CYAN}{confirm_status}{Style.RESET_ALL})")
+
     # Additional options
-    print(f"{Fore.YELLOW}9.{Style.RESET_ALL} Reset to Default Risk Settings")
-    print(f"{Fore.YELLOW}10.{Style.RESET_ALL} Configure Take Profit Selection")
-    print(f"{Fore.YELLOW}11.{Style.RESET_ALL} Return to Main Menu")
+    print(f"{Fore.YELLOW}12.{Style.RESET_ALL} Configure Take Profit Selection")
+    print(f"{Fore.YELLOW}13.{Style.RESET_ALL} Reset to Default Risk Settings")
+    print(f"{Fore.YELLOW}14.{Style.RESET_ALL} Return to Main Menu")
     print(f"{Fore.CYAN}========================================={Style.RESET_ALL}\n")
 
-    choice = input(f"{Fore.GREEN}Enter your choice (1-11): {Style.RESET_ALL}")
+    choice = input(f"{Fore.GREEN}Enter your choice (1-14): {Style.RESET_ALL}")
     return choice
 
 

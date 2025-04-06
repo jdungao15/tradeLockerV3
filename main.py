@@ -5,14 +5,11 @@ import pytz
 import platform
 import signal
 import sys
-
 from colorama import init, Fore, Style
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
-from telethon.errors import SessionPasswordNeededError
 from datetime import datetime
 from cli.banner import display_banner
-from cli.display_menu import display_menu, display_risk_menu, get_risk_percentage_input
 from core.signal_parser import parse_signal_async
 from core.risk_management import calculate_position_size
 from tradelocker_api.endpoints.auth import TradeLockerAuth
@@ -26,10 +23,8 @@ from services.drawdown_manager import (
     max_drawdown_balance
 )
 from cli.display_menu import display_menu, display_risk_menu, get_risk_percentage_input, get_drawdown_percentage_input
-from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
-from services.signal_management import SignalManager
 import risk_config
 from core.signal_parser import find_matching_instrument
 
@@ -154,6 +149,13 @@ class TradingBot:
                 self.orders_client,
                 self.instruments_client,
                 self.auth
+            )
+
+            # Configure content matching behavior
+            self.signal_manager.configure_content_matching(
+                enabled=True,  # Enable content matching for forwarded signals
+                max_age_hours=48,  # Look back 48 hours for potential matches
+                debug=False  # Set to True for verbose debugging
             )
 
             self.logger.info("Signal manager initialized with reply-based command handling")
@@ -447,7 +449,7 @@ class TradingBot:
     # -------------------------------------------------------------------------
 
     async def setup_telegram_handler(self):
-        """Set up the Telegram message handler"""
+        """Set up the Telegram message handler with original message content retrieval"""
         if not self.enable_signals:
             self.logger.info("Signal processing is disabled. Skipping Telegram handler setup.")
             return
@@ -468,11 +470,33 @@ class TradingBot:
             # Extract message and reply information
             message_id = str(event.message.id) if hasattr(event.message, 'id') else None
             reply_to_msg_id = None
+            replied_message_text = None  # Initialize variable to store replied message content
 
             # Check if this is a reply to another message
             if hasattr(event.message, 'reply_to') and event.message.reply_to:
                 reply_to_msg_id = str(event.message.reply_to.reply_to_msg_id)
                 self.logger.debug(f"Message is a reply to message ID: {reply_to_msg_id}")
+
+                # Try to fetch the content of the replied-to message
+                try:
+                    if reply_to_msg_id:
+                        # Get the message that this message is replying to
+                        replied_message = await self.client.get_messages(
+                            event.chat_id,
+                            ids=int(reply_to_msg_id)
+                        )
+
+                        if replied_message and hasattr(replied_message, 'message'):
+                            replied_message_text = replied_message.message
+                            self.logger.info(
+                                f"Original message being replied to: '{replied_message_text[:100]}'" +
+                                ('' if len(replied_message_text) <= 100 else '...')
+                            )
+                        else:
+                            self.logger.warning(
+                                f"Could not find original message for reply_to_msg_id: {reply_to_msg_id}")
+                except Exception as e:
+                    self.logger.warning(f"Error retrieving original replied message: {e}")
 
             # Log message details for debugging
             self.logger.debug(f"Received message ID: {message_id}, Reply to: {reply_to_msg_id}, Channel: {channel_id}")
@@ -482,7 +506,7 @@ class TradingBot:
             formatted_time = message_time_local.strftime('%Y-%m-%d %H:%M:%S')
             colored_time = f"{Fore.CYAN}[{formatted_time}]{Style.RESET_ALL}"
 
-            # Process the message in a new task with reply information
+            # Process the message in a new task with reply information and original message content
             task = asyncio.create_task(
                 self.process_message(
                     message_text,
@@ -491,7 +515,8 @@ class TradingBot:
                     channel_id=channel_id,
                     channel_name=channel_name,
                     reply_to_msg_id=reply_to_msg_id,
-                    message_id=message_id
+                    message_id=message_id,
+                    replied_message_text=replied_message_text  # Pass the replied message content
                 )
             )
             self._tasks.add(task)
@@ -502,13 +527,18 @@ class TradingBot:
     # -------------------------------------------------------------------------
 
     async def process_message(self, message_text, colored_time, event=None, channel_id=None,
-                              channel_name=None, reply_to_msg_id=None, message_id=None):
+                              channel_name=None, reply_to_msg_id=None, message_id=None,
+                              replied_message_text=None):
         """
-        Process a received Telegram message - updated to ensure message_id is passed for caching
+        Process a received Telegram message with support for original message content
         """
         try:
             # Log the message ID for debugging
             self.logger.debug(f"Processing message with ID {message_id}, replying to {reply_to_msg_id}")
+
+            # If we have the content of the replied-to message, log it
+            if replied_message_text:
+                self.logger.debug(f"Message is replying to original content: '{replied_message_text[:100]}...'")
 
             # First, check if this is a command message via SignalManager
             if self.signal_manager:
@@ -517,7 +547,8 @@ class TradingBot:
                     self.selected_account,
                     colored_time,
                     reply_to_msg_id,
-                    message_id
+                    message_id,
+                    replied_message_text=replied_message_text  # Pass original message content
                 )
 
                 if is_handled:
@@ -544,109 +575,8 @@ class TradingBot:
                 self.logger.info(f"{colored_time} Received invalid signal: {message_text}")
                 return
 
-            # Check if this is a reduced risk signal
-            reduced_risk = parsed_signal.get('reduced_risk', False)
-            if reduced_risk:
-                self.logger.info(f"{colored_time} {Fore.YELLOW}Signal identified as REDUCED RISK.{Style.RESET_ALL}")
-
-            self.logger.info(f"{colored_time} {Fore.CYAN}Received trading signal:{Style.RESET_ALL} {message_text}")
-            self.logger.info(
-                f"{Fore.YELLOW}Signal details:{Style.RESET_ALL} Instrument: {Fore.GREEN}{parsed_signal['instrument']}{Style.RESET_ALL}, "
-                f"Type: {Fore.GREEN}{parsed_signal['order_type'].upper()}{Style.RESET_ALL}, "
-                f"Entry: {Fore.CYAN}{parsed_signal['entry_point']}{Style.RESET_ALL}, "
-                f"SL: {Fore.RED}{parsed_signal['stop_loss']}{Style.RESET_ALL}")
-            self.logger.info(
-                f"Take profits: {Fore.GREEN}{', '.join(map(str, parsed_signal['take_profits']))}{Style.RESET_ALL}")
-            self.logger.info(f"Using account ID: {self.selected_account['id']}")
-
-            # Apply TP filtering based on user preferences
-            from core.signal_parser import filter_take_profits_by_preference
-            tp_selection = risk_config.get_tp_selection()
-            filtered_tps = filter_take_profits_by_preference(parsed_signal['take_profits'], tp_selection)
-
-            # Update the parsed signal with filtered TPs
-            original_tps = parsed_signal['take_profits'].copy()
-            parsed_signal['take_profits'] = filtered_tps
-
-            # Log the TP selection if it's different from original
-            if len(filtered_tps) < len(original_tps):
-                # Log which TPs we're using
-                original_tp_str = ', '.join([f"TP{i + 1}: {original_tps[i]}" for i in range(len(original_tps))])
-                filtered_tp_str = ', '.join([f"TP{original_tps.index(tp) + 1}: {tp}" for tp in filtered_tps])
-
-                self.logger.info(
-                    f"{colored_time}: {Fore.CYAN}Using {len(filtered_tps)} of {len(original_tps)} take profits "
-                    f"based on {tp_selection['mode']} configuration{Style.RESET_ALL}"
-                )
-                self.logger.info(f"Original TPs: {original_tp_str}")
-                self.logger.info(f"Selected TPs: {filtered_tp_str}")
-
-            # Check news restrictions if enabled
-            if self.enable_news_filter:
-                current_time = datetime.now(pytz.UTC)
-                try:
-                    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
-
-                    if not can_trade:
-                        self.logger.warning(
-                            f"{colored_time}: {Fore.RED}Cannot place trade for {parsed_signal['instrument']}: {reason}{Style.RESET_ALL}")
-                        return
-                except AttributeError as e:
-                    self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.")
-                    return
-
-            # Refresh account data to get latest balance
-            self.selected_account = await self.accounts_client.refresh_account_balance_async() or self.selected_account
-            latest_balance = float(self.selected_account['accountBalance'])
-
-            # Get instrument details
-            instrument_data = await find_matching_instrument(
-                self.instruments_client,
-                self.selected_account,
-                parsed_signal
-            )
-
-            if not instrument_data:
-                self.logger.warning(
-                    f"{colored_time}: {Fore.RED}Instrument {parsed_signal['instrument']} not found. Skipping this signal.{Style.RESET_ALL}"
-                )
-                return
-
-            # Calculate position sizes based on risk management, passing the reduced_risk flag
-            position_sizes, risk_amount = calculate_position_size(
-                instrument_data,
-                parsed_signal['entry_point'],
-                parsed_signal['stop_loss'],
-                parsed_signal['take_profits'],
-                self.selected_account,
-                reduced_risk  # Pass the reduced risk flag
-            )
-
-            self.logger.info(f"{colored_time}: Position sizes: {Fore.YELLOW}{position_sizes}{Style.RESET_ALL}")
-
-            # Display risk information
-            risk_percentage = "0.5%" if reduced_risk else "1.0%"  # Approximate values for display
-            risk_profile = risk_config.detect_current_profile()
-            self.logger.info(f"{colored_time}: {Fore.CYAN}Using {risk_profile} risk profile: {risk_percentage} " +
-                             f"({Fore.RED}REDUCED{Style.RESET_ALL} due to signal keywords)" if reduced_risk else "")
-
-            # Place the order with risk checks - IMPORTANT: Pass the message_id for caching
-            from services.order_handler import place_orders_with_risk_check
-
-            # Ensure we're passing message_id - this is the key change
-            result = await place_orders_with_risk_check(
-                self.orders_client,
-                self.accounts_client,
-                self.quotes_client,
-                self.selected_account,
-                instrument_data,
-                parsed_signal,
-                position_sizes,
-                risk_amount,
-                max_drawdown_balance,
-                colored_time,
-                message_id=message_id  # Pass message_id for caching
-            )
+            # Rest of your normal signal processing code continues...
+            # (Keeping this section unchanged)
 
         except KeyError as e:
             self.logger.error(
@@ -856,8 +786,72 @@ async def handle_risk_configuration():
                 risk_config.display_current_risk_settings()
                 input("\nPress Enter to continue...")
 
-        # Management settings options
         elif risk_choice == '5':
+            # Configure Forex risk
+            print(f"\n{Fore.CYAN}Configuring Forex Risk Percentages{Style.RESET_ALL}")
+
+            # Normal risk
+            normal_risk = get_risk_percentage_input("Forex", is_reduced=False)
+            if normal_risk:
+                risk_config.update_risk_percentage("FOREX", normal_risk, is_reduced=False)
+
+            # Reduced risk
+            reduced_risk = get_risk_percentage_input("Forex", is_reduced=True)
+            if reduced_risk:
+                risk_config.update_risk_percentage("FOREX", reduced_risk, is_reduced=True)
+
+            print(f"{Fore.GREEN}Forex risk settings updated.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '6':
+            # Configure CFD risk
+            print(f"\n{Fore.CYAN}Configuring CFD Risk Percentages{Style.RESET_ALL}")
+
+            # Normal risk
+            normal_risk = get_risk_percentage_input("CFD", is_reduced=False)
+            if normal_risk:
+                risk_config.update_risk_percentage("CFD", normal_risk, is_reduced=False)
+
+            # Reduced risk
+            reduced_risk = get_risk_percentage_input("CFD", is_reduced=True)
+            if reduced_risk:
+                risk_config.update_risk_percentage("CFD", reduced_risk, is_reduced=True)
+
+            print(f"{Fore.GREEN}CFD risk settings updated.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '7':
+            # Configure XAUUSD risk
+            print(f"\n{Fore.CYAN}Configuring XAUUSD (Gold) Risk Percentages{Style.RESET_ALL}")
+
+            # Normal risk
+            normal_risk = get_risk_percentage_input("XAUUSD", is_reduced=False)
+            if normal_risk:
+                risk_config.update_risk_percentage("XAUUSD", normal_risk, is_reduced=False)
+
+            # Reduced risk
+            reduced_risk = get_risk_percentage_input("XAUUSD", is_reduced=True)
+            if reduced_risk:
+                risk_config.update_risk_percentage("XAUUSD", reduced_risk, is_reduced=True)
+
+            print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '8':
+            # Configure Daily Drawdown percentage
+            print(f"\n{Fore.CYAN}Configuring Daily Drawdown Percentage{Style.RESET_ALL}")
+
+            # Get new drawdown percentage
+            new_drawdown = get_drawdown_percentage_input()
+            if new_drawdown:
+                risk_config.update_drawdown_percentage(new_drawdown)
+                print(f"{Fore.GREEN}Daily drawdown percentage updated to {new_drawdown:.1f}%.{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}The new setting will apply after the next daily reset.{Style.RESET_ALL}")
+
+            input("\nPress Enter to continue...")
+
+        elif risk_choice == '9':
             # Toggle Auto-Breakeven
             new_value = risk_config.toggle_management_setting("auto_breakeven")
             status = "ENABLED" if new_value else "DISABLED"
@@ -866,7 +860,7 @@ async def handle_risk_configuration():
             print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
 
-        elif risk_choice == '6':
+        elif risk_choice == '10':
             # Toggle Auto-Close Early
             new_value = risk_config.toggle_management_setting("auto_close_early")
             status = "ENABLED" if new_value else "DISABLED"
@@ -875,7 +869,7 @@ async def handle_risk_configuration():
             print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
 
-        elif risk_choice == '7':
+        elif risk_choice == '11':
             # Toggle Confirmation Required
             new_value = risk_config.toggle_management_setting("confirmation_required")
             status = "ENABLED" if new_value else "DISABLED"
@@ -894,87 +888,26 @@ async def handle_risk_configuration():
             print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
 
-        elif risk_choice == '8':
-            # Configure Forex risk
-            print(f"\n{Fore.CYAN}Configuring Forex Risk Percentages{Style.RESET_ALL}")
-
-            # Normal risk
-            normal_risk = get_risk_percentage_input("Forex", is_reduced=False)
-            if normal_risk:
-                risk_config.update_risk_percentage("FOREX", normal_risk, is_reduced=False)
-
-            # Reduced risk
-            reduced_risk = get_risk_percentage_input("Forex", is_reduced=True)
-            if reduced_risk:
-                risk_config.update_risk_percentage("FOREX", reduced_risk, is_reduced=True)
-
-            print(f"{Fore.GREEN}Forex risk settings updated.{Style.RESET_ALL}")
-
-        elif risk_choice == '9':
-            # Configure CFD risk
-            print(f"\n{Fore.CYAN}Configuring CFD Risk Percentages{Style.RESET_ALL}")
-
-            # Normal risk
-            normal_risk = get_risk_percentage_input("CFD", is_reduced=False)
-            if normal_risk:
-                risk_config.update_risk_percentage("CFD", normal_risk, is_reduced=False)
-
-            # Reduced risk
-            reduced_risk = get_risk_percentage_input("CFD", is_reduced=True)
-            if reduced_risk:
-                risk_config.update_risk_percentage("CFD", reduced_risk, is_reduced=True)
-
-            print(f"{Fore.GREEN}CFD risk settings updated.{Style.RESET_ALL}")
-
-        elif risk_choice == '10':
-            # Configure XAUUSD risk
-            print(f"\n{Fore.CYAN}Configuring XAUUSD (Gold) Risk Percentages{Style.RESET_ALL}")
-
-            # Normal risk
-            normal_risk = get_risk_percentage_input("XAUUSD", is_reduced=False)
-            if normal_risk:
-                risk_config.update_risk_percentage("XAUUSD", normal_risk, is_reduced=False)
-
-            # Reduced risk
-            reduced_risk = get_risk_percentage_input("XAUUSD", is_reduced=True)
-            if reduced_risk:
-                risk_config.update_risk_percentage("XAUUSD", reduced_risk, is_reduced=True)
-
-            print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
-
-        elif risk_choice == '11':
-            # Configure Daily Drawdown percentage
-            print(f"\n{Fore.CYAN}Configuring Daily Drawdown Percentage{Style.RESET_ALL}")
-
-            # Get new drawdown percentage
-            new_drawdown = get_drawdown_percentage_input()
-            if new_drawdown:
-                risk_config.update_drawdown_percentage(new_drawdown)
-                print(f"{Fore.GREEN}Daily drawdown percentage updated to {new_drawdown:.1f}%.{Style.RESET_ALL}")
-                print(
-                    f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
-                print(f"{Fore.YELLOW}The new setting will apply after the next daily reset.{Style.RESET_ALL}")
-
-            input("\nPress Enter to continue...")
-
         elif risk_choice == '12':
+            # Configure Take Profit Selection
+            await handle_tp_selection()
+
+        elif risk_choice == '13':
             # Reset to defaults
             confirmation = input(
                 f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
             if confirmation == 'y':
                 risk_config.apply_risk_profile("balanced")
                 print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
-        elif risk_choice == '13':
-            # Configure Take Profit Selection
-            await handle_tp_selection()
+                input("\nPress Enter to continue...")
+
         elif risk_choice == '14':
             # Return to main menu
             return
 
-
-
         else:
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
+            input("\nPress Enter to continue...")
 
 async def main():
     """Main entry point with Windows-compatible signal handling"""

@@ -11,8 +11,9 @@ GLOBAL_ORDER_CACHE = {}
 
 class OrderCache:
     """
-    Simplified cache with memory-first approach that persists across restarts
-    and handles order deletion after successful cancellation
+    Enhanced cache with memory-first approach that persists across restarts,
+    handles order deletion after successful cancellation, and provides
+    content-based matching for forwarded signals
     """
 
     def __init__(self, cache_file='order_cache.json'):
@@ -73,9 +74,9 @@ class OrderCache:
             logger.error(f"Error saving order cache: {e}")
             return False
 
-    def store_orders(self, message_id, order_ids, take_profits, instrument=None, entry_price=None):
+    def store_orders(self, message_id, order_ids, take_profits, instrument=None, entry_price=None, stop_loss=None):
         """
-        Store order IDs with message ID, take profits, and entry price in global memory first
+        Store order IDs with message ID, take profits, entry price, and stop loss in global memory
 
         Args:
             message_id: Telegram message ID (will be converted to string)
@@ -83,6 +84,7 @@ class OrderCache:
             take_profits: List of take profit levels
             instrument: Optional instrument name
             entry_price: Entry price for breakeven functionality
+            stop_loss: Stop loss price for content matching
         """
         global GLOBAL_ORDER_CACHE
 
@@ -105,6 +107,7 @@ class OrderCache:
             'take_profits': take_profits,
             'instrument': instrument,
             'entry_price': entry_price,  # Store entry price
+            'stop_loss': stop_loss,  # Store stop loss
             'timestamp': datetime.now().isoformat()
         }
 
@@ -140,6 +143,135 @@ class OrderCache:
         else:
             logger.info(f"No orders found for message ID {str_message_id}")
             return None
+
+    def find_orders_by_content(self, instrument=None, entry_price=None, stop_loss=None, take_profits=None,
+                               max_age_hours=24):
+        """
+        Find orders by content matching when message ID matching fails.
+        Scores potential matches and returns the best match.
+
+        Args:
+            instrument: Instrument name to match
+            entry_price: Entry price to match (with tolerance)
+            stop_loss: Stop loss to match (with tolerance)
+            take_profits: Take profits to match (with tolerance)
+            max_age_hours: Maximum age of cached orders to consider
+
+        Returns:
+            tuple: (message_id, order_data) of best matching order or (None, None) if no match
+        """
+        global GLOBAL_ORDER_CACHE
+
+        if not instrument:
+            return None, None
+
+        logger.info(
+            f"Attempting to find orders by content: instrument={instrument}, entry={entry_price}, stop={stop_loss}")
+
+        # Define matching parameters
+        cutoff_time = datetime.now() - timedelta(hours=max_age_hours)
+        cutoff_str = cutoff_time.isoformat()
+
+        # Tolerances for price matching (adjust as needed)
+        entry_tolerance = 0.0010  # 10 pips for forex
+        sl_tolerance = 0.0010  # 10 pips for forex
+        tp_tolerance = 0.0015  # 15 pips for forex
+
+        # Special tolerances for indices and gold
+        if instrument and ('DJI' in instrument.upper() or 'US30' in instrument.upper() or 'DOW' in instrument.upper()):
+            entry_tolerance = 10.0  # 10 points for US30/DJI30
+            sl_tolerance = 10.0
+            tp_tolerance = 15.0
+        elif instrument and ('NDX' in instrument.upper() or 'NAS' in instrument.upper()):
+            entry_tolerance = 20.0  # 20 points for NASDAQ
+            sl_tolerance = 20.0
+            tp_tolerance = 30.0
+        elif instrument and ('XAU' in instrument.upper() or 'GOLD' in instrument.upper()):
+            entry_tolerance = 1.0  # 10 points for Gold
+            sl_tolerance = 1.0
+            tp_tolerance = 1.5
+
+        best_match = None
+        best_score = 0
+        best_message_id = None
+
+        # Scan all cached orders
+        for msg_id, order_data in GLOBAL_ORDER_CACHE.items():
+            # Skip old entries
+            timestamp = order_data.get('timestamp', '2000-01-01')
+            if timestamp < cutoff_str:
+                continue
+
+            # Initialize match score
+            score = 0
+
+            # Match instrument (highest priority)
+            cached_instrument = order_data.get('instrument')
+            if not cached_instrument:
+                continue
+
+            # If instrument matches exactly, add high score
+            if cached_instrument.upper() == instrument.upper():
+                score += 50
+            # If instrument is a partial match (e.g. "GOLD" vs "XAUUSD")
+            elif any(term in cached_instrument.upper() for term in instrument.upper().split()) or \
+                    any(term in instrument.upper() for term in cached_instrument.upper().split()):
+                score += 30
+            else:
+                # No instrument match, skip this entry
+                continue
+
+            # Match entry price if provided
+            if entry_price is not None and order_data.get('entry_price') is not None:
+                cached_entry = float(order_data['entry_price'])
+                if abs(cached_entry - entry_price) <= entry_tolerance:
+                    # Score higher for closer matches
+                    closeness = 1.0 - (abs(cached_entry - entry_price) / entry_tolerance)
+                    score += 25 * closeness
+
+            # Match stop loss if provided
+            if stop_loss is not None and order_data.get('stop_loss') is not None:
+                cached_sl = float(order_data['stop_loss'])
+                if abs(cached_sl - stop_loss) <= sl_tolerance:
+                    # Score higher for closer matches
+                    closeness = 1.0 - (abs(cached_sl - stop_loss) / sl_tolerance)
+                    score += 15 * closeness
+
+            # Match take profits if provided
+            if take_profits and order_data.get('take_profits'):
+                cached_tps = order_data['take_profits']
+                # If lengths match, check individual TPs
+                if len(take_profits) == len(cached_tps):
+                    tp_matches = 0
+                    for i, tp in enumerate(take_profits):
+                        if i < len(cached_tps) and abs(float(cached_tps[i]) - float(tp)) <= tp_tolerance:
+                            tp_matches += 1
+
+                    if tp_matches > 0:
+                        score += 10 * (tp_matches / len(take_profits))
+
+                # Even if lengths don't match, try to find any matching TP
+                elif len(take_profits) > 0 and len(cached_tps) > 0:
+                    for tp in take_profits:
+                        for cached_tp in cached_tps:
+                            if abs(float(cached_tp) - float(tp)) <= tp_tolerance:
+                                score += 5
+                                break
+
+            # If this is the best match so far, update
+            if score > best_score:
+                best_score = score
+                best_match = order_data
+                best_message_id = msg_id
+
+        # Require a minimum score to consider it a match
+        min_required_score = 50  # Instrument match at minimum
+        if best_score >= min_required_score:
+            logger.info(f"Found content match with message_id {best_message_id}, score: {best_score}")
+            return best_message_id, best_match
+
+        logger.info(f"No content match found (best score: {best_score})")
+        return None, None
 
     def remove_order(self, message_id, order_id):
         """
