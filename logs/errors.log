@@ -1267,3 +1267,184 @@ client_session: <aiohttp.client.ClientSession object at 0x00000244215EDE50>
 2025-03-10 15:31:12 - core.signal_parser             - ERROR    - Error parsing OpenAI response: Expecting value: line 1 column 1 (char 0)
 2025-03-10 19:28:15 - trading_bot                    - ERROR    - Account ID 6262 is not valid.
 2025-03-10 19:28:15 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-10-16 04:37:40 - trading_bot                    - ERROR    - Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+2025-10-16 04:37:40 - root                           - ERROR    - Critical error: Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 975, in <module>
+    asyncio.run(main())
+    ~~~~~~~~~~~^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2288.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2288.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2288.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 953, in main
+    bot = TradingBot()
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 45, in __init__
+    self._load_config()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 86, in _load_config
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
+OSError: Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+2025-10-16 18:43:08 - tradelocker_api.endpoints.auth - ERROR    - Authentication failed: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/auth/jwt/token'
+2025-10-16 18:43:08 - trading_bot                    - ERROR    - Initialization error: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/auth/jwt/token'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 130, in initialize
+    await self.auth.authenticate_async()
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\tradelocker_api\endpoints\auth.py", line 146, in authenticate_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/auth/jwt/token'
+2025-10-16 18:43:08 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-10-16 18:48:51 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:11:39 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:13:51 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:16:37 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-10-16 19:16:37 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:26:45 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-10-16 19:26:50 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-10-16 19:26:50 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-10-16 19:27:15 - services.order_handler         - ERROR    - [36m[2025-10-16 19:27:12][0m: Error placing orders: 'TradeLockerOrders' object has no attribute 'place_order_async'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\services\order_handler.py", line 193, in place_order_with_caching
+    tasks = [orders_client.place_order_async(order) for order in orders_batch]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradeLockerOrders' object has no attribute 'place_order_async'. Did you mean: 'cancel_order_async'?
+2025-10-16 19:29:01 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002DB4CF63B10>
+2025-10-16 19:29:20 - services.order_handler         - ERROR    - [36m[2025-10-16 19:29:13][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045279 Sell   0.42  Price 4383.00 
+2025-10-16 19:29:20 - services.order_handler         - ERROR    - [36m[2025-10-16 19:29:13][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045280 Sell   0.42  Price 4383.00 
+2025-10-16 19:31:56 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001B2ED4DF110>
+2025-10-16 19:32:16 - services.order_handler         - ERROR    - [36m[2025-10-16 19:32:10][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045514 Sell   0.42  Price 4383.00 
+2025-10-16 19:32:16 - services.order_handler         - ERROR    - [36m[2025-10-16 19:32:10][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045515 Sell   0.42  Price 4383.00 
+2025-10-16 21:06:30 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000019D5B03EAD0>

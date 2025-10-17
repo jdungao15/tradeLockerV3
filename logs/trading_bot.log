@@ -7241,3 +7241,1131 @@ SL 41570
 2025-03-10 21:49:51 - services.order_handler         - INFO     - [36m[2025-03-10 21:49:48][0m: [32mLIMIT order placed successfully[0m - Instrument: [33mDJI30[0m, Side: [34mBUY[0m, Size: [33m0.33[0m, Entry: [33m41620[0m, SL: [31m41570[0m, TP: [32m41680[0m
 2025-03-10 21:49:51 - services.order_handler         - INFO     - [36m[2025-03-10 21:49:48][0m: [32mLIMIT order placed successfully[0m - Instrument: [33mDJI30[0m, Side: [34mBUY[0m, Size: [33m0.33[0m, Entry: [33m41620[0m, SL: [31m41570[0m, TP: [32m42120.0[0m
 2025-03-10 21:49:51 - services.order_handler         - INFO     - [36m[2025-03-10 21:49:48][0m: [35mCFD Runner position[0m (ID: 7421932185935973077) created - Position monitor will handle trailing stop
+2025-10-16 04:37:40 - trading_bot                    - ERROR    - Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+2025-10-16 04:37:40 - root                           - ERROR    - Critical error: Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 975, in <module>
+    asyncio.run(main())
+    ~~~~~~~~~~~^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2288.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2288.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2288.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 953, in main
+    bot = TradingBot()
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 45, in __init__
+    self._load_config()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 86, in _load_config
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
+OSError: Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+2025-10-16 18:42:56 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 18:42:56 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.167.51:443/TcpFull...
+2025-10-16 18:42:57 - telethon.network.mtprotosender - INFO     - Connection to 149.154.167.51:443/TcpFull complete!
+2025-10-16 18:42:57 - trading_bot                    - INFO     - Telegram authentication required
+2025-10-16 18:43:01 - telethon.client.users          - INFO     - Phone migrated to 1
+2025-10-16 18:43:01 - telethon.client.telegrambaseclient - INFO     - Reconnecting to new data center 1
+2025-10-16 18:43:01 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.167.51:443/TcpFull...
+2025-10-16 18:43:01 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.167.51:443/TcpFull complete!
+2025-10-16 18:43:01 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 18:43:02 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 18:43:07 - trading_bot                    - INFO     - Telegram authentication successful
+2025-10-16 18:43:08 - tradelocker_api.endpoints.auth - ERROR    - Authentication failed: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/auth/jwt/token'
+2025-10-16 18:43:08 - trading_bot                    - ERROR    - Initialization error: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/auth/jwt/token'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 130, in initialize
+    await self.auth.authenticate_async()
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\tradelocker_api\endpoints\auth.py", line 146, in authenticate_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://demo.tradelocker.com/backend-api/auth/jwt/token'
+2025-10-16 18:43:08 - trading_bot                    - ERROR    - Initialization failed. Exiting.
+2025-10-16 18:43:08 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-16 18:43:08 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-10-16 18:43:08 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-10-16 18:43:08 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-16 18:47:38 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 18:47:38 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 18:47:38 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 18:47:38 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 18:47:38 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 18:47:38 - services.news_filter           - INFO     - Loaded economic calendar from cache with 74 events
+2025-10-16 18:47:39 - order_cache                    - INFO     - Using existing in-memory cache with 2 entries
+2025-10-16 18:47:39 - order_cache                    - INFO     - Loaded order cache with 2 entries
+2025-10-16 18:47:39 - order_cache                    - INFO     - Cache keys: ['410', '411']
+2025-10-16 18:47:39 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 18:47:39 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 18:48:02 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 18:48:02 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 18:48:02 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=24000.0, starting=25000.0
+2025-10-16 18:48:02 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 18:48:02 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 18:48:02 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 18:48:02 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-16 19:00:00 EST
+2025-10-16 18:48:02 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 18:48:51 - services.signal_management     - INFO     - [36m[2025-10-16 18:48:50][0m: Looking for cached orders with reply_to_msg_id: 10269 (type: str)
+2025-10-16 18:48:51 - order_cache                    - INFO     - Looking for message ID 10269 in cache
+2025-10-16 18:48:51 - order_cache                    - INFO     - Available keys in cache: ['410', '411']
+2025-10-16 18:48:51 - order_cache                    - INFO     - No orders found for message ID 10269
+2025-10-16 18:48:51 - services.signal_management     - INFO     - [36m[2025-10-16 18:48:50][0m: No cached orders found for message ID 10269
+2025-10-16 18:48:51 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:00:00 - services.drawdown_manager      - INFO     - API data retrieved successfully: Balance=50689.8, Unrealized P&L=0.0
+2025-10-16 19:00:00 - services.drawdown_manager      - INFO     - Daily drawdown limits for today: Account Balance=$50689.80, Tier=$50000, Drawdown=4.0%, Drawdown Limit=$2000.00, Max Drawdown Balance=$48689.80
+2025-10-16 19:00:00 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 19:08:13 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 19:08:13 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 19:08:13 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:08:14 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 19:08:14 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 19:08:14 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-16 19:08:14 - order_cache                    - INFO     - Using existing in-memory cache with 2 entries
+2025-10-16 19:08:14 - order_cache                    - INFO     - Loaded order cache with 2 entries
+2025-10-16 19:08:14 - order_cache                    - INFO     - Cache keys: ['410', '411']
+2025-10-16 19:08:14 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 19:08:14 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 19:08:17 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:08:17 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 19:08:17 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-16 19:08:17 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 19:08:17 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 19:08:17 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 19:08:17 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 19:08:17 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 19:10:50 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 19:10:50 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 19:10:50 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:10:51 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 19:10:51 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 19:10:51 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-16 19:10:51 - order_cache                    - INFO     - Using existing in-memory cache with 2 entries
+2025-10-16 19:10:51 - order_cache                    - INFO     - Loaded order cache with 2 entries
+2025-10-16 19:10:51 - order_cache                    - INFO     - Cache keys: ['410', '411']
+2025-10-16 19:10:51 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 19:10:51 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 19:10:54 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:10:54 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 19:10:54 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-16 19:10:54 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 19:10:54 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 19:10:54 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 19:10:54 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 19:10:54 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 19:11:33 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:11:38 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:11:38 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:11:38 - services.signal_management     - INFO     - [36m[2025-10-16 19:11:38][0m: Command detected but no reply-to message ID
+2025-10-16 19:11:39 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:11:39 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:11:39 - trading_bot                    - INFO     - [36m[2025-10-16 19:11:38][0m Received invalid signal: Sell   XAUUSD 
+
+  4379 4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:13:19 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:13:19 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:13:19 - services.signal_management     - INFO     - [36m[2025-10-16 19:13:19][0m: Command detected but no reply-to message ID
+2025-10-16 19:13:19 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-10-16 19:13:19 - trading_bot                    - INFO     - [36m[2025-10-16 19:13:19][0m Received invalid signal: Sell   XAUUSD 
+
+  4379 4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:13:19 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:13:48 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:13:48 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:13:48 - services.signal_management     - INFO     - [36m[2025-10-16 19:13:48][0m: Command detected but no reply-to message ID
+2025-10-16 19:13:48 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:13:51 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:13:51 - trading_bot                    - INFO     - [36m[2025-10-16 19:13:48][0m Received invalid signal: Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:16:37 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-10-16 19:16:37 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:16:37 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-10-16 19:16:37 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-16 19:16:37 - services.drawdown_manager      - INFO     - Drawdown reset task was cancelled
+2025-10-16 19:16:37 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-10-16 19:16:37 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-10-16 19:16:37 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-16 19:16:41 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 19:16:41 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 19:16:41 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:16:42 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 19:16:42 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 19:16:42 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-16 19:16:42 - order_cache                    - INFO     - Using existing in-memory cache with 2 entries
+2025-10-16 19:16:42 - order_cache                    - INFO     - Loaded order cache with 2 entries
+2025-10-16 19:16:42 - order_cache                    - INFO     - Cache keys: ['410', '411']
+2025-10-16 19:16:42 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 19:16:42 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 19:16:43 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:16:43 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 19:16:43 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-16 19:16:43 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 19:16:43 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 19:16:43 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 19:16:43 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 19:16:43 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 19:16:51 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:16:51 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-10-16 19:16:51 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:16:51 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:16:51 - services.signal_management     - INFO     - [36m[2025-10-16 19:13:48][0m: Command detected but no reply-to message ID
+2025-10-16 19:16:51 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:16:51 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:16:51 - services.signal_management     - INFO     - [36m[2025-10-16 19:16:50][0m: Command detected but no reply-to message ID
+2025-10-16 19:16:54 - trading_bot                    - INFO     - [36m[2025-10-16 19:13:48][0m [36mReceived trading signal:[0m Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:16:54 - trading_bot                    - INFO     - [33mSignal details:[0m Instrument: [32mGOLD[0m, Type: [32mSELL[0m, Entry: [36m4383[0m, SL: [31m4385[0m
+2025-10-16 19:16:54 - trading_bot                    - INFO     - Take profits: [32m4375, 4370, 4350[0m
+2025-10-16 19:16:54 - trading_bot                    - INFO     - Using account ID: 1560653
+2025-10-16 19:16:54 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:16:54 - core.signal_parser             - INFO     - Looking for instrument: GOLD
+2025-10-16 19:16:54 - core.signal_parser             - INFO     - Signal instrument 'GOLD' identified as 'GOLD'
+2025-10-16 19:16:54 - core.signal_parser             - INFO     - Will try these nicknames for matching: ['GOLD', 'XAUUSD', 'XAU', 'GOLD.', 'XAUUSD.', 'GOLD/', 'XAU/', 'GOLD-', 'XAU-']
+2025-10-16 19:16:54 - core.signal_parser             - INFO     - Trying potential match: XAUUSD (score: 100)
+2025-10-16 19:16:54 - core.signal_parser             - INFO     - Successfully matched GOLD to broker instrument: XAUUSD
+2025-10-16 19:16:54 - core.risk_management           - INFO     - Using XAUUSD risk setting: 1.00%
+2025-10-16 19:16:54 - core.risk_management           - INFO     - Account: $50689.8, Risk: 1.00%, Total risk: $506.90
+2025-10-16 19:16:54 - core.risk_management           - INFO     - Positions: 3, Risk per position: $168.97
+2025-10-16 19:16:54 - core.risk_management           - INFO     - Entry: 4383.0, SL: 4385.0, Distance: 2.0
+2025-10-16 19:16:54 - core.risk_management           - INFO     - Identified XAUUSD as GOLD
+2025-10-16 19:16:54 - core.risk_management           - INFO     - GOLD calculation: $168.966 / 2.0 = 84.483 micro lots = 0.84 lots
+2025-10-16 19:16:54 - core.risk_management           - INFO     - Final lot size per position: 0.84
+2025-10-16 19:16:54 - core.risk_management           - INFO     - Final position sizes: [0.84, 0.84, 0.84], Total risk: $506.90
+2025-10-16 19:16:54 - trading_bot                    - INFO     - [36m[2025-10-16 19:13:48][0m: Position sizes: [33m[0.84, 0.84, 0.84][0m
+2025-10-16 19:16:54 - trading_bot                    - INFO     - 
+2025-10-16 19:16:54 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:16:55 - trading_bot                    - INFO     - [36m[2025-10-16 19:16:50][0m [36mReceived trading signal:[0m Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:16:55 - trading_bot                    - INFO     - [33mSignal details:[0m Instrument: [32mGOLD[0m, Type: [32mSELL[0m, Entry: [36m4383[0m, SL: [31m4385[0m
+2025-10-16 19:16:55 - trading_bot                    - INFO     - Take profits: [32m4375, 4370, 4350[0m
+2025-10-16 19:16:55 - trading_bot                    - INFO     - Using account ID: 1560653
+2025-10-16 19:16:55 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:16:55 - core.signal_parser             - INFO     - Looking for instrument: GOLD
+2025-10-16 19:16:55 - core.signal_parser             - INFO     - Signal instrument 'GOLD' identified as 'GOLD'
+2025-10-16 19:16:55 - core.signal_parser             - INFO     - Will try these nicknames for matching: ['GOLD', 'XAUUSD', 'XAU', 'GOLD.', 'XAUUSD.', 'GOLD/', 'XAU/', 'GOLD-', 'XAU-']
+2025-10-16 19:16:55 - core.signal_parser             - INFO     - Trying potential match: XAUUSD (score: 100)
+2025-10-16 19:16:55 - core.signal_parser             - INFO     - Successfully matched GOLD to broker instrument: XAUUSD
+2025-10-16 19:16:55 - core.risk_management           - INFO     - Using XAUUSD risk setting: 1.00%
+2025-10-16 19:16:55 - core.risk_management           - INFO     - Account: $50689.8, Risk: 1.00%, Total risk: $506.90
+2025-10-16 19:16:55 - core.risk_management           - INFO     - Positions: 3, Risk per position: $168.97
+2025-10-16 19:16:55 - core.risk_management           - INFO     - Entry: 4383.0, SL: 4385.0, Distance: 2.0
+2025-10-16 19:16:55 - core.risk_management           - INFO     - Identified XAUUSD as GOLD
+2025-10-16 19:16:55 - core.risk_management           - INFO     - GOLD calculation: $168.966 / 2.0 = 84.483 micro lots = 0.84 lots
+2025-10-16 19:16:55 - core.risk_management           - INFO     - Final lot size per position: 0.84
+2025-10-16 19:16:55 - core.risk_management           - INFO     - Final position sizes: [0.84, 0.84, 0.84], Total risk: $506.90
+2025-10-16 19:16:55 - trading_bot                    - INFO     - [36m[2025-10-16 19:16:50][0m: Position sizes: [33m[0.84, 0.84, 0.84][0m
+2025-10-16 19:16:55 - trading_bot                    - INFO     - 
+2025-10-16 19:16:55 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: Processing order with message_id: 546
+2025-10-16 19:16:55 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: Position #1 (size: 0.84) with take profit: 4375
+2025-10-16 19:16:55 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: Position #2 (size: 0.84) with take profit: 4370
+2025-10-16 19:16:55 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: Position #3 (RUNNER) (size: 0.84) with take profit: 4350
+2025-10-16 19:16:55 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: Placing 3 [36mLIMIT[0m orders in parallel...
+2025-10-16 19:16:55 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936044430 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:16:56 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: Processing order with message_id: 547
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: Position #1 (size: 0.84) with take profit: 4375
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: Position #2 (size: 0.84) with take profit: 4370
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: Position #3 (RUNNER) (size: 0.84) with take profit: 4350
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: Placing 3 [36mLIMIT[0m orders in parallel...
+2025-10-16 19:16:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936044432 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:16:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936044433 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: [32mLIMIT order placed successfully - Instrument: [33mXAUUSD[0m, Side: [34mSELL[0m, Size: [33m0.84[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4375[0m
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: [32mLIMIT order placed successfully - Instrument: [33mXAUUSD[0m, Side: [34mSELL[0m, Size: [33m0.84[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4370[0m
+2025-10-16 19:16:56 - services.order_handler         - INFO     - [36m[2025-10-16 19:13:48][0m: [32mLIMIT order placed successfully[35m (RUNNER)[0m - Instrument: [33mXAUUSD[0m, Side: [34mSELL[0m, Size: [33m0.84[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4350[0m
+2025-10-16 19:16:56 - services.order_handler         - WARNING  - [36m[2025-10-16 19:13:48][0m: Cannot cache orders - missing message ID (546) or order IDs (0)
+2025-10-16 19:16:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936044434 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:16:56 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936044435 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:16:57 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936044436 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:16:57 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: [32mLIMIT order placed successfully - Instrument: [33mXAUUSD[0m, Side: [34mSELL[0m, Size: [33m0.84[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4375[0m
+2025-10-16 19:16:57 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: [32mLIMIT order placed successfully - Instrument: [33mXAUUSD[0m, Side: [34mSELL[0m, Size: [33m0.84[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4370[0m
+2025-10-16 19:16:57 - services.order_handler         - INFO     - [36m[2025-10-16 19:16:50][0m: [32mLIMIT order placed successfully[35m (RUNNER)[0m - Instrument: [33mXAUUSD[0m, Side: [34mSELL[0m, Size: [33m0.84[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4350[0m
+2025-10-16 19:16:57 - services.order_handler         - WARNING  - [36m[2025-10-16 19:16:50][0m: Cannot cache orders - missing message ID (547) or order IDs (0)
+2025-10-16 19:17:42 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - [36m[2025-10-16 19:11:38][0m: Command detected but no reply-to message ID
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4379 4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - [36m[2025-10-16 19:13:19][0m: Command detected but no reply-to message ID
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - [36m[2025-10-16 19:13:48][0m: Command detected but no reply-to message ID
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:17:42 - services.signal_management     - INFO     - [36m[2025-10-16 19:16:50][0m: Command detected but no reply-to message ID
+2025-10-16 19:17:42 - telethon.client.updates        - INFO     - Got difference for channel 2234745920 updates
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:17:42 - trading_bot                    - INFO     - [36m[2025-10-16 19:11:38][0m Received invalid signal: Sell   XAUUSD 
+
+  4379 4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:17:42 - trading_bot                    - INFO     - [36m[2025-10-16 19:16:50][0m Received invalid signal: Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:17:42 - telethon.client.updates        - INFO     - Got difference for channel 2416539371 updates
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:17:42 - trading_bot                    - INFO     - [36m[2025-10-16 19:13:19][0m Received invalid signal: Sell   XAUUSD 
+
+  4379 4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:17:42 - core.signal_parser             - ERROR    - Error parsing signal: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\core\signal_parser.py", line 319, in parse_signal_async
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\aiohttp\client_reqrep.py", line 1161, in raise_for_status
+    raise ClientResponseError(
+    ...<5 lines>...
+    )
+aiohttp.client_exceptions.ClientResponseError: 401, message='Unauthorized', url='https://api.openai.com/v1/chat/completions'
+2025-10-16 19:17:42 - trading_bot                    - INFO     - [36m[2025-10-16 19:13:48][0m Received invalid signal: Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:19:33 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 
+2025-10-16 19:26:45 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-10-16 19:26:45 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:26:45 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-10-16 19:26:50 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-10-16 19:26:50 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:26:50 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py", line 517, in _keepalive_loop
+    self._save_states_and_entities()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\telegrambaseclient.py", line 694, in _save_states_and_entities
+    self.session.process_entities(types.contacts.ResolvedPeer(None, [e._as_input_peer() for e in entities], []))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\sessions\sqlite.py", line 301, in process_entities
+    c.executemany(
+    ~~~~~~~~~~~~~^
+        'insert or replace into entities values (?,?,?,?,?,?)', rows)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: database is locked
+2025-10-16 19:26:50 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-16 19:26:50 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-10-16 19:26:50 - telethon.client.telegrambaseclient - ERROR    - Unhandled exception from keepalive_handle after cancelling <class '_asyncio.Task'> (<Task finished name='Task-7' coro=<UpdateMethods._keepalive_loop() done, defined at C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\client\updates.py:481> exception=OperationalError('database is locked')>)
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\telethon\helpers.py", line 176, in _cancel
+    await task
+sqlite3.OperationalError: database is locked
+2025-10-16 19:26:50 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-16 19:26:50 - services.drawdown_manager      - INFO     - Drawdown reset task was cancelled
+2025-10-16 19:26:55 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 19:26:55 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 19:26:55 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:26:55 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 19:26:55 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 19:26:55 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-16 19:26:55 - order_cache                    - INFO     - Using existing in-memory cache with 2 entries
+2025-10-16 19:26:55 - order_cache                    - INFO     - Loaded order cache with 2 entries
+2025-10-16 19:26:55 - order_cache                    - INFO     - Cache keys: ['410', '411']
+2025-10-16 19:26:55 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 19:26:55 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 19:26:57 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:26:57 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 19:26:57 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-16 19:26:57 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 19:26:57 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 19:26:57 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 19:26:57 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 19:26:57 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 19:27:12 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:27:12 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:27:12 - services.signal_management     - INFO     - [36m[2025-10-16 19:27:12][0m: Command detected but no reply-to message ID
+2025-10-16 19:27:12 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:27:14 - trading_bot                    - INFO     - [36m[2025-10-16 19:27:12][0m [36mReceived trading signal:[0m Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:27:14 - trading_bot                    - INFO     - [33mSignal details:[0m Instrument: [32mGOLD[0m, Type: [32mSELL[0m, Entry: [36m4383[0m, SL: [31m4385[0m
+2025-10-16 19:27:14 - trading_bot                    - INFO     - Take profits: [32m4375, 4370, 4350[0m
+2025-10-16 19:27:14 - trading_bot                    - INFO     - Using account ID: 1560653
+2025-10-16 19:27:14 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:27:14 - core.signal_parser             - INFO     - Looking for instrument: GOLD
+2025-10-16 19:27:14 - core.signal_parser             - INFO     - Signal instrument 'GOLD' identified as 'GOLD'
+2025-10-16 19:27:14 - core.signal_parser             - INFO     - Will try these nicknames for matching: ['GOLD', 'XAUUSD', 'XAU', 'GOLD.', 'XAUUSD.', 'GOLD/', 'XAU/', 'GOLD-', 'XAU-']
+2025-10-16 19:27:14 - core.signal_parser             - INFO     - Trying potential match: XAUUSD (score: 100)
+2025-10-16 19:27:15 - core.signal_parser             - INFO     - Successfully matched GOLD to broker instrument: XAUUSD
+2025-10-16 19:27:15 - core.risk_management           - INFO     - Using XAUUSD risk setting: 1.00%
+2025-10-16 19:27:15 - core.risk_management           - INFO     - Account: $50689.8, Risk: 1.00%, Total risk: $506.90
+2025-10-16 19:27:15 - core.risk_management           - INFO     - Positions: 3, Risk per position: $168.97
+2025-10-16 19:27:15 - core.risk_management           - INFO     - Entry: 4383.0, SL: 4385.0, Distance: 2.0
+2025-10-16 19:27:15 - core.risk_management           - INFO     - Identified XAUUSD as GOLD
+2025-10-16 19:27:15 - core.risk_management           - INFO     - GOLD calculation: $168.966 / 2.0 = 84.483 micro lots = 0.84 lots
+2025-10-16 19:27:15 - core.risk_management           - INFO     - Final lot size per position: 0.84
+2025-10-16 19:27:15 - core.risk_management           - INFO     - Final position sizes: [0.84, 0.84, 0.84], Total risk: $506.90
+2025-10-16 19:27:15 - trading_bot                    - INFO     - [36m[2025-10-16 19:27:12][0m: Position sizes: [33m[0.84, 0.84, 0.84][0m
+2025-10-16 19:27:15 - trading_bot                    - INFO     - 
+2025-10-16 19:27:15 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:27:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:27:12][0m: Instrument XAUUSD is EQUITY_CFD
+2025-10-16 19:27:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:27:12][0m: Processing CFD instrument with custom take profit allocation
+2025-10-16 19:27:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:27:12][0m: Sorted TPs (ascending): [4350, 4370, 4375]
+2025-10-16 19:27:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:27:12][0m: Position #1 (size: 0.84) with take profit: 4350
+2025-10-16 19:27:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:27:12][0m: Position #2 (size: 0.84) with take profit: 4370
+2025-10-16 19:27:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:27:12][0m: Position #3 (RUNNER) (size: 0.84) with 500 pip distant take profit: 3883
+2025-10-16 19:27:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:27:12][0m: Placing 3 LIMIT orders in parallel...
+2025-10-16 19:27:15 - services.order_handler         - ERROR    - [36m[2025-10-16 19:27:12][0m: Error placing orders: 'TradeLockerOrders' object has no attribute 'place_order_async'
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\services\order_handler.py", line 193, in place_order_with_caching
+    tasks = [orders_client.place_order_async(order) for order in orders_batch]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TradeLockerOrders' object has no attribute 'place_order_async'. Did you mean: 'cancel_order_async'?
+2025-10-16 19:29:01 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-10-16 19:29:01 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:29:01 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-16 19:29:01 - services.drawdown_manager      - INFO     - Drawdown reset task was cancelled
+2025-10-16 19:29:01 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-10-16 19:29:01 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-16 19:29:01 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002DB4CF63B10>
+2025-10-16 19:29:05 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 19:29:05 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 19:29:05 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:29:05 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 19:29:05 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 19:29:05 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-16 19:29:05 - order_cache                    - INFO     - Using existing in-memory cache with 2 entries
+2025-10-16 19:29:05 - order_cache                    - INFO     - Loaded order cache with 2 entries
+2025-10-16 19:29:05 - order_cache                    - INFO     - Cache keys: ['410', '411']
+2025-10-16 19:29:05 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 19:29:05 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 19:29:07 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:29:07 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 19:29:07 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-16 19:29:07 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 19:29:07 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 19:29:07 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 19:29:07 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 19:29:07 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 19:29:14 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:29:14 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:29:14 - services.signal_management     - INFO     - [36m[2025-10-16 19:29:13][0m: Command detected but no reply-to message ID
+2025-10-16 19:29:14 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:29:17 - trading_bot                    - INFO     - [36m[2025-10-16 19:29:13][0m [36mReceived trading signal:[0m Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:29:17 - trading_bot                    - INFO     - [33mSignal details:[0m Instrument: [32mGOLD[0m, Type: [32mSELL[0m, Entry: [36m4383[0m, SL: [31m4385[0m
+2025-10-16 19:29:17 - trading_bot                    - INFO     - Take profits: [32m4375, 4370, 4350[0m
+2025-10-16 19:29:17 - trading_bot                    - INFO     - Using account ID: 1560653
+2025-10-16 19:29:17 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:29:17 - core.signal_parser             - INFO     - Looking for instrument: GOLD
+2025-10-16 19:29:18 - core.signal_parser             - INFO     - Signal instrument 'GOLD' identified as 'GOLD'
+2025-10-16 19:29:18 - core.signal_parser             - INFO     - Will try these nicknames for matching: ['GOLD', 'XAUUSD', 'XAU', 'GOLD.', 'XAUUSD.', 'GOLD/', 'XAU/', 'GOLD-', 'XAU-']
+2025-10-16 19:29:18 - core.signal_parser             - INFO     - Trying potential match: XAUUSD (score: 100)
+2025-10-16 19:29:18 - core.signal_parser             - INFO     - Successfully matched GOLD to broker instrument: XAUUSD
+2025-10-16 19:29:18 - core.risk_management           - INFO     - Using XAUUSD risk setting: 1.00%
+2025-10-16 19:29:18 - core.risk_management           - INFO     - Account: $50689.8, Risk: 1.00%, Total risk: $506.90
+2025-10-16 19:29:18 - core.risk_management           - INFO     - Positions: 3, Risk per position: $168.97
+2025-10-16 19:29:18 - core.risk_management           - INFO     - Entry: 4383.0, SL: 4385.0, Distance: 2.0
+2025-10-16 19:29:18 - core.risk_management           - INFO     - Identified XAUUSD as GOLD
+2025-10-16 19:29:18 - core.risk_management           - INFO     - GOLD calculation: $168.966 / 2.0 = 84.483 micro lots = 0.84 lots
+2025-10-16 19:29:18 - core.risk_management           - INFO     - Final lot size per position: 0.84
+2025-10-16 19:29:18 - core.risk_management           - INFO     - Final position sizes: [0.84, 0.84, 0.84], Total risk: $506.90
+2025-10-16 19:29:18 - trading_bot                    - INFO     - [36m[2025-10-16 19:29:13][0m: Position sizes: [33m[0.84, 0.84, 0.84][0m
+2025-10-16 19:29:18 - trading_bot                    - INFO     - 
+2025-10-16 19:29:18 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Instrument XAUUSD is EQUITY_CFD
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Processing CFD instrument with custom take profit allocation
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Sorted TPs (ascending): [4350, 4370, 4375]
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Position #1 (size: 0.84) with take profit: 4350
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Position #2 (size: 0.84) with take profit: 4370
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Position #3 (RUNNER) (size: 0.84) with 500 pip distant take profit: 3883
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Placing 3 LIMIT orders in parallel...
+2025-10-16 19:29:19 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045273 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:29:19 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045275 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:29:19 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045276 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:29:19 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Attempt 1: [32m0 successful[0m, [31m3 margin errors[0m
+2025-10-16 19:29:19 - services.order_handler         - WARNING  - [36m[2025-10-16 19:29:13][0m: [33mAll 3 orders failed due to margin. Retrying with smaller sizes...[0m
+2025-10-16 19:29:20 - services.order_handler         - WARNING  - [36m[2025-10-16 19:29:13][0m: [33mMargin insufficient. Retry 1/3 - Reducing sizes by 50%[0m
+2025-10-16 19:29:20 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: New sizes: [0.42, 0.42, 0.42]
+2025-10-16 19:29:20 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185936045277'}}
+2025-10-16 19:29:20 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045280 Sell   0.42  Price 4383.00 '}
+2025-10-16 19:29:20 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045279 Sell   0.42  Price 4383.00 '}
+2025-10-16 19:29:20 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Attempt 2: [32m1 successful[0m, [31m2 margin errors[0m
+2025-10-16 19:29:20 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: [32mLIMIT order placed successfully[0m - Instrument: [33mXAUUSD[0m, Side: [36mSELL[0m, Size: [33m0.42[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4350[0m
+2025-10-16 19:29:20 - services.order_handler         - ERROR    - [36m[2025-10-16 19:29:13][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045279 Sell   0.42  Price 4383.00 
+2025-10-16 19:29:20 - services.order_handler         - ERROR    - [36m[2025-10-16 19:29:13][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045280 Sell   0.42  Price 4383.00 
+2025-10-16 19:29:20 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: [35mCFD Runner position[0m (ID: 7421932185936045277) created - Position monitor will handle trailing stop
+2025-10-16 19:29:20 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: Attempting to cache 1 orders for message 549
+2025-10-16 19:29:20 - order_cache                    - INFO     - Using existing in-memory cache with 2 entries
+2025-10-16 19:29:20 - order_cache                    - INFO     - Storing orders for message_id: '549' with 1 orders
+2025-10-16 19:29:20 - order_cache                    - INFO     - Verification: message_id 549 in memory cache: True
+2025-10-16 19:29:20 - order_cache                    - INFO     - Cache updated, current keys: ['410', '411', '549']
+2025-10-16 19:29:20 - order_cache                    - INFO     - Saved order cache with 3 entries
+2025-10-16 19:29:20 - services.order_handler         - INFO     - [36m[2025-10-16 19:29:13][0m: [36mSuccessfully cached 1 orders for message 549 with entry price 4383[0m
+2025-10-16 19:31:56 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-10-16 19:31:56 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:31:56 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-16 19:31:56 - services.drawdown_manager      - INFO     - Drawdown reset task was cancelled
+2025-10-16 19:31:56 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-10-16 19:31:56 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-16 19:31:56 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001B2ED4DF110>
+2025-10-16 19:32:03 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 19:32:03 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 19:32:03 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 19:32:04 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 19:32:04 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 19:32:04 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-16 19:32:04 - order_cache                    - INFO     - Using existing in-memory cache with 3 entries
+2025-10-16 19:32:04 - order_cache                    - INFO     - Loaded order cache with 3 entries
+2025-10-16 19:32:04 - order_cache                    - INFO     - Cache keys: ['410', '411', '549']
+2025-10-16 19:32:04 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 19:32:04 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 19:32:05 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:32:05 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 19:32:05 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-16 19:32:05 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 19:32:05 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 19:32:05 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 19:32:05 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 19:32:05 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 19:32:10 - services.signal_management     - INFO     - Checking if message is a command: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:32:10 - services.signal_management     - INFO     - Detected TP command with level 4375: 'sell   xauusd 
+
+  4383
+
+tp 4375
+tp 4370
+tp 4350
+tp 4300
+
+sl 4385'
+2025-10-16 19:32:10 - services.signal_management     - INFO     - [36m[2025-10-16 19:32:10][0m: Command detected but no reply-to message ID
+2025-10-16 19:32:10 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 19:32:13 - trading_bot                    - INFO     - [36m[2025-10-16 19:32:10][0m [36mReceived trading signal:[0m Sell   XAUUSD 
+
+  4383
+
+Tp 4375
+Tp 4370
+Tp 4350
+Tp 4300
+
+Sl 4385
+2025-10-16 19:32:13 - trading_bot                    - INFO     - [33mSignal details:[0m Instrument: [32mGOLD[0m, Type: [32mSELL[0m, Entry: [36m4383[0m, SL: [31m4385[0m
+2025-10-16 19:32:13 - trading_bot                    - INFO     - Take profits: [32m4375, 4370, 4350[0m
+2025-10-16 19:32:13 - trading_bot                    - INFO     - Using account ID: 1560653
+2025-10-16 19:32:13 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:32:13 - core.signal_parser             - INFO     - Looking for instrument: GOLD
+2025-10-16 19:32:13 - core.signal_parser             - INFO     - Signal instrument 'GOLD' identified as 'GOLD'
+2025-10-16 19:32:13 - core.signal_parser             - INFO     - Will try these nicknames for matching: ['GOLD', 'XAUUSD', 'XAU', 'GOLD.', 'XAUUSD.', 'GOLD/', 'XAU/', 'GOLD-', 'XAU-']
+2025-10-16 19:32:13 - core.signal_parser             - INFO     - Trying potential match: XAUUSD (score: 100)
+2025-10-16 19:32:13 - core.signal_parser             - INFO     - Successfully matched GOLD to broker instrument: XAUUSD
+2025-10-16 19:32:13 - core.risk_management           - INFO     - Using XAUUSD risk setting: 1.00%
+2025-10-16 19:32:13 - core.risk_management           - INFO     - Account: $50689.8, Risk: 1.00%, Total risk: $506.90
+2025-10-16 19:32:13 - core.risk_management           - INFO     - Positions: 3, Risk per position: $168.97
+2025-10-16 19:32:13 - core.risk_management           - INFO     - Entry: 4383.0, SL: 4385.0, Distance: 2.0
+2025-10-16 19:32:13 - core.risk_management           - INFO     - Identified XAUUSD as GOLD
+2025-10-16 19:32:13 - core.risk_management           - INFO     - GOLD calculation: $168.966 / 2.0 = 84.483 micro lots = 0.84 lots
+2025-10-16 19:32:13 - core.risk_management           - INFO     - Final lot size per position: 0.84
+2025-10-16 19:32:13 - core.risk_management           - INFO     - Final position sizes: [0.84, 0.84, 0.84], Total risk: $506.90
+2025-10-16 19:32:13 - trading_bot                    - INFO     - [36m[2025-10-16 19:32:10][0m: Position sizes: [33m[0.84, 0.84, 0.84][0m
+2025-10-16 19:32:13 - trading_bot                    - INFO     - 
+2025-10-16 19:32:13 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 19:32:14 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Instrument XAUUSD is EQUITY_CFD
+2025-10-16 19:32:14 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Processing CFD instrument with custom take profit allocation
+2025-10-16 19:32:14 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Sorted TPs (ascending): [4350, 4370, 4375]
+2025-10-16 19:32:14 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Position #1 (size: 0.84) with take profit: 4350
+2025-10-16 19:32:14 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Position #2 (size: 0.84) with take profit: 4370
+2025-10-16 19:32:14 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Position #3 (RUNNER) (size: 0.84) with 500 pip distant take profit: 3883
+2025-10-16 19:32:14 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Placing 3 LIMIT orders in parallel...
+2025-10-16 19:32:14 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045505 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:32:14 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045507 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:32:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045508 Sell   0.84  Price 4383.00 '}
+2025-10-16 19:32:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Attempt 1: [32m0 successful[0m, [31m3 margin errors[0m
+2025-10-16 19:32:15 - services.order_handler         - WARNING  - [36m[2025-10-16 19:32:10][0m: [33mAll 3 orders failed due to margin. Retrying with smaller sizes...[0m
+2025-10-16 19:32:15 - services.order_handler         - WARNING  - [36m[2025-10-16 19:32:10][0m: [33mMargin insufficient. Retry 1/3 - Reducing sizes by 50%[0m
+2025-10-16 19:32:15 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: New sizes: [0.42, 0.42, 0.42]
+2025-10-16 19:32:15 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185936045510'}}
+2025-10-16 19:32:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045515 Sell   0.42  Price 4383.00 '}
+2025-10-16 19:32:16 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'error', 'errmsg': 'Not enough margin to create Order #7421932185936045514 Sell   0.42  Price 4383.00 '}
+2025-10-16 19:32:16 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Attempt 2: [32m1 successful[0m, [31m2 margin errors[0m
+2025-10-16 19:32:16 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: [32m[OK] Completed with 1/3 orders placed[0m
+2025-10-16 19:32:16 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: [32mLIMIT order placed successfully[0m - Instrument: [33mXAUUSD[0m, Side: [36mSELL[0m, Size: [33m0.42[0m, Entry: [33m4383[0m, SL: [31m4385[0m, TP: [32m4350[0m
+2025-10-16 19:32:16 - services.order_handler         - ERROR    - [36m[2025-10-16 19:32:10][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045514 Sell   0.42  Price 4383.00 
+2025-10-16 19:32:16 - services.order_handler         - ERROR    - [36m[2025-10-16 19:32:10][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045515 Sell   0.42  Price 4383.00 
+2025-10-16 19:32:16 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: [35mCFD Runner position[0m (ID: 7421932185936045510) created - Position monitor will handle trailing stop
+2025-10-16 19:32:16 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: Attempting to cache 1 orders for message 550
+2025-10-16 19:32:16 - order_cache                    - INFO     - Using existing in-memory cache with 3 entries
+2025-10-16 19:32:16 - order_cache                    - INFO     - Storing orders for message_id: '550' with 1 orders
+2025-10-16 19:32:16 - order_cache                    - INFO     - Verification: message_id 550 in memory cache: True
+2025-10-16 19:32:16 - order_cache                    - INFO     - Cache updated, current keys: ['410', '411', '549', '550']
+2025-10-16 19:32:16 - order_cache                    - INFO     - Saved order cache with 4 entries
+2025-10-16 19:32:16 - services.order_handler         - INFO     - [36m[2025-10-16 19:32:10][0m: [36mSuccessfully cached 1 orders for message 550 with entry price 4383[0m
+2025-10-16 20:18:59 - telethon.client.updates        - INFO     - Got difference for channel 2416539371 updates
+2025-10-16 20:41:59 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 21:03:09 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 21:04:00 - telethon.client.updates        - INFO     - Got difference for channel 2416539371 updates
+2025-10-16 21:05:57 - services.signal_management     - INFO     - Checking if message is a command: 'buy  us30 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:05:57 - services.signal_management     - INFO     - Detected TP command with level 46200: 'buy  us30 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:05:57 - services.signal_management     - INFO     - [36m[2025-10-16 21:05:56][0m: Command detected but no reply-to message ID
+2025-10-16 21:05:57 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 21:05:59 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-10-16 21:05:59 - trading_bot                    - INFO     - [36m[2025-10-16 21:05:56][0m Received invalid signal: Buy  us30 46120
+
+Tp 46200
+Tp 46330
+Tp 46420
+Tp 47000
+2025-10-16 21:06:15 - services.signal_management     - INFO     - Checking if message is a command: 'buy  us30 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:06:15 - services.signal_management     - INFO     - Detected TP command with level 46200: 'buy  us30 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:06:15 - services.signal_management     - INFO     - [36m[2025-10-16 21:06:15][0m: Command detected but no reply-to message ID
+2025-10-16 21:06:15 - core.signal_parser             - INFO     - Using cached parsed signal
+2025-10-16 21:06:15 - trading_bot                    - INFO     - [36m[2025-10-16 21:06:15][0m Received invalid signal: Buy  us30 46120
+
+Tp 46200
+Tp 46330
+Tp 46420
+Tp 47000
+2025-10-16 21:06:20 - services.signal_management     - INFO     - Checking if message is a command: 'buy  us30
+ 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:06:20 - services.signal_management     - INFO     - Detected TP command with level 46200: 'buy  us30
+ 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:06:20 - services.signal_management     - INFO     - [36m[2025-10-16 21:06:20][0m: Command detected but no reply-to message ID
+2025-10-16 21:06:20 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 21:06:23 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-10-16 21:06:23 - trading_bot                    - INFO     - [36m[2025-10-16 21:06:20][0m Received invalid signal: Buy  us30
+ 46120
+
+Tp 46200
+Tp 46330
+Tp 46420
+Tp 47000
+2025-10-16 21:06:30 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.54:443/TcpFull...
+2025-10-16 21:06:30 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.54:443/TcpFull complete!
+2025-10-16 21:06:30 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-16 21:06:30 - services.drawdown_manager      - INFO     - Drawdown reset task was cancelled
+2025-10-16 21:06:30 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-10-16 21:06:30 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-16 21:06:30 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000019D5B03EAD0>
+2025-10-16 21:07:23 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-16 21:07:23 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.54:443/TcpFull...
+2025-10-16 21:07:23 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.54:443/TcpFull complete!
+2025-10-16 21:07:23 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-16 21:07:23 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-16 21:07:23 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-16 21:07:23 - order_cache                    - INFO     - Using existing in-memory cache with 4 entries
+2025-10-16 21:07:23 - order_cache                    - INFO     - Loaded order cache with 4 entries
+2025-10-16 21:07:23 - order_cache                    - INFO     - Cache keys: ['410', '411', '549', '550']
+2025-10-16 21:07:23 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-16 21:07:23 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-16 21:07:25 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 21:07:25 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 50689.80
+2025-10-16 21:07:25 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-16 21:07:25 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-16 21:07:25 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-16 21:07:25 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-16 21:07:25 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-17 19:00:00 EST
+2025-10-16 21:07:25 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-16 21:07:35 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-16 21:07:35 - telethon.client.updates        - INFO     - Got difference for channel 2486712356 updates
+2025-10-16 21:07:35 - services.signal_management     - INFO     - Checking if message is a command: 'buy  us30
+ 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:07:35 - services.signal_management     - INFO     - Detected TP command with level 46200: 'buy  us30
+ 46120
+
+tp 46200
+tp 46330
+tp 46420
+tp 47000'
+2025-10-16 21:07:35 - services.signal_management     - INFO     - [36m[2025-10-16 21:06:20][0m: Command detected but no reply-to message ID
+2025-10-16 21:07:35 - services.signal_management     - INFO     - Checking if message is a command: 'sell  us30 
+
+46390 46440
+
+tp 46350
+tp 46290
+tp 46190
+tp 45300
+
+sl 46460'
+2025-10-16 21:07:35 - services.signal_management     - INFO     - Detected TP command with level 46350: 'sell  us30 
+
+46390 46440
+
+tp 46350
+tp 46290
+tp 46190
+tp 45300
+
+sl 46460'
+2025-10-16 21:07:35 - services.signal_management     - INFO     - [36m[2025-10-16 21:07:34][0m: Command detected but no reply-to message ID
+2025-10-16 21:07:38 - trading_bot                    - INFO     - [36m[2025-10-16 21:07:34][0m [36mReceived trading signal:[0m Sell  us30 
+
+46390 46440
+
+Tp 46350
+Tp 46290
+Tp 46190
+Tp 45300
+
+Sl 46460
+2025-10-16 21:07:38 - trading_bot                    - INFO     - [33mSignal details:[0m Instrument: [32mDOW[0m, Type: [32mSELL[0m, Entry: [36m46390[0m, SL: [31m46460[0m
+2025-10-16 21:07:38 - trading_bot                    - INFO     - Take profits: [32m46350, 46290, 46190[0m
+2025-10-16 21:07:38 - trading_bot                    - INFO     - Using account ID: 1560653
+2025-10-16 21:07:38 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 21:07:38 - core.signal_parser             - INFO     - Looking for instrument: DOW
+2025-10-16 21:07:38 - core.signal_parser             - INFO     - Signal instrument 'DOW' identified as 'DOW_JONES'
+2025-10-16 21:07:38 - core.signal_parser             - INFO     - Will try these nicknames for matching: ['DOW', 'DJI30', 'US30', 'DOWJONES', 'DJ30', 'WALLST', 'DJI', 'DOW.', 'US30.', 'DOWJONES.', 'DJ.']
+2025-10-16 21:07:38 - core.signal_parser             - INFO     - Trying potential match: US30 (score: 100)
+2025-10-16 21:07:38 - core.signal_parser             - INFO     - Successfully matched DOW to broker instrument: US30
+2025-10-16 21:07:38 - core.risk_management           - INFO     - Using CFD risk setting: 1.00%
+2025-10-16 21:07:38 - core.risk_management           - INFO     - Account: $50689.8, Risk: 1.00%, Total risk: $506.90
+2025-10-16 21:07:38 - core.risk_management           - INFO     - Positions: 3, Risk per position: $168.97
+2025-10-16 21:07:38 - core.risk_management           - INFO     - Entry: 46390.0, SL: 46460.0, Distance: 70.0
+2025-10-16 21:07:38 - core.risk_management           - INFO     - Identified US30 as US30/DOW
+2025-10-16 21:07:38 - core.risk_management           - INFO     - US30 calculation: $168.966 / (70.0 * 0.1) = 48.276 micro lots = 0.48 lots
+2025-10-16 21:07:38 - core.risk_management           - INFO     - Final lot size per position: 0.48
+2025-10-16 21:07:38 - core.risk_management           - INFO     - Final position sizes: [0.48, 0.48, 0.48], Total risk: $506.90
+2025-10-16 21:07:38 - trading_bot                    - INFO     - [36m[2025-10-16 21:07:34][0m: Position sizes: [33m[0.48, 0.48, 0.48][0m
+2025-10-16 21:07:38 - trading_bot                    - INFO     - 
+2025-10-16 21:07:39 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-16 21:07:39 - core.signal_parser             - WARNING  - Field stop_loss is not numeric: None
+2025-10-16 21:07:39 - trading_bot                    - INFO     - [36m[2025-10-16 21:06:20][0m Received invalid signal: Buy  us30
+ 46120
+
+Tp 46200
+Tp 46330
+Tp 46420
+Tp 47000
+2025-10-16 21:07:39 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Instrument US30 is EQUITY_CFD
+2025-10-16 21:07:39 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Processing CFD instrument with custom take profit allocation
+2025-10-16 21:07:39 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Sorted TPs (ascending): [46190, 46290, 46350]
+2025-10-16 21:07:39 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Position #1 (size: 0.48) with take profit: 46190
+2025-10-16 21:07:39 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Position #2 (size: 0.48) with take profit: 46290
+2025-10-16 21:07:39 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Position #3 (RUNNER) (size: 0.48) with 500 pip distant take profit: 45890
+2025-10-16 21:07:39 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Placing 3 LIMIT orders in parallel...
+2025-10-16 21:07:39 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185936055455'}}
+2025-10-16 21:07:40 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185936055458'}}
+2025-10-16 21:07:40 - tradelocker_api.endpoints.orders - INFO     - Order placed successfully: {'s': 'ok', 'd': {'orderId': '7421932185936055460'}}
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Attempt 1: [32m3 successful[0m, [31m0 margin errors[0m
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: [32m[OK] Completed with 3/3 orders placed[0m
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: [32mLIMIT order placed successfully[0m - Instrument: [33mUS30[0m, Side: [36mSELL[0m, Size: [33m0.48[0m, Entry: [33m46390[0m, SL: [31m46460[0m, TP: [32m46190[0m
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: [32mLIMIT order placed successfully[0m - Instrument: [33mUS30[0m, Side: [36mSELL[0m, Size: [33m0.48[0m, Entry: [33m46390[0m, SL: [31m46460[0m, TP: [32m46290[0m
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: [32mLIMIT order placed successfully[0m [35m(RUNNER)[0m - Instrument: [33mUS30[0m, Side: [36mSELL[0m, Size: [33m0.48[0m, Entry: [33m46390[0m, SL: [31m46460[0m, TP: [32m45890[0m
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: [35mCFD Runner position[0m (ID: 7421932185936055458) created - Position monitor will handle trailing stop
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: Attempting to cache 3 orders for message 554
+2025-10-16 21:07:40 - order_cache                    - INFO     - Using existing in-memory cache with 4 entries
+2025-10-16 21:07:40 - order_cache                    - INFO     - Storing orders for message_id: '554' with 3 orders
+2025-10-16 21:07:40 - order_cache                    - INFO     - Verification: message_id 554 in memory cache: True
+2025-10-16 21:07:40 - order_cache                    - INFO     - Cache updated, current keys: ['410', '411', '549', '550', '554']
+2025-10-16 21:07:40 - order_cache                    - INFO     - Saved order cache with 5 entries
+2025-10-16 21:07:40 - services.order_handler         - INFO     - [36m[2025-10-16 21:07:34][0m: [36mSuccessfully cached 3 orders for message 554 with entry price 46390[0m

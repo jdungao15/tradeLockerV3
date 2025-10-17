@@ -36,142 +36,252 @@ async def place_orders_batch(orders_client, account_id, acc_num, orders_batch):
         }
 
 
+"""
+Complete place_order_with_caching function with automatic margin management
+Replace your entire place_order_with_caching function in services/order_handler.py with this
+"""
+
+"""
+Complete place_order_with_caching function with automatic margin management
+Replace your entire place_order_with_caching function in services/order_handler.py with this
+"""
+
+
 async def place_order_with_caching(orders_client, selected_account, instrument_data, parsed_signal,
                                    position_sizes, colored_time, order_type='limit', message_id=None):
     """
     Places orders and stores them in the order cache for future reference.
+    Includes automatic margin management - will retry with reduced sizes if margin insufficient.
     Includes entry price in cached data for breakeven functionality.
 
     Args:
-        orders_client: Orders API client
-        selected_account: Selected account information
+        orders_client: TradeLocker orders client
+        selected_account: Selected account info
         instrument_data: Instrument data
-        parsed_signal: Parsed trading signal
-        position_sizes: List of position sizes
-        colored_time: Formatted time string for logging
-        order_type: Type of order ('limit' or 'market')
-        message_id: Telegram message ID for caching
+        parsed_signal: Parsed signal containing order details
+        position_sizes: List of position sizes for each take profit
+        colored_time: Formatted timestamp string
+        order_type: 'limit' or 'market'
+        message_id: Optional message ID for caching orders
 
     Returns:
-        dict: Results with successful and failed orders
+        dict: Results with placed and failed orders
     """
     try:
-        # Validate inputs
-        if not instrument_data or not parsed_signal or not position_sizes:
-            logger.error("Missing required data for order placement")
-            return None
+        account_id = selected_account['id']
+        acc_num = selected_account['accNum']
+        instrument_name = instrument_data['name']
+        instrument_type = instrument_data.get('type', 'UNKNOWN')
 
-        # Check if take profits are available
-        take_profits = parsed_signal.get('take_profits', [])
-        if not take_profits:
-            logger.error("No take profits found in signal")
-            return None
+        # Extract signal information
+        order_side = 'buy' if parsed_signal['order_type'].lower() == 'buy' else 'sell'
+        entry_point = parsed_signal['entry_point']
+        stop_loss = parsed_signal['stop_loss']
+        take_profits = parsed_signal['take_profits']
 
-        # Extract entry price from the signal for caching
-        entry_price = parsed_signal.get('entry_point')
+        # Log order placement start
+        logger.info(f"{colored_time}: Instrument {instrument_name} is {instrument_type}")
 
-        # Log the message ID we're working with
-        logger.info(f"{colored_time}: Processing order with message_id: {message_id}")
+        # Determine if this is a CFD and handle accordingly
+        is_cfd = instrument_type in ['EQUITY_CFD', 'INDEX_CFD', 'COMMODITY_CFD']
 
-        # Calculate total position size
-        total_pos_size = sum(float(size) for size in position_sizes)
+        if is_cfd:
+            logger.info(f"{colored_time}: Processing CFD instrument with custom take profit allocation")
 
-        # Number of positions based on take profits
-        num_positions = len(take_profits)
+            # For CFDs, sort TPs based on order direction
+            if order_side == 'buy':
+                sorted_tps = sorted(take_profits, reverse=True)  # Descending for buy
+            else:
+                sorted_tps = sorted(take_profits)  # Ascending for sell
 
-        # Equal position size distribution if we have a flat value
-        if len(position_sizes) == 1 and num_positions > 1:
-            position_per_segment = round(total_pos_size / num_positions, 2)
-            position_sizes = [position_per_segment] * num_positions
-        elif len(position_sizes) != num_positions:
-            # Make sure we have the right number of position sizes
-            logger.warning(
-                f"Position sizes count ({len(position_sizes)}) doesn't match take profits count ({num_positions})")
-
-            # Distribute evenly in this case
-            position_per_segment = round(total_pos_size / num_positions, 2)
-            position_sizes = [position_per_segment] * num_positions
-
-        # Prepare orders batch
-        orders_batch = []
-
-        # Create orders for each take profit
-        for i, take_profit in enumerate(take_profits):
-            size = position_sizes[i] if i < len(position_sizes) else position_sizes[-1]
-
-            order = {
-                'instrument': instrument_data,
-                'quantity': size,
-                'side': parsed_signal['order_type'],
-                'order_type': order_type,
-                'price': parsed_signal['entry_point'] if order_type == 'limit' else None,
-                'stop_loss': parsed_signal['stop_loss'],
-                'take_profit': take_profit
-            }
-            orders_batch.append(order)
-
-            # Log the order details
-            runner_note = " (RUNNER)" if i == num_positions - 1 and num_positions > 1 else ""
             logger.info(
-                f"{colored_time}: Position #{i + 1}{runner_note} (size: {size}) with take profit: {take_profit}"
+                f"{colored_time}: Sorted TPs ({'descending' if order_side == 'buy' else 'ascending'}): {sorted_tps}")
+
+            # Create orders for each TP
+            final_tps = []
+            for i, (size, tp) in enumerate(zip(position_sizes, sorted_tps)):
+                # Determine if this is the runner position (last one)
+                is_runner = (i == len(position_sizes) - 1)
+
+                # For runner position, set a distant TP (500 pips away)
+                if is_runner:
+                    pip_distance = 500
+                    if order_side == 'buy':
+                        runner_tp = entry_point + pip_distance
+                    else:
+                        runner_tp = entry_point - pip_distance
+
+                    logger.info(
+                        f"{colored_time}: Position #{i + 1} (RUNNER) (size: {size}) with {pip_distance} pip distant take profit: {runner_tp}")
+                    final_tps.append(runner_tp)
+                else:
+                    logger.info(f"{colored_time}: Position #{i + 1} (size: {size}) with take profit: {tp}")
+                    final_tps.append(tp)
+        else:
+            # For non-CFD instruments (Forex), use standard approach
+            final_tps = take_profits
+
+        # Log order placement
+        logger.info(f"{colored_time}: Placing {len(position_sizes)} {order_type.upper()} orders in parallel...")
+
+        # ========================================================================
+        # AUTOMATIC MARGIN MANAGEMENT - Retry with reduced sizes if needed
+        # ========================================================================
+
+        import asyncio
+
+        # Get original sizes
+        current_sizes = position_sizes.copy()
+        max_retries = 3
+        responses = None
+
+        for attempt in range(max_retries + 1):
+            if attempt > 0:
+                # Reduce all sizes by 50%
+                logger.warning(
+                    f"{colored_time}: {Fore.YELLOW}Margin insufficient. "
+                    f"Retry {attempt}/{max_retries} - Reducing sizes by 50%{Style.RESET_ALL}"
+                )
+                current_sizes = [round(size * 0.5, 2) for size in current_sizes]
+
+                # Check if sizes are too small
+                min_size = instrument_data.get('minTrade', 0.01)
+                if any(s < min_size for s in current_sizes):
+                    logger.error(
+                        f"{colored_time}: {Fore.RED}Position sizes below minimum ({min_size}). "
+                        f"Cannot place orders.{Style.RESET_ALL}"
+                    )
+                    break
+
+                logger.info(f"{colored_time}: New sizes: {current_sizes}")
+
+            # Attempt to place orders using create_order_async
+            tasks = []
+            for size, tp in zip(current_sizes, final_tps):
+                task = orders_client.create_order_async(
+                    account_id=account_id,
+                    acc_num=acc_num,
+                    instrument=instrument_data,  # Pass entire instrument dict
+                    quantity=size,
+                    side=order_side,
+                    order_type=order_type,
+                    price=entry_point if order_type == 'limit' else None,
+                    stop_loss=stop_loss,
+                    take_profit=tp
+                )
+                tasks.append(task)
+
+            responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+            # Count margin errors and successes
+            margin_errors = 0
+            success_count = 0
+
+            for response in responses:
+                if isinstance(response, dict):
+                    error_msg = str(response.get('errmsg', '')).lower()
+                    if response.get('s') == 'error' and 'not enough margin' in error_msg:
+                        margin_errors += 1
+                    elif response.get('s') == 'ok':
+                        success_count += 1
+
+            logger.info(
+                f"{colored_time}: Attempt {attempt + 1}: "
+                f"{Fore.GREEN}{success_count} successful{Style.RESET_ALL}, "
+                f"{Fore.RED}{margin_errors} margin errors{Style.RESET_ALL}"
             )
 
-        # Place orders in parallel
-        logger.info(
-            f"{colored_time}: Placing {len(orders_batch)} {Fore.CYAN}{order_type.upper()}{Style.RESET_ALL} orders in parallel..."
-        )
-
-        result = await place_orders_batch(
-            orders_client,
-            selected_account['id'],
-            selected_account['accNum'],
-            orders_batch
-        )
-
-        if result:
-            # Extract order IDs from successful orders
-            order_ids = []
-
-            # Log results
-            successful_orders = result.get('successful', [])
-            for j, (order, response) in enumerate(successful_orders):
-                entry_point = parsed_signal['entry_point']
-                stop_loss = parsed_signal['stop_loss']
-                side = parsed_signal['order_type'].upper()
-                take_profit = order.get('take_profit', 'N/A')
-
-                # Determine if this is a runner position (last position when multiple positions)
-                is_runner = (j == len(successful_orders) - 1) and (len(successful_orders) > 1)
-                runner_text = f"{Fore.MAGENTA} (RUNNER){Style.RESET_ALL}" if is_runner else ""
-
+            # If no margin errors or at least one success, we're done
+            if margin_errors == 0 or success_count > 0:
                 logger.info(
-                    f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{runner_text} - "
-                    f"Instrument: {Fore.YELLOW}{instrument_data['name']}{Style.RESET_ALL}, "
-                    f"Side: {Fore.BLUE}{side}{Style.RESET_ALL}, "
-                    f"Size: {Fore.YELLOW}{order.get('quantity')}{Style.RESET_ALL}, "
-                    f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
-                    f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
-                    f"TP: {Fore.GREEN}{take_profit}{Style.RESET_ALL}"
+                    f"{colored_time}: {Fore.GREEN}[OK] Completed with {success_count}/{len(current_sizes)} orders placed{Style.RESET_ALL}"
+                )
+                break
+
+            # If all failed due to margin and we have retries left, continue
+            if attempt < max_retries:
+                logger.warning(
+                    f"{colored_time}: {Fore.YELLOW}All {len(current_sizes)} orders failed due to margin. "
+                    f"Retrying with smaller sizes...{Style.RESET_ALL}"
+                )
+                await asyncio.sleep(0.5)  # Brief delay before retry
+            else:
+                logger.error(
+                    f"{colored_time}: {Fore.RED}Failed after {max_retries} retries. "
+                    f"No orders placed.{Style.RESET_ALL}"
                 )
 
-                # Extract order ID and add to our list
-                order_id = None
-                try:
-                    if isinstance(response, dict):
-                        if 'd' in response and 'orderId' in response.get('d', {}):
-                            order_id = response['d']['orderId']
-                        elif 'orderId' in response:
-                            order_id = response['orderId']
+        # ========================================================================
+        # Process results
+        # ========================================================================
 
-                        if order_id:
-                            order_ids.append(order_id)
-                            logger.debug(f"Extracted order ID: {order_id}")
-                except Exception as e:
-                    logger.error(f"Error extracting order ID: {e}")
+        if responses:
+            result = {
+                'placed': [],
+                'failed': []
+            }
 
-            # Log failed orders
-            for order, error in result.get('failed', []):
-                logger.error(f"{colored_time}: {Fore.RED}Failed to place order{Style.RESET_ALL}: {error}")
+            order_ids = []
+
+            for i, response in enumerate(responses):
+                # Handle exceptions
+                if isinstance(response, Exception):
+                    logger.error(f"{colored_time}: Order placement exception: {response}")
+                    result['failed'].append((None, str(response)))
+                    continue
+
+                # Handle successful orders
+                if isinstance(response, dict) and response.get('s') == 'ok':
+                    if 'd' in response and 'orderId' in response['d']:
+                        order_id = response['d']['orderId']
+                        order_ids.append(order_id)
+                        result['placed'].append((None, response))
+
+                        # Log success with appropriate styling
+                        tp_value = final_tps[i]
+                        size_value = current_sizes[i]
+
+                        # Check if this is a runner position
+                        is_runner = (is_cfd and i == len(responses) - 1)
+
+                        if is_runner:
+                            logger.info(
+                                f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{Style.RESET_ALL} "
+                                f"{Fore.MAGENTA}(RUNNER){Style.RESET_ALL} - "
+                                f"Instrument: {Fore.YELLOW}{instrument_name}{Style.RESET_ALL}, "
+                                f"Side: {Fore.CYAN}{order_side.upper()}{Style.RESET_ALL}, "
+                                f"Size: {Fore.YELLOW}{size_value}{Style.RESET_ALL}, "
+                                f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
+                                f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
+                                f"TP: {Fore.GREEN}{tp_value}{Style.RESET_ALL}"
+                            )
+                        else:
+                            logger.info(
+                                f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{Style.RESET_ALL} - "
+                                f"Instrument: {Fore.YELLOW}{instrument_name}{Style.RESET_ALL}, "
+                                f"Side: {Fore.CYAN}{order_side.upper()}{Style.RESET_ALL}, "
+                                f"Size: {Fore.YELLOW}{size_value}{Style.RESET_ALL}, "
+                                f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
+                                f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
+                                f"TP: {Fore.GREEN}{tp_value}{Style.RESET_ALL}"
+                            )
+                    else:
+                        logger.error(f"{colored_time}: Order response missing orderId: {response}")
+                        result['failed'].append((None, "Missing orderId in response"))
+
+                # Handle failed orders
+                elif isinstance(response, dict) and response.get('s') == 'error':
+                    error_msg = response.get('errmsg', 'Unknown error')
+                    result['failed'].append((None, error_msg))
+                    logger.error(f"{colored_time}: {Fore.RED}Order failed{Style.RESET_ALL}: {error_msg}")
+
+            # Log runner position if CFD
+            if is_cfd and result['placed']:
+                logger.info(
+                    f"{colored_time}: {Fore.MAGENTA}CFD Runner position{Style.RESET_ALL} "
+                    f"(ID: {order_ids[-1] if order_ids else 'N/A'}) created - "
+                    f"Position monitor will handle trailing stop"
+                )
 
             # Store orders in cache if we have a message_id and order_ids
             if message_id and order_ids:
@@ -183,22 +293,25 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
 
                 # Store in cache with explicit call including entry price
                 cached = order_cache.store_orders(
-                    message_id=str(message_id),  # Ensure it's a string
+                    message_id=str(message_id),
                     order_ids=order_ids,
                     take_profits=take_profits,
-                    instrument=instrument_data['name'],
-                    entry_price=entry_price  # Store entry price for breakeven functionality
+                    instrument=instrument_name,
+                    entry_price=entry_point
                 )
 
                 if cached:
                     logger.info(
-                        f"{colored_time}: {Fore.CYAN}Successfully cached {len(order_ids)} orders for message {message_id} with entry price {entry_price}{Style.RESET_ALL}"
+                        f"{colored_time}: {Fore.CYAN}Successfully cached {len(order_ids)} orders "
+                        f"for message {message_id} with entry price {entry_point}{Style.RESET_ALL}"
                     )
                 else:
                     logger.warning(f"{colored_time}: Failed to cache orders for message {message_id}")
             else:
                 logger.warning(
-                    f"{colored_time}: Cannot cache orders - missing message ID ({message_id}) or order IDs ({len(order_ids)})")
+                    f"{colored_time}: Cannot cache orders - "
+                    f"missing message ID ({message_id}) or order IDs ({len(order_ids) if order_ids else 0})"
+                )
 
             return result
         else:

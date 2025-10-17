@@ -90,7 +90,8 @@ class TradingBot:
         self.base_url = os.getenv('TRADELOCKER_API_URL')
 
         # Configuration that could be moved to a config file
-        self.channel_ids = [-1002153475473, -1002486712356]
+        # self.channel_ids = [-1002153475473, -1002486712356]
+        self.channel_ids = [2486712356]
         self.local_timezone = pytz.timezone('America/New_York')
 
         # Additional configurable parameters
