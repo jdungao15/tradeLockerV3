@@ -1,10 +1,12 @@
+import os
+os.system('chcp 65001 >nul')
 import asyncio
 import logging
-import os
 import pytz
 import platform
 import signal
 import sys
+
 
 from colorama import init, Fore, Style
 from dotenv import load_dotenv
@@ -32,6 +34,8 @@ from services.news_filter import NewsEventFilter
 from services.signal_management import SignalManager
 import risk_config
 from core.signal_parser import find_matching_instrument
+
+
 
 class TradingBot:
     def __init__(self):
@@ -109,6 +113,8 @@ class TradingBot:
             # Connect first
             await self.client.connect()
 
+            #Show current monitor channels
+            await self.display_monitored_channels()
             # Check if already authorized
             if not await self.client.is_user_authorized():
                 self.logger.info("Telegram authentication required")
@@ -502,6 +508,113 @@ class TradingBot:
             self._tasks.add(task)
             task.add_done_callback(self._tasks.discard)
 
+    async def display_monitored_channels(self):
+        """
+        Display all Telegram channels being monitored by the bot.
+        Shows channel names, IDs, and verification status.
+        Call this during bot initialization after Telegram client is connected.
+        """
+        try:
+            self.logger.info("=" * 70)
+            self.logger.info("TELEGRAM CHANNEL MONITORING STATUS")
+            self.logger.info("=" * 70)
+
+            if not self.channel_ids or len(self.channel_ids) == 0:
+                self.logger.warning("No channels configured for monitoring!")
+                self.logger.warning("Add channel IDs to self.channel_ids in your config")
+                self.logger.info("=" * 70)
+                return
+
+            self.logger.info(f"Configured to monitor {len(self.channel_ids)} channel(s)")
+            self.logger.info("")
+
+            # Track statistics
+            accessible_count = 0
+            inaccessible_count = 0
+
+            # Check each channel
+            for i, channel_id in enumerate(self.channel_ids, 1):
+                try:
+                    # Try to get entity information
+                    entity = await self.client.get_entity(channel_id)
+
+                    # Extract channel information
+                    channel_name = entity.title if hasattr(entity, 'title') else 'Unknown'
+                    username = entity.username if hasattr(entity, 'username') else None
+
+                    # Determine channel type
+                    from telethon.tl.types import Channel, Chat
+                    if isinstance(entity, Channel):
+                        if entity.broadcast:
+                            channel_type = "[Channel]"
+                        else:
+                            channel_type = "[Supergroup]"
+                    else:
+                        channel_type = "[Group]"
+
+                    # Success - channel is accessible
+                    accessible_count += 1
+
+                    self.logger.info(f"{i}. OK {channel_type}: {Fore.GREEN}{channel_name}{Style.RESET_ALL}")
+                    self.logger.info(f"   ID: {Fore.CYAN}{channel_id}{Style.RESET_ALL}")
+
+                    if username:
+                        self.logger.info(f"   Username: {Fore.YELLOW}@{username}{Style.RESET_ALL}")
+
+                    self.logger.info(f"   Status: {Fore.GREEN}Accessible - Monitoring active{Style.RESET_ALL}")
+
+                    # Try to get latest message to verify read access
+                    try:
+                        messages = await self.client.get_messages(entity, limit=1)
+                        if messages:
+                            last_msg_date = messages[0].date.strftime('%Y-%m-%d %H:%M:%S')
+                            self.logger.info(f"   Last message: {last_msg_date}")
+                    except:
+                        self.logger.info(
+                            f"   {Fore.YELLOW}WARNING: Can see channel but cannot read messages{Style.RESET_ALL}")
+
+                    self.logger.info("")
+
+                except ValueError as e:
+                    # Channel ID not found or invalid
+                    inaccessible_count += 1
+                    self.logger.error(f"{i}. ERROR Channel ID: {Fore.RED}{channel_id}{Style.RESET_ALL}")
+                    self.logger.error(f"   Error: {Fore.RED}Channel not found or invalid ID{Style.RESET_ALL}")
+                    self.logger.error(f"   Bot cannot access this channel!")
+                    self.logger.info("")
+
+                except Exception as e:
+                    # Other errors
+                    inaccessible_count += 1
+                    self.logger.error(f"{i}. ERROR Channel ID: {Fore.RED}{channel_id}{Style.RESET_ALL}")
+                    self.logger.error(f"   Error: {Fore.RED}{str(e)}{Style.RESET_ALL}")
+                    self.logger.info("")
+
+            # Summary
+            self.logger.info("-" * 70)
+            self.logger.info(f"MONITORING SUMMARY:")
+            self.logger.info(f"   Total configured: {len(self.channel_ids)}")
+            self.logger.info(f"   {Fore.GREEN}Accessible: {accessible_count}{Style.RESET_ALL}")
+
+            if inaccessible_count > 0:
+                self.logger.warning(f"   {Fore.RED}Inaccessible: {inaccessible_count}{Style.RESET_ALL}")
+                self.logger.warning("")
+                self.logger.warning(
+                    f"   {Fore.YELLOW}WARNING: Bot cannot monitor {inaccessible_count} channel(s)!{Style.RESET_ALL}")
+                self.logger.warning("   Possible reasons:")
+                self.logger.warning("   1. Wrong channel ID format")
+                self.logger.warning("   2. Bot not added to channel")
+                self.logger.warning("   3. Channel was deleted or made private")
+                self.logger.warning("")
+                self.logger.warning("   Run 'python tools/get_telegram_channels.py' to get correct IDs")
+            else:
+                self.logger.info(f"   {Fore.GREEN}All channels accessible!{Style.RESET_ALL}")
+
+            self.logger.info("=" * 70)
+            self.logger.info("")
+
+        except Exception as e:
+            self.logger.error(f"Error displaying monitored channels: {e}", exc_info=True)
     # -------------------------------------------------------------------------
     # Trading Signal Processing Methods
     # -------------------------------------------------------------------------

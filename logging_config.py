@@ -80,7 +80,7 @@ class TradingBotFormatter(logging.Formatter):
 
 
 def setup_logging():
-    """Configure logging for the trading bot application"""
+    """Configure logging for the trading bot application with UTF-8 emoji support"""
     # Create logs directory if it doesn't exist
     os.makedirs("logs", exist_ok=True)
 
@@ -98,31 +98,34 @@ def setup_logging():
     console_handler.setFormatter(TradingBotFormatter(use_colors=True))
     root_logger.addHandler(console_handler)
 
-    # Create file handler for all logs
+    # Create file handler for all logs with UTF-8 encoding
     main_file_handler = RotatingFileHandler(
         "logs/trading_bot.log",
         maxBytes=10 * 1024 * 1024,  # 10 MB
-        backupCount=5
+        backupCount=5,
+        encoding='utf-8'  # ⭐ ADDED - Enables emoji support
     )
     main_file_handler.setLevel(logging.INFO)
     main_file_handler.setFormatter(TradingBotFormatter(use_colors=False))
     root_logger.addHandler(main_file_handler)
 
-    # Create separate file handler for errors
+    # Create separate file handler for errors with UTF-8 encoding
     error_file_handler = RotatingFileHandler(
         "logs/errors.log",
         maxBytes=5 * 1024 * 1024,  # 5 MB
-        backupCount=3
+        backupCount=3,
+        encoding='utf-8'  # ⭐ ADDED - Enables emoji support
     )
     error_file_handler.setLevel(logging.ERROR)
     error_file_handler.setFormatter(TradingBotFormatter(use_colors=False))
     root_logger.addHandler(error_file_handler)
 
-    # Create debug file handler for more verbose logs
+    # Create debug file handler for more verbose logs with UTF-8 encoding
     debug_file_handler = RotatingFileHandler(
         "logs/debug.log",
         maxBytes=20 * 1024 * 1024,  # 20 MB
-        backupCount=3
+        backupCount=3,
+        encoding='utf-8'  # ⭐ ADDED - Enables emoji support
     )
     debug_file_handler.setLevel(logging.DEBUG)
     debug_file_handler.setFormatter(TradingBotFormatter(use_colors=False))
@@ -130,7 +133,6 @@ def setup_logging():
 
     # Customize specific loggers
     customize_component_loggers()
-
     return root_logger
 
 
