@@ -91,7 +91,7 @@ class TradingBot:
 
         # Configuration that could be moved to a config file
         # self.channel_ids = [-1002153475473, -1002486712356]
-        self.channel_ids = [2486712356]
+        self.channel_ids = [-1002153475473, -1002486712356, -1002379218267, 2486712356]
         self.local_timezone = pytz.timezone('America/New_York')
 
         # Additional configurable parameters
