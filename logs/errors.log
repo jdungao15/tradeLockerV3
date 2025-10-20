@@ -1448,3 +1448,26 @@ client_session: <aiohttp.client.ClientSession object at 0x000001B2ED4DF110>
 2025-10-16 19:32:16 - services.order_handler         - ERROR    - [36m[2025-10-16 19:32:10][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936045515 Sell   0.42  Price 4383.00 
 2025-10-16 21:06:30 - asyncio                        - ERROR    - Unclosed client session
 client_session: <aiohttp.client.ClientSession object at 0x0000019D5B03EAD0>
+2025-10-19 17:52:21 - trading_bot                    - ERROR    - Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+2025-10-19 17:52:21 - root                           - ERROR    - Critical error: Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+Traceback (most recent call last):
+  File "C:\Users\johnm\OneDrive\Documents\tradeLockerV3\main.py", line 976, in <module>
+    asyncio.run(main())
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\lib\asyncio\runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0\lib\asyncio\base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "C:\Users\johnm\OneDrive\Documents\tradeLockerV3\main.py", line 954, in main
+    bot = TradingBot()
+  File "C:\Users\johnm\OneDrive\Documents\tradeLockerV3\main.py", line 45, in __init__
+    self._load_config()
+  File "C:\Users\johnm\OneDrive\Documents\tradeLockerV3\main.py", line 86, in _load_config
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
+OSError: Missing required environment variables: API_ID, API_HASH, TRADELOCKER_API_URL
+2025-10-19 21:26:37 - services.order_handler         - ERROR    - [36m[2025-10-19 21:26:28][0m: [31mOrder failed[0m: Not enough margin to create Order #7421932185936253533 Sell   0.12  Price 4383.00 
+2025-10-19 21:33:13 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000243FDDEE740>
+2025-10-19 21:37:28 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000230959EFB80>
+2025-10-19 21:37:58 - trading_bot                    - ERROR    - Account ID  is not valid.
+2025-10-19 21:37:58 - trading_bot                    - ERROR    - Account selection failed. Exiting.

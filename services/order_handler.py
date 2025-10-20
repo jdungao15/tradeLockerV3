@@ -54,6 +54,8 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
     Includes automatic margin management - will retry with reduced sizes if margin insufficient.
     Includes entry price in cached data for breakeven functionality.
 
+    MODIFIED: CFD instruments now use only 2 positions (TP2 and TP3) with TP3 as runner (no 500-pip offset)
+
     Args:
         orders_client: TradeLocker orders client
         selected_account: Selected account info
@@ -86,7 +88,7 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
         is_cfd = instrument_type in ['EQUITY_CFD', 'INDEX_CFD', 'COMMODITY_CFD']
 
         if is_cfd:
-            logger.info(f"{colored_time}: Processing CFD instrument with custom take profit allocation")
+            logger.info(f"{colored_time}: Processing CFD instrument with 2-position runner allocation")
 
             # For CFDs, sort TPs based on order direction
             if order_side == 'buy':
@@ -97,26 +99,34 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
             logger.info(
                 f"{colored_time}: Sorted TPs ({'descending' if order_side == 'buy' else 'ascending'}): {sorted_tps}")
 
-            # Create orders for each TP
-            final_tps = []
-            for i, (size, tp) in enumerate(zip(position_sizes, sorted_tps)):
-                # Determine if this is the runner position (last one)
-                is_runner = (i == len(position_sizes) - 1)
+            # MODIFIED: Use only 2 positions - TP2 and TP3 (no 500-pip offset)
+            # Ensure we have at least 3 TPs to work with
+            if len(sorted_tps) < 3:
+                logger.error(f"{colored_time}: Need at least 3 take profits for CFD strategy, got {len(sorted_tps)}")
+                return None
 
-                # For runner position, set a distant TP (500 pips away)
-                if is_runner:
-                    pip_distance = 500
-                    if order_side == 'buy':
-                        runner_tp = entry_point + pip_distance
-                    else:
-                        runner_tp = entry_point - pip_distance
+            # For SELL: sorted_tps is ascending [4240, 4265, 4272], we want 4265 and 4240
+            # For BUY: sorted_tps is descending [4272, 4265, 4240], we want 4265 and 4240
+            # In both cases: index[1] is TP2, index[0] is TP3 (furthest/runner)
+            tp_for_pos1 = sorted_tps[1]  # Second TP (middle one)
+            tp_for_pos2 = sorted_tps[0]  # Third TP (furthest one - runner)
 
-                    logger.info(
-                        f"{colored_time}: Position #{i + 1} (RUNNER) (size: {size}) with {pip_distance} pip distant take profit: {runner_tp}")
-                    final_tps.append(runner_tp)
-                else:
-                    logger.info(f"{colored_time}: Position #{i + 1} (size: {size}) with take profit: {tp}")
-                    final_tps.append(tp)
+            # Adjust position_sizes to only use last 2
+            if len(position_sizes) > 2:
+                position_sizes = position_sizes[-2:]  # Take last 2 sizes
+            elif len(position_sizes) == 1:
+                # Split equally if only one size given
+                pos_size = round(float(position_sizes[0]) / 2, 2)
+                position_sizes = [pos_size, pos_size]
+
+            # Create final TPs list with only 2 positions
+            final_tps = [tp_for_pos1, tp_for_pos2]
+
+            # Log the positions
+            logger.info(f"{colored_time}: Position #1 (size: {position_sizes[0]}) with take profit: {tp_for_pos1}")
+            logger.info(
+                f"{colored_time}: Position #2 (RUNNER) (size: {position_sizes[1]}) with take profit: {tp_for_pos2}")
+
         else:
             # For non-CFD instruments (Forex), use standard approach
             final_tps = take_profits
@@ -241,7 +251,7 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                         tp_value = final_tps[i]
                         size_value = current_sizes[i]
 
-                        # Check if this is a runner position
+                        # Check if this is a runner position (last position for CFD)
                         is_runner = (is_cfd and i == len(responses) - 1)
 
                         if is_runner:
