@@ -286,6 +286,10 @@ class TradingBot:
         # Load drawdown data
         load_drawdown_data(self.selected_account)
 
+        # ⭐ ADD THIS - Validate and fix drawdown if needed
+        from services.drawdown_manager import validate_and_fix_drawdown
+        await validate_and_fix_drawdown(self.accounts_client, self.selected_account)
+
         # Schedule first reset using async approach
         reset_task = asyncio.create_task(
             schedule_daily_reset_async(self.accounts_client, self.selected_account)

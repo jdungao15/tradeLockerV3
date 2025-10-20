@@ -9950,3 +9950,81 @@ Sl 4280
 2025-10-19 21:38:16 - order_cache                    - INFO     - Cache updated, current keys: ['410', '411', '549', '550', '554', '557', '558', '559']
 2025-10-19 21:38:16 - order_cache                    - INFO     - Saved order cache with 8 entries
 2025-10-19 21:38:16 - services.order_handler         - INFO     - [36m[2025-10-19 21:38:11][0m: [36mSuccessfully cached 2 orders for message 559 with entry price 4275[0m
+2025-10-19 21:53:12 - telethon.client.updates        - INFO     - Got difference for account updates
+2025-10-19 21:57:34 - services.drawdown_manager      - INFO     - Drawdown reset task was cancelled
+2025-10-19 21:57:34 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.57:443/TcpFull...
+2025-10-19 21:57:34 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.57:443/TcpFull complete!
+2025-10-19 21:57:34 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-19 21:57:34 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-10-19 21:57:34 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-19 21:57:34 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001A76F85E200>
+2025-10-19 21:57:42 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-19 21:57:42 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.57:443/TcpFull...
+2025-10-19 21:57:42 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.57:443/TcpFull complete!
+2025-10-19 21:57:43 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-19 21:57:43 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-19 21:57:43 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-19 21:57:43 - order_cache                    - INFO     - Using existing in-memory cache with 8 entries
+2025-10-19 21:57:43 - order_cache                    - INFO     - Loaded order cache with 8 entries
+2025-10-19 21:57:43 - order_cache                    - INFO     - Cache keys: ['410', '411', '549', '550', '554', '557', '558', '559']
+2025-10-19 21:57:43 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-19 21:57:43 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-19 21:57:53 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-19 21:57:53 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 53467.47
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=48689.8, starting=50689.8
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - ============================================================
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - VALIDATING DAILY DRAWDOWN SETTINGS
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - ============================================================
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Current Account Balance: $53,467.47
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Configured Drawdown Percentage: 3.0%
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Account Tier Size: $50,000.00
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Correct Drawdown Limit: $1,500.00
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Correct Max Drawdown Balance: $51,967.47
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Current Saved Max Drawdown: $48,689.80
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Current Saved Starting Balance: $50,689.80
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - File Drawdown Percentage: 4.00%
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - ============================================================
+2025-10-19 21:57:53 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-19 21:57:53 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-19 21:57:53 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-19 21:57:53 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-20 19:00:00 EST
+2025-10-19 21:57:53 - services.pos_monitor           - INFO     - Starting position monitoring service
+2025-10-19 21:57:53 - tradelocker_api.api_client     - WARNING  - Request failed, retrying in 0.5s: 429, message='Too Many Requests', url='https://demo.tradelocker.com/backend-api/trade/accounts/1560653/positions'
+2025-10-19 21:58:28 - services.drawdown_manager      - INFO     - Drawdown reset task was cancelled
+2025-10-19 21:58:28 - telethon.network.mtprotosender - INFO     - Disconnecting from 149.154.175.57:443/TcpFull...
+2025-10-19 21:58:28 - telethon.network.mtprotosender - INFO     - Disconnection from 149.154.175.57:443/TcpFull complete!
+2025-10-19 21:58:28 - trading_bot                    - INFO     - Performing cleanup...
+2025-10-19 21:58:28 - telethon.network.mtprotosender - INFO     - Not disconnecting (already have no connection)
+2025-10-19 21:58:28 - trading_bot                    - INFO     - Cleanup completed.
+2025-10-19 21:58:33 - trading_bot                    - INFO     - Connecting to Telegram...
+2025-10-19 21:58:33 - telethon.network.mtprotosender - INFO     - Connecting to 149.154.175.57:443/TcpFull...
+2025-10-19 21:58:33 - telethon.network.mtprotosender - INFO     - Connection to 149.154.175.57:443/TcpFull complete!
+2025-10-19 21:58:33 - trading_bot                    - INFO     - Already authenticated with Telegram
+2025-10-19 21:58:34 - trading_bot                    - INFO     - Initializing economic calendar for news filtering...
+2025-10-19 21:58:34 - services.news_filter           - INFO     - Loaded economic calendar from cache with 109 events
+2025-10-19 21:58:34 - order_cache                    - INFO     - Using existing in-memory cache with 8 entries
+2025-10-19 21:58:34 - order_cache                    - INFO     - Loaded order cache with 8 entries
+2025-10-19 21:58:34 - order_cache                    - INFO     - Cache keys: ['410', '411', '549', '550', '554', '557', '558', '559']
+2025-10-19 21:58:34 - services.signal_management     - INFO     - Signal manager initialized
+2025-10-19 21:58:34 - trading_bot                    - INFO     - Signal manager initialized with reply-based command handling
+2025-10-19 21:58:35 - tradelocker_api.endpoints.accounts - INFO     - Selected account: 1560653 saved to selected_account.json
+2025-10-19 21:58:35 - trading_bot                    - INFO     - Selected account: ID: 1560653, Account Number: 7, Balance: 53467.47
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Loaded drawdown data: max_drawdown=51967.47, starting=53467.47
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - ============================================================
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - VALIDATING DAILY DRAWDOWN SETTINGS
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - ============================================================
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Current Account Balance: $53,467.47
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Configured Drawdown Percentage: 3.0%
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Account Tier Size: $50,000.00
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Correct Drawdown Limit: $1,500.00
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Correct Max Drawdown Balance: $51,967.47
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Current Saved Max Drawdown: $51,967.47
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Current Saved Starting Balance: $53,467.47
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - File Drawdown Percentage: 3.00%
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - ============================================================
+2025-10-19 21:58:35 - trading_bot                    - INFO     - No upcoming high-impact news events in the next 24 hours.
+2025-10-19 21:58:35 - trading_bot                    - INFO     - Starting position monitoring...
+2025-10-19 21:58:35 - trading_bot                    - INFO     - Bot is now running. Press Ctrl+C to stop.
+2025-10-19 21:58:35 - services.drawdown_manager      - INFO     - Scheduling next drawdown reset at 2025-10-20 19:00:00 EST
+2025-10-19 21:58:35 - services.pos_monitor           - INFO     - Starting position monitoring service

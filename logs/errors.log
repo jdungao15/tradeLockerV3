@@ -1471,3 +1471,5 @@ client_session: <aiohttp.client.ClientSession object at 0x00000243FDDEE740>
 client_session: <aiohttp.client.ClientSession object at 0x00000230959EFB80>
 2025-10-19 21:37:58 - trading_bot                    - ERROR    - Account ID  is not valid.
 2025-10-19 21:37:58 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-10-19 21:57:34 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001A76F85E200>

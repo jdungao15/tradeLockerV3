@@ -172,6 +172,128 @@ async def reset_daily_drawdown_async(accounts_client, selected_account):
             return False
 
 
+async def validate_and_fix_drawdown(accounts_client, selected_account):
+    """
+    Validates the current drawdown settings and fixes them if incorrect.
+    Should be called on bot startup after getting account info.
+
+    This ensures that:
+    1. The drawdown percentage matches your configured setting
+    2. The max_drawdown_balance is correctly calculated from current balance
+    3. No old/incorrect values remain in the file
+
+    Args:
+        accounts_client: TradeLocker accounts client
+        selected_account: Selected account info
+
+    Returns:
+        bool: True if validation passed or was fixed, False if error
+    """
+    global max_drawdown_balance, starting_balance
+
+    try:
+        logger.info("=" * 60)
+        logger.info("VALIDATING DAILY DRAWDOWN SETTINGS")
+        logger.info("=" * 60)
+
+        # Get current account balance
+        current_balance = float(selected_account['accountBalance'])
+        logger.info(f"Current Account Balance: ${current_balance:,.2f}")
+
+        # Get configured drawdown percentage from risk_config
+        drawdown_percentage = risk_config.get_drawdown_percentage()
+        logger.info(f"Configured Drawdown Percentage: {drawdown_percentage}%")
+
+        # Determine tier size based on current balance
+        tier_size, _ = get_tier_size(current_balance)
+        logger.info(f"Account Tier Size: ${tier_size:,.2f}")
+
+        # Calculate what the correct drawdown should be
+        correct_drawdown_limit = tier_size * (drawdown_percentage / 100.0)
+        correct_max_drawdown = current_balance - correct_drawdown_limit
+
+        logger.info(f"Correct Drawdown Limit: ${correct_drawdown_limit:,.2f}")
+        logger.info(f"Correct Max Drawdown Balance: ${correct_max_drawdown:,.2f}")
+
+        # Load current values from file
+        with _drawdown_lock:
+            current_max_dd = max_drawdown_balance
+            current_starting = starting_balance
+
+        logger.info(f"Current Saved Max Drawdown: ${current_max_dd:,.2f}")
+        logger.info(f"Current Saved Starting Balance: ${current_starting:,.2f}")
+
+        # Calculate actual percentage in the file
+        if current_starting > 0:
+            file_drawdown_amount = current_starting - current_max_dd
+            file_drawdown_percentage = (file_drawdown_amount / tier_size) * 100
+            logger.info(f"File Drawdown Percentage: {file_drawdown_percentage:.2f}%")
+        else:
+            file_drawdown_percentage = 0
+
+        # Check if correction is needed
+        needs_correction = False
+
+        # Check 1: Does the percentage match?
+        if abs(file_drawdown_percentage - drawdown_percentage) > 0.1:
+            logger.warning(
+                f"⚠️  Drawdown percentage mismatch! "
+                f"File has {file_drawdown_percentage:.2f}%, should be {drawdown_percentage}%"
+            )
+            needs_correction = True
+
+        # Check 2: Is the starting balance way off from current balance?
+        balance_difference = abs(current_balance - current_starting)
+        if balance_difference > (current_balance * 0.02):  # More than 2% difference
+            logger.warning(
+                f"⚠️  Starting balance mismatch! "
+                f"File has ${current_starting:,.2f}, current is ${current_balance:,.2f}"
+            )
+            needs_correction = True
+
+        # Check 3: Would we exceed drawdown with a reasonable loss?
+        # Calculate what % loss the current settings allow
+        allowed_loss = current_balance - current_max_dd
+        allowed_loss_percentage = (allowed_loss / current_balance) * 100
+
+        if allowed_loss_percentage > (drawdown_percentage + 1):  # More than 1% over target
+            logger.warning(
+                f"⚠️  Drawdown allows {allowed_loss_percentage:.2f}% loss, "
+                f"should be ~{drawdown_percentage}%"
+            )
+            needs_correction = True
+
+        # Apply correction if needed
+        if needs_correction:
+            logger.warning("🔧 CORRECTING DRAWDOWN SETTINGS...")
+
+            with _drawdown_lock:
+                starting_balance = current_balance
+                max_drawdown_balance = correct_max_drawdown
+
+            save_drawdown_data()
+
+            logger.info(f"✅ CORRECTED - New Max Drawdown Balance: ${max_drawdown_balance:,.2f}")
+            logger.info(f"✅ CORRECTED - New Starting Balance: ${starting_balance:,.2f}")
+            logger.info(f"✅ You can now lose up to ${correct_drawdown_limit:,.2f} ({drawdown_percentage}%) today")
+        else:
+            logger.info("✅ Drawdown settings are correct - no changes needed")
+
+        logger.info("=" * 60)
+        return True
+
+    except Exception as e:
+        logger.error(f"Error validating drawdown: {e}", exc_info=True)
+
+        # Emergency fix - reset to safe values
+        logger.warning("⚠️  Applying emergency drawdown reset...")
+        try:
+            await reset_daily_drawdown_async(accounts_client, selected_account)
+            return True
+        except:
+            return False
+
+
 # Synchronous wrapper for reset_daily_drawdown
 def reset_daily_drawdown(accounts_client, selected_account):
     """
