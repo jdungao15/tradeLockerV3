@@ -354,8 +354,44 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
     Returns:
         dict: Result of order placement
     """
+    """Place orders with risk checks and signal validation"""
+
     try:
-        # Refresh account balance
+        # ======= NEW CODE - ADD THIS BLOCK AT THE TOP =======
+        from services.signal_validator import SignalValidator
+
+        validator = SignalValidator()
+        validation_result = await validator.validate_signal_before_execution(
+            quotes_client=quotes_client,
+            selected_account=selected_account,
+            instrument_data=instrument_data,
+            parsed_signal=parsed_signal,
+            signal_timestamp=None  # You can pass actual timestamp if available
+        )
+
+        # If signal is invalid, return immediately
+        if not validation_result['valid']:
+            logger.warning(
+                f"{colored_time}: {Fore.RED}❌ Signal rejected: {validation_result['reason']}{Style.RESET_ALL}"
+            )
+            return None
+
+        # Use the validated order type (market or limit)
+        order_type = validation_result.get('order_type', 'limit')
+
+        # If using market order, adjust entry price
+        if order_type == 'market' and 'adjusted_entry' in validation_result:
+            parsed_signal = parsed_signal.copy()
+            parsed_signal['entry_point'] = validation_result['adjusted_entry']
+
+            logger.info(
+                f"{colored_time}: {Fore.CYAN}Using MARKET order at {validation_result['adjusted_entry']} "
+                f"(Signal price: {parsed_signal['entry_point']}, "
+                f"Slippage: {validation_result['price_diff_pips']:.1f} pips){Style.RESET_ALL}"
+            )
+        # ======= END NEW CODE =======
+
+        # Refresh account balance (YOUR EXISTING CODE CONTINUES HERE)
         updated_account = await accounts_client.refresh_account_balance_async()
         if not updated_account:
             logger.error(f"{colored_time}: Failed to refresh account balance")

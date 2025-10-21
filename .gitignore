@@ -13,6 +13,8 @@ daily_drawdown.json
 selected_account.json
 
 # Log files
+logs/*.log
+logs/*.log.*
 logs/
 *.log
 debug.log
