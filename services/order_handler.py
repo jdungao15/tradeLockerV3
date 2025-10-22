@@ -1,6 +1,6 @@
 import logging
 from colorama import init, Fore, Style
-from order_cache import OrderCache
+from config.order_cache import OrderCache
 # Initialize colorama
 init(autoreset=True)
 logger = logging.getLogger(__name__)
@@ -76,13 +76,15 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
         instrument_type = instrument_data.get('type', 'UNKNOWN')
 
         # Extract signal information
-        order_side = 'buy' if parsed_signal['order_type'].lower() == 'buy' else 'sell'
+        # Handle order types with modifiers (e.g., 'buy limit', 'sell stop')
+        order_type_lower = parsed_signal['order_type'].lower()
+        order_side = 'buy' if 'buy' in order_type_lower else 'sell'
         entry_point = parsed_signal['entry_point']
         stop_loss = parsed_signal['stop_loss']
         take_profits = parsed_signal['take_profits']
 
         # Log order placement start
-        logger.info(f"{colored_time}: Instrument {instrument_name} is {instrument_type}")
+        logger.debug(f"{colored_time}: Instrument {instrument_name} is {instrument_type}")
 
         # Determine if this is a CFD and handle accordingly
         is_cfd = instrument_type in ['EQUITY_CFD', 'INDEX_CFD', 'COMMODITY_CFD']
@@ -132,7 +134,7 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
             final_tps = take_profits
 
         # Log order placement
-        logger.info(f"{colored_time}: Placing {len(position_sizes)} {order_type.upper()} orders in parallel...")
+        logger.debug(f"{colored_time}: Placing {len(position_sizes)} {order_type.upper()} orders in parallel...")
 
         # ========================================================================
         # AUTOMATIC MARGIN MANAGEMENT - Retry with reduced sizes if needed
@@ -195,16 +197,16 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                     elif response.get('s') == 'ok':
                         success_count += 1
 
-            logger.info(
+            logger.debug(
                 f"{colored_time}: Attempt {attempt + 1}: "
-                f"{Fore.GREEN}{success_count} successful{Style.RESET_ALL}, "
-                f"{Fore.RED}{margin_errors} margin errors{Style.RESET_ALL}"
+                f"{success_count} successful, "
+                f"{margin_errors} margin errors"
             )
 
             # If no margin errors or at least one success, we're done
             if margin_errors == 0 or success_count > 0:
-                logger.info(
-                    f"{colored_time}: {Fore.GREEN}[OK] Completed with {success_count}/{len(current_sizes)} orders placed{Style.RESET_ALL}"
+                logger.debug(
+                    f"{colored_time}: [OK] Completed with {success_count}/{len(current_sizes)} orders placed"
                 )
                 break
 
@@ -254,27 +256,12 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                         # Check if this is a runner position (last position for CFD)
                         is_runner = (is_cfd and i == len(responses) - 1)
 
-                        if is_runner:
-                            logger.info(
-                                f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{Style.RESET_ALL} "
-                                f"{Fore.MAGENTA}(RUNNER){Style.RESET_ALL} - "
-                                f"Instrument: {Fore.YELLOW}{instrument_name}{Style.RESET_ALL}, "
-                                f"Side: {Fore.CYAN}{order_side.upper()}{Style.RESET_ALL}, "
-                                f"Size: {Fore.YELLOW}{size_value}{Style.RESET_ALL}, "
-                                f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
-                                f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
-                                f"TP: {Fore.GREEN}{tp_value}{Style.RESET_ALL}"
-                            )
-                        else:
-                            logger.info(
-                                f"{colored_time}: {Fore.GREEN}{order_type.upper()} order placed successfully{Style.RESET_ALL} - "
-                                f"Instrument: {Fore.YELLOW}{instrument_name}{Style.RESET_ALL}, "
-                                f"Side: {Fore.CYAN}{order_side.upper()}{Style.RESET_ALL}, "
-                                f"Size: {Fore.YELLOW}{size_value}{Style.RESET_ALL}, "
-                                f"Entry: {Fore.YELLOW}{entry_point}{Style.RESET_ALL}, "
-                                f"SL: {Fore.RED}{stop_loss}{Style.RESET_ALL}, "
-                                f"TP: {Fore.GREEN}{tp_value}{Style.RESET_ALL}"
-                            )
+                        runner_tag = " (RUNNER)" if is_runner else ""
+                        logger.info(
+                            f"{colored_time}: ✅ {order_type.upper()} order placed{runner_tag} - "
+                            f"{instrument_name} {order_side.upper()} {size_value} lots @ {entry_point}, "
+                            f"SL: {stop_loss}, TP: {tp_value}"
+                        )
                     else:
                         logger.error(f"{colored_time}: Order response missing orderId: {response}")
                         result['failed'].append((None, "Missing orderId in response"))
@@ -295,10 +282,10 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
 
             # Store orders in cache if we have a message_id and order_ids
             if message_id and order_ids:
-                logger.info(f"{colored_time}: Attempting to cache {len(order_ids)} orders for message {message_id}")
+                logger.debug(f"{colored_time}: Attempting to cache {len(order_ids)} orders for message {message_id}")
 
                 # Make sure we're using the global order cache
-                from order_cache import OrderCache
+                from config.order_cache import OrderCache
                 order_cache = OrderCache()
 
                 # Store in cache with explicit call including entry price
@@ -311,9 +298,9 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                 )
 
                 if cached:
-                    logger.info(
-                        f"{colored_time}: {Fore.CYAN}Successfully cached {len(order_ids)} orders "
-                        f"for message {message_id} with entry price {entry_point}{Style.RESET_ALL}"
+                    logger.debug(
+                        f"{colored_time}: Successfully cached {len(order_ids)} orders "
+                        f"for message {message_id} with entry price {entry_point}"
                     )
                 else:
                     logger.warning(f"{colored_time}: Failed to cache orders for message {message_id}")
@@ -371,9 +358,7 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
 
         # If signal is invalid, return immediately
         if not validation_result['valid']:
-            logger.warning(
-                f"{colored_time}: {Fore.RED}❌ Signal rejected: {validation_result['reason']}{Style.RESET_ALL}"
-            )
+            # Already logged by signal_validator
             return None
 
         # Use the validated order type (market or limit)
@@ -454,12 +439,15 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
                     else:  # sell
                         adjusted_stop_loss = parsed_signal['stop_loss'] - price_diff
 
-                    logger.info(
-                        f"{colored_time}: Using {Fore.GREEN}MARKET {side.upper()}{Style.RESET_ALL} instead of limit. "
-                        f"Current price: {Fore.YELLOW}{current_price}{Style.RESET_ALL}, "
-                        f"Entry: {Fore.YELLOW}{parsed_signal['entry_point']}{Style.RESET_ALL}, "
-                        f"Diff: {Fore.CYAN}{pip_diff} pips{Style.RESET_ALL}, "
-                        f"Adjusted SL: {Fore.MAGENTA}{adjusted_stop_loss}{Style.RESET_ALL}"
+                    # Round to 5 decimal places to avoid floating point precision issues
+                    adjusted_stop_loss = round(adjusted_stop_loss, 5)
+
+                    logger.debug(
+                        f"{colored_time}: Using MARKET {side.upper()} instead of limit. "
+                        f"Current price: {current_price}, "
+                        f"Entry: {parsed_signal['entry_point']}, "
+                        f"Diff: {pip_diff} pips, "
+                        f"Adjusted SL: {adjusted_stop_loss}"
                     )
             else:
                 logger.warning(f"{colored_time}: Could not get current price. Using limit order.")

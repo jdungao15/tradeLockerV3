@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime, timedelta
-from colorama import Fore, Style
 import os
 
 logger = logging.getLogger(__name__)
@@ -83,6 +82,9 @@ class SignalValidator:
             signal_entry = parsed_signal['entry_point']
             signal_side = parsed_signal['order_type'].lower()
 
+            # Check if this is originally a LIMIT order
+            original_order_type = parsed_signal.get('order_type', '').lower()
+
             # Step 1: Check signal age if timestamp provided
             if signal_timestamp:
                 age_seconds = (datetime.now() - signal_timestamp).total_seconds()
@@ -108,7 +110,7 @@ class SignalValidator:
             ask_price = float(quote['d'].get('ap', 0))
 
             # Determine current execution price based on side
-            current_price = ask_price if signal_side == 'buy' else bid_price
+            current_price = ask_price if 'buy' in signal_side else bid_price
 
             # Step 3: Calculate price difference in pips
             pip_value = self._get_pip_value(instrument_name)
@@ -118,20 +120,33 @@ class SignalValidator:
             # Get maximum allowed slippage
             max_slippage = self._get_max_slippage(instrument_name)
 
-            # Step 4: Determine if price moved favorably
+            # Step 4: For LIMIT orders, allow them regardless of distance from current price
+            # The provider is predicting future price movement, so distance is intentional
+            if 'limit' in original_order_type:
+                logger.debug(
+                    f"LIMIT order detected - allowing signal regardless of price distance "
+                    f"({price_diff_pips:.1f} pips from current price)"
+                )
+                return {
+                    'valid': True,
+                    'order_type': 'limit',
+                    'price_diff_pips': price_diff_pips,
+                    'reason': 'LIMIT order - provider prediction'
+                }
+
+            # Step 5: For MARKET orders or when considering conversion, apply slippage validation
+
+            # Determine if price moved favorably
             favorable_move = False
-            if signal_side == 'buy':
+            if 'buy' in signal_side:
                 favorable_move = current_price < signal_entry  # Can buy cheaper
             else:
                 favorable_move = current_price > signal_entry  # Can sell higher
 
-            # Step 5: Make decision
-
             # If price moved favorably OR very close to entry -> MARKET order
             if favorable_move or price_diff_pips <= 10:
                 logger.info(
-                    f"{Fore.GREEN}✓ Signal valid - Price favorable or close "
-                    f"({price_diff_pips:.1f} pips){Style.RESET_ALL}"
+                    f"   ✓ Signal valid - Price favorable or close ({price_diff_pips:.1f} pips)"
                 )
                 return {
                     'valid': True,
@@ -144,8 +159,7 @@ class SignalValidator:
             # If within acceptable slippage range -> MARKET order
             elif price_diff_pips <= max_slippage:
                 logger.info(
-                    f"{Fore.YELLOW}⚠ Signal valid but slipped {price_diff_pips:.1f} pips "
-                    f"(max: {max_slippage}). Using MARKET order.{Style.RESET_ALL}"
+                    f"   ⚠ Signal valid but slipped {price_diff_pips:.1f} pips (max: {max_slippage}). Using MARKET order."
                 )
                 return {
                     'valid': True,
@@ -158,8 +172,7 @@ class SignalValidator:
             # Too much slippage -> REJECT
             else:
                 logger.warning(
-                    f"{Fore.RED}✗ Signal REJECTED - Slippage {price_diff_pips:.1f} pips "
-                    f"exceeds maximum {max_slippage} pips{Style.RESET_ALL}"
+                    f"   🚫 Signal rejected - Price moved {price_diff_pips:.1f} pips (max: {max_slippage} pips)"
                 )
                 return {
                     'valid': False,

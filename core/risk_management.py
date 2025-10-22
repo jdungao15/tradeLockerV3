@@ -1,5 +1,5 @@
 import asyncio
-import risk_config
+import config.risk_config as risk_config
 import requests
 import aiohttp
 import json
@@ -234,18 +234,18 @@ def determine_risk_percentage(account_balance: float, instrument: dict, reduced_
         # Special case for XAUUSD (Gold)
         if instrument_name == "XAUUSD":
             risk_percentage = risk_config.get_risk_percentage("XAUUSD", reduced_risk)
-            logger.info(f"Using XAUUSD risk setting: {risk_percentage * 100:.2f}%")
+            logger.debug(f"Using XAUUSD risk setting: {risk_percentage * 100:.2f}%")
             return risk_percentage
 
         # For other CFD instruments
         if instrument_type == "EQUITY_CFD":
             risk_percentage = risk_config.get_risk_percentage("CFD", reduced_risk)
-            logger.info(f"Using CFD risk setting: {risk_percentage * 100:.2f}%")
+            logger.debug(f"Using CFD risk setting: {risk_percentage * 100:.2f}%")
             return risk_percentage
 
         # Default to forex risk settings
         risk_percentage = risk_config.get_risk_percentage("FOREX", reduced_risk)
-        logger.info(f"Using FOREX risk setting: {risk_percentage * 100:.2f}%")
+        logger.debug(f"Using FOREX risk setting: {risk_percentage * 100:.2f}%")
         return risk_percentage
 
     except Exception as e:
@@ -268,6 +268,8 @@ def calculate_position_size(
     """
     Calculate position size based on risk management parameters with correctly distributed risk.
     Total risk is split across all take profit positions, with proper scaling for Gold.
+
+    IMPORTANT: Risk is calculated based on TIER SIZE, not current balance (for prop firm consistency).
 
     Args:
         instrument: Instrument data dictionary
@@ -296,22 +298,28 @@ def calculate_position_size(
         instrument_name = instrument['name'].upper()
         base_name = re.sub(r'[.+\-_].*$', '', instrument_name)
 
+        # PROP FIRM LOGIC: Use tier size instead of current balance for consistent risk
+        from services.drawdown_manager import get_tier_size
+        tier_size, _ = get_tier_size(account_balance)
+
+        logger.debug(f"Current balance: ${account_balance:.2f}, Tier size: ${tier_size:.2f}")
+
         # Determine risk percentage based on account tiers, instrument type, and risk flag
         risk_percentage = determine_risk_percentage(account_balance, instrument, reduced_risk)
 
-        # Calculate total risk amount (NOT per position but TOTAL)
-        total_risk_amount = account_balance * risk_percentage
+        # Calculate total risk amount based on TIER SIZE (NOT current balance)
+        total_risk_amount = tier_size * risk_percentage
 
         # Calculate risk per position (divide total risk by number of positions)
         risk_per_position = total_risk_amount / num_positions
 
-        logger.info(
-            f"Account: ${account_balance}, Risk: {risk_percentage * 100:.2f}%, Total risk: ${total_risk_amount:.2f}")
-        logger.info(f"Positions: {num_positions}, Risk per position: ${risk_per_position:.2f}")
+        logger.debug(
+            f"Tier: ${tier_size}, Risk: {risk_percentage * 100:.2f}%, Total risk: ${total_risk_amount:.2f}")
+        logger.debug(f"Positions: {num_positions}, Risk per position: ${risk_per_position:.2f}")
 
         # Calculate stop loss distance in absolute terms
         sl_distance = abs(entry_point - stop_loss)
-        logger.info(f"Entry: {entry_point}, SL: {stop_loss}, Distance: {sl_distance}")
+        logger.debug(f"Entry: {entry_point}, SL: {stop_loss}, Distance: {sl_distance}")
 
         # IDENTIFY INSTRUMENT TYPE
         is_forex = False
@@ -324,28 +332,28 @@ def calculate_position_size(
         # Gold detection
         if "XAU" in base_name or "GOLD" in base_name:
             is_gold = True
-            logger.info(f"Identified {instrument_name} as GOLD")
+            logger.debug(f"Identified {instrument_name} as GOLD")
 
         # Silver detection
         elif "XAG" in base_name or "SILVER" in base_name:
             is_silver = True
-            logger.info(f"Identified {instrument_name} as SILVER")
+            logger.debug(f"Identified {instrument_name} as SILVER")
 
         # US30/DOW detection
         elif any(idx in base_name for idx in ["DOW", "DJI", "US30"]):
             is_us30 = True
-            logger.info(f"Identified {instrument_name} as US30/DOW")
+            logger.debug(f"Identified {instrument_name} as US30/DOW")
 
         # NASDAQ detection
         elif any(idx in base_name for idx in ["NAS", "NDX", "NASDAQ", "NSDQ"]):
             is_nas100 = True
-            logger.info(f"Identified {instrument_name} as NASDAQ")
+            logger.debug(f"Identified {instrument_name} as NASDAQ")
 
         # Forex detection
         elif (len(base_name) == 6 and base_name.isalpha()):
             is_forex = True
             is_jpy_pair = "JPY" in base_name
-            logger.info(f"Identified {instrument_name} as Forex pair (JPY: {is_jpy_pair})")
+            logger.debug(f"Identified {instrument_name} as Forex pair (JPY: {is_jpy_pair})")
 
         # CALCULATE POSITION SIZE BASED ON INSTRUMENT TYPE
 
@@ -362,7 +370,7 @@ def calculate_position_size(
             # Convert to standard lots (divide by 100)
             lot_size = micro_lots / 100
 
-            logger.info(
+            logger.debug(
                 f"GOLD calculation: ${risk_per_position} / {sl_distance} = {micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For Silver/XAGUSD
@@ -370,7 +378,7 @@ def calculate_position_size(
             # SILVER CALCULATION with similar scaling to Gold
             micro_lots = risk_per_position / (sl_distance * 0.5)  # Silver is ~half the value of Gold
             lot_size = micro_lots / 100
-            logger.info(
+            logger.debug(
                 f"SILVER calculation: ${risk_per_position} / ({sl_distance} * 0.5) = {micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For US30/DOW Index
@@ -379,7 +387,7 @@ def calculate_position_size(
             # 0.01 lot (1 micro lot) = $0.1 risk per point
             micro_lots = risk_per_position / (sl_distance * 0.05)
             lot_size = micro_lots / 100
-            logger.info(
+            logger.debug(
                 f"US30 calculation: ${risk_per_position} / ({sl_distance} * 0.1) = {micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For NASDAQ/NAS100
@@ -388,7 +396,7 @@ def calculate_position_size(
             # 0.01 lot (1 micro lot) = $0.2 risk per point
             micro_lots = risk_per_position / (sl_distance * 0.05)
             lot_size = micro_lots / 100
-            logger.info(
+            logger.debug(
                 f"NAS100 calculation: ${risk_per_position} / ({sl_distance} * 0.2) = {micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For Forex pairs
@@ -407,7 +415,7 @@ def calculate_position_size(
             # 0.01 lot (1 micro lot) = $0.1 risk per pip for major pairs
             micro_lots = risk_per_position / (sl_pips * 0.1)
             lot_size = micro_lots / 100
-            logger.info(
+            logger.debug(
                 f"FOREX calculation: ${risk_per_position} / ({sl_pips} pips * 0.1) = {micro_lots} micro lots = {lot_size:.2f} lots")
 
         # Default for other instruments
@@ -415,7 +423,7 @@ def calculate_position_size(
             # Conservative approach with scaling
             micro_lots = risk_per_position / sl_distance
             lot_size = micro_lots / 100
-            logger.info(
+            logger.debug(
                 f"Default calculation: ${risk_per_position} / {sl_distance} = {micro_lots} micro lots = {lot_size:.2f} lots")
 
         # Apply reasonable limits and rounding
@@ -423,12 +431,12 @@ def calculate_position_size(
         lot_size = max(lot_size, 0.01)  # Minimum 0.01 lots
         lot_size = round(lot_size, 2)  # Round to 2 decimal places
 
-        logger.info(f"Final lot size per position: {lot_size}")
+        logger.debug(f"Final lot size per position: {lot_size}")
 
         # Same size for all take profits
         position_sizes = [lot_size] * num_positions
 
-        logger.info(f"Final position sizes: {position_sizes}, Total risk: ${total_risk_amount:.2f}")
+        logger.debug(f"Final position sizes: {position_sizes}, Total risk: ${total_risk_amount:.2f}")
         return position_sizes, round(total_risk_amount)
 
     except Exception as e:
