@@ -212,15 +212,16 @@ def calculate_stop_loss_pips(stop_loss: float, entry_point: float, instrument: d
 
 
 # Determine the risk percentage based on account tiers
-def determine_risk_percentage(account_balance: float, instrument: dict, reduced_risk: bool = False) -> float:
+def determine_risk_percentage(account_balance: float, instrument: dict, reduced_risk: bool = False, account_id: str = None) -> float:  # noqa: E501
     """
     Determine risk percentage based on account balance, instrument, and risk flag.
-    Uses configurable risk settings from risk_config.
+    Uses configurable risk settings from risk_config (per-account or global).
 
     Args:
         account_balance: Current account balance
         instrument: Instrument data dictionary
         reduced_risk: Flag indicating if the signal suggests reduced risk
+        account_id: Account number for per-account risk settings (optional)
 
     Returns:
         float: Risk percentage (e.g., 0.02 for 2%)
@@ -232,18 +233,18 @@ def determine_risk_percentage(account_balance: float, instrument: dict, reduced_
 
         # Special case for XAUUSD (Gold)
         if instrument_name == "XAUUSD":
-            risk_percentage = risk_config.get_risk_percentage("XAUUSD", reduced_risk)
+            risk_percentage = risk_config.get_risk_percentage("XAUUSD", reduced_risk, account_id=account_id)
             logger.debug(f"Using XAUUSD risk setting: {risk_percentage * 100:.2f}%")
             return risk_percentage
 
         # For other CFD instruments
         if instrument_type == "EQUITY_CFD":
-            risk_percentage = risk_config.get_risk_percentage("CFD", reduced_risk)
+            risk_percentage = risk_config.get_risk_percentage("CFD", reduced_risk, account_id=account_id)
             logger.debug(f"Using CFD risk setting: {risk_percentage * 100:.2f}%")
             return risk_percentage
 
         # Default to forex risk settings
-        risk_percentage = risk_config.get_risk_percentage("FOREX", reduced_risk)
+        risk_percentage = risk_config.get_risk_percentage("FOREX", reduced_risk, account_id=account_id)
         logger.debug(f"Using FOREX risk setting: {risk_percentage * 100:.2f}%")
         return risk_percentage
 
@@ -303,8 +304,11 @@ def calculate_position_size(
 
         logger.debug(f"Current balance: ${account_balance:.2f}, Tier size: ${tier_size:.2f}")
 
+        # Extract account ID for per-account risk settings
+        account_id = account.get('accNum') if account else None
+
         # Determine risk percentage based on account tiers, instrument type, and risk flag
-        risk_percentage = determine_risk_percentage(account_balance, instrument, reduced_risk)
+        risk_percentage = determine_risk_percentage(account_balance, instrument, reduced_risk, account_id=account_id)
 
         # Calculate total risk amount based on TIER SIZE (NOT current balance)
         total_risk_amount = tier_size * risk_percentage
