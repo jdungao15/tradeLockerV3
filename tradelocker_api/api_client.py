@@ -48,7 +48,8 @@ class ApiClient:
         if endpoint in self._circuit_states:
             state = self._circuit_states[endpoint]
             if state['status'] in ['OPEN', 'HALF-OPEN']:
-                logger.info(f"Circuit for {endpoint} is now CLOSED after successful call")
+                logger.info(
+                    f"Circuit for {endpoint} is now CLOSED after successful call")
                 self._circuit_states[endpoint] = {
                     'status': 'CLOSED',
                     'failures': 0,
@@ -71,7 +72,8 @@ class ApiClient:
         # Open circuit after 5 consecutive failures
         if state['status'] == 'CLOSED' and state['failures'] >= 5:
             state['status'] = 'OPEN'
-            logger.warning(f"Circuit OPEN for {endpoint} after {state['failures']} failures")
+            logger.warning(
+                f"Circuit OPEN for {endpoint} after {state['failures']} failures")
 
     def _can_execute(self, endpoint):
         """Check if request can be executed based on circuit state"""
@@ -121,7 +123,8 @@ class ApiClient:
         """Make a synchronous API request with caching and circuit breaker"""
         # Check circuit breaker
         if not self._can_execute(endpoint):
-            logger.warning(f"Circuit breaker open for {endpoint}, request blocked")
+            logger.warning(
+                f"Circuit breaker open for {endpoint}, request blocked")
             raise Exception(f"Service unavailable: {endpoint}")
 
         # Generate cache key if caching is enabled
@@ -176,12 +179,14 @@ class ApiClient:
                 if attempt == retry_count - 1:  # Last attempt
                     # Record failure
                     self._record_failure(endpoint)
-                    logger.error(f"Request to {endpoint} failed after {retry_count} attempts: {e}")
+                    logger.error(
+                        f"Request to {endpoint} failed after {retry_count} attempts: {e}")
                     raise
 
                 # Exponential backoff
                 wait_time = 0.5 * (2 ** attempt)
-                logger.warning(f"Request failed, retrying in {wait_time}s: {e}")
+                logger.warning(
+                    f"Request failed, retrying in {wait_time}s: {e}")
                 time.sleep(wait_time)
 
     # Asynchronous request method (for new code)
@@ -195,7 +200,8 @@ class ApiClient:
                 break
 
         # Get rate limit config for this endpoint type
-        rate_config = self._rate_limit_config.get(endpoint_type, self._rate_limit_config["DEFAULT"])
+        rate_config = self._rate_limit_config.get(
+            endpoint_type, self._rate_limit_config["DEFAULT"])
         requests_allowed = rate_config["requests"]
         time_window = rate_config["per_seconds"]
 
@@ -210,18 +216,29 @@ class ApiClient:
             wait_time = (time_window / requests_allowed) - time_passed
             wait_time = max(0.1, wait_time)  # At least 100ms delay
 
-            logger.debug(f"Rate limit enforced for {endpoint_type}: waiting {wait_time:.2f}s")
+            logger.debug(
+                f"Rate limit enforced for {endpoint_type}: waiting {wait_time:.2f}s")
             await asyncio.sleep(wait_time)
 
         # Update last request time
         self._last_request_time[endpoint_type] = time.time()
-    async def request_async(self, method, endpoint, headers=None, params=None, json=None,
-                            data=None, cache_ttl=0, retry_count=3):
+
+    async def request_async(
+            self,
+            method,
+            endpoint,
+            headers=None,
+            params=None,
+            json=None,
+            data=None,
+            cache_ttl=0,
+            retry_count=3):
         """Make an asynchronous API request with caching, rate limiting and circuit breaker"""
         # Check circuit breaker
         await self._enforce_rate_limit(endpoint)
         if not self._can_execute(endpoint):
-            logger.warning(f"Circuit breaker open for {endpoint}, request blocked")
+            logger.warning(
+                f"Circuit breaker open for {endpoint}, request blocked")
             raise Exception(f"Service unavailable: {endpoint}")
 
         # Generate cache key if caching is enabled
@@ -278,14 +295,14 @@ class ApiClient:
                 if attempt == retry_count - 1:  # Last attempt
                     # Record failure for circuit breaker
                     self._record_failure(endpoint)
-                    logger.error(f"Request to {endpoint} failed after {retry_count} attempts: {e}")
+                    logger.error(
+                        f"Request to {endpoint} failed after {retry_count} attempts: {e}")
                     raise
 
                 # Exponential backoff
                 wait_time = 0.5 * (2 ** attempt)
-                logger.warning(f"Request failed, retrying in {wait_time}s: {e}")
+                logger.warning("Request failed, retrying in {wait_time}s: {e}")
                 await asyncio.sleep(wait_time)
-
 
     # Cache management
 

@@ -259,7 +259,6 @@ class SignalManager:
             logger.error(f"Error closing position {position_id}: {e}")
             return False
 
-
     async def set_breakeven(self, account, position_id, entry_price=None):
         """
         Set stop loss to breakeven for a position - simplified implementation
@@ -374,7 +373,7 @@ class SignalManager:
 
         # We found cached orders, so we can process the command
         order_ids = cached_orders.get('orders', [])
-        take_profits = cached_orders.get('take_profits', [])
+        cached_orders.get('take_profits', [])
         instrument = cached_orders.get('instrument')
 
         logger.info(
@@ -423,7 +422,6 @@ class SignalManager:
                     self.order_cache.remove_message(reply_to_msg_id)
                     logger.info(
                         f"{colored_time}: {Fore.GREEN}All orders cancelled, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
-
 
         elif command_type == 'close':
             # Use the same parallel processing logic that works for TP and cancel
@@ -475,8 +473,6 @@ class SignalManager:
                     logger.info(
                         f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
 
-
-
         elif command_type == 'cancel':
             # Use the same logic that works for TP command
             # Process all orders in parallel for efficiency
@@ -520,7 +516,6 @@ class SignalManager:
                     self.order_cache.remove_message(reply_to_msg_id)
                     logger.info(
                         f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
-
 
         elif command_type == 'breakeven':
             # For breakeven command, use entry price from cache

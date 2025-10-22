@@ -1,11 +1,38 @@
+from core.signal_parser import find_matching_instrument
+import config.risk_config as risk_config
+from services.news_filter import NewsEventFilter
+from services.pos_monitor import monitor_existing_position
+from cli.display_menu import (
+    display_menu,
+    display_risk_menu,
+    get_risk_percentage_input,
+    get_drawdown_percentage_input
+)
+from services import multi_account_drawdown_manager
+from services.drawdown_manager import (
+    load_drawdown_data,
+    schedule_daily_reset_async,
+    max_drawdown_balance
+)
+from tradelocker_api.endpoints.quotes import TradeLockerQuotes
+from tradelocker_api.endpoints.orders import TradeLockerOrders
+from tradelocker_api.endpoints.instruments import TradeLockerInstruments
+from tradelocker_api.endpoints.accounts import TradeLockerAccounts
+from tradelocker_api.endpoints.auth import TradeLockerAuth
+from core.risk_management import calculate_position_size
+from core.signal_parser import parse_signal_async
+from cli.banner import display_banner
+from telethon import TelegramClient, events
+from dotenv import load_dotenv
+from colorama import init, Fore, Style
+import sys
+import signal
+import platform
+import pytz
+import logging
+import asyncio
 import os
 os.system('chcp 65001 >nul')
-import asyncio
-import logging
-import pytz
-import platform
-import signal
-import sys
 
 
 # Filter to suppress unwanted library messages
@@ -23,38 +50,11 @@ class StdoutFilter:
     def flush(self):
         self.stream.flush()
 
+
 # Apply stdout filter
 sys.stdout = StdoutFilter(sys.stdout)
 
-from colorama import init, Fore, Style
-from dotenv import load_dotenv
-from telethon import TelegramClient, events
-from telethon.errors import SessionPasswordNeededError
-from datetime import datetime
-from cli.banner import display_banner
-from cli.display_menu import display_menu, display_risk_menu, get_risk_percentage_input
-from core.signal_parser import parse_signal_async
-from core.risk_management import calculate_position_size
-from tradelocker_api.endpoints.auth import TradeLockerAuth
-from tradelocker_api.endpoints.accounts import TradeLockerAccounts
-from tradelocker_api.endpoints.instruments import TradeLockerInstruments
-from tradelocker_api.endpoints.orders import TradeLockerOrders
-from tradelocker_api.endpoints.quotes import TradeLockerQuotes
-from services.drawdown_manager import (
-    load_drawdown_data,
-    schedule_daily_reset_async,
-    max_drawdown_balance
-)
 # Multi-account drawdown management
-from services import multi_account_drawdown_manager
-from cli.display_menu import display_menu, display_risk_menu, get_risk_percentage_input, get_drawdown_percentage_input
-from services.order_handler import place_orders_with_risk_check
-from services.pos_monitor import monitor_existing_position
-from services.news_filter import NewsEventFilter
-from services.signal_management import SignalManager
-import config.risk_config as risk_config
-from core.signal_parser import find_matching_instrument
-
 
 
 class TradingBot:
@@ -139,7 +139,7 @@ class TradingBot:
             # Connect first
             await self.client.connect()
 
-            #Show current monitor channels
+            # Show current monitor channels
             await self.display_monitored_channels()
             # Check if already authorized
             if not await self.client.is_user_authorized():
@@ -215,19 +215,17 @@ class TradingBot:
         self.missed_signal_handler.consider_channel_source = consider_channel
 
         self.logger.info(
-            f"Missed signal handler configured: "
+            "Missed signal handler configured: "
             f"Fallback protection {'ENABLED' if enable_fallback else 'DISABLED'}, "
             f"Signal age limit: {max_signal_age_hours} hours, "
             f"Consider channel source: {'YES' if consider_channel else 'NO'}"
         )
         return True
 
-
-
-
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     # Logging Methods
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+
     def export_message_logs(self):
         """Export signal management message logs for debugging"""
         if hasattr(self, 'signal_manager') and hasattr(self.signal_manager, 'export_message_logs'):
@@ -255,7 +253,7 @@ class TradingBot:
                 match_methods[method] = match_methods.get(method, 0) + 1
 
         # Format results
-        result = f"Recent Signal Analysis:\n"
+        result = "Recent Signal Analysis:\n"
         result += f"Total messages: {len(logs)}\n"
         result += f"Management instructions: {management_count}\n"
         result += f"Successful executions: {success_count}\n\n"
@@ -291,6 +289,7 @@ class TradingBot:
         )
         self._tasks.add(monitor_task)
         return monitor_task
+
     def _schedule_news_calendar_updates(self):
         """Schedule regular updates for the economic calendar"""
 
@@ -381,7 +380,7 @@ class TradingBot:
     async def display_accounts(self):
         """Fetch and display all available accounts with colorama for reliable color output"""
         try:
-            from colorama import init, Fore, Back, Style
+            from colorama import init, Fore, Style
             # Initialize colorama with autoreset and force mode
             init(autoreset=True, convert=True, strip=False, wrap=True)
 
@@ -715,7 +714,7 @@ class TradingBot:
 
             # Refresh account data to get latest balance
             self.selected_account = await self.accounts_client.refresh_account_balance_async() or self.selected_account
-            latest_balance = float(self.selected_account['accountBalance'])
+            float(self.selected_account['accountBalance'])
 
             # Get instrument details
             instrument_data = await find_matching_instrument(
@@ -939,6 +938,8 @@ async def handle_tp_selection():
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
 
         input("\nPress Enter to continue...")
+
+
 async def handle_risk_configuration():
     """Handle risk management configuration menu"""
     while True:
@@ -1043,7 +1044,8 @@ async def handle_risk_configuration():
 
         elif risk_choice == '9':
             # Reset to defaults
-            confirmation = input(f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
+            confirmation = input(
+                f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
             if confirmation == 'y':
                 risk_config.apply_risk_profile("balanced")
                 print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
@@ -1059,6 +1061,7 @@ async def handle_risk_configuration():
 
         else:
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
+
 
 async def main():
     """Main entry point with Windows-compatible signal handling"""
@@ -1100,5 +1103,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Bot stopped manually.")
     except Exception as e:
-        logging.error(f"Critical error: {e}", exc_info=True)
+        logging.error("Critical error: {e}", exc_info=True)
         sys.exit(1)

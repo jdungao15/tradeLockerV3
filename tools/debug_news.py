@@ -5,9 +5,7 @@ Debug script to analyze economic events CSV and identify date filtering issues
 
 import csv
 import sys
-import os
 from datetime import datetime
-import pytz
 
 
 def debug_csv_dates(csv_path):
@@ -64,11 +62,11 @@ def debug_csv_dates(csv_path):
 
         for date_str in unique_dates:
             try:
-                parsed_date = datetime.strptime(date_str, '%m-%d-%Y')
+                datetime.strptime(date_str, '%m-%d-%Y')
                 format_str = '%m-%d-%Y'
             except ValueError:
                 try:
-                    parsed_date = datetime.strptime(date_str, '%Y-%m-%d')
+                    datetime.strptime(date_str, '%Y-%m-%d')
                     format_str = '%Y-%m-%d'
                 except ValueError:
                     format_str = 'unknown'

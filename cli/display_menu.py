@@ -1,5 +1,4 @@
-from datetime import datetime
-from colorama import init, Fore, Style
+from colorama import Fore, Style
 import config.risk_config as risk_config
 
 
@@ -73,8 +72,8 @@ def display_risk_menu():
     print(f"{Fore.YELLOW}7.{Style.RESET_ALL} Configure XAUUSD (Gold) Risk")
 
     # Drawdown option
-    print(
-        f"{Fore.YELLOW}8.{Style.RESET_ALL} Configure Daily Drawdown ({Fore.MAGENTA}{drawdown_percentage:.1f}%{Style.RESET_ALL})")
+    print(f"{Fore.YELLOW}8.{Style.RESET_ALL} Configure Daily Drawdown "
+          f"({Fore.MAGENTA}{drawdown_percentage:.1f}%{Style.RESET_ALL})")
 
     # Additional options
     print(f"{Fore.YELLOW}9.{Style.RESET_ALL} Reset to Default Risk Settings")
@@ -131,12 +130,12 @@ def get_drawdown_percentage_input():
 
     print(f"\n{Fore.CYAN}Daily Drawdown Configuration{Style.RESET_ALL}")
     print(f"Current setting: {Fore.MAGENTA}{current_percentage:.1f}%{Style.RESET_ALL} of tier size")
-    print(f"This setting determines how much of your account you can lose in a day.")
-    print(f"PropFirm rules typically allow 4-5% maximum daily drawdown.")
+    print("This setting determines how much of your account you can lose in a day.")
+    print("PropFirm rules typically allow 4-5% maximum daily drawdown.")
 
     while True:
         try:
-            percentage_input = input(f"Enter new daily drawdown percentage (1.0-10.0): ")
+            percentage_input = input("Enter new daily drawdown percentage (1.0-10.0): ")
             percentage_value = float(percentage_input)
 
             # Validate range

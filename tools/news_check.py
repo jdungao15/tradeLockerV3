@@ -8,13 +8,12 @@ Usage:
     python news_check.py list --hours 168 --sort-impact # List events for next 7 days sorted by impact
 """
 
+from services.news_filter import NewsEventFilter
 import os
 import sys
 import asyncio
 import logging
 import argparse
-from datetime import datetime, timedelta
-import pytz
 from colorama import init, Fore, Style
 from tabulate import tabulate
 
@@ -22,7 +21,6 @@ from tabulate import tabulate
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import the NewsEventFilter
-from services.news_filter import NewsEventFilter
 
 # Initialize colorama
 init(autoreset=True)

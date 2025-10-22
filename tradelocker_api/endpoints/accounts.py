@@ -70,7 +70,7 @@ class TradeLockerAccounts(ApiClient):
                 account = json.load(file)
                 return account
         else:
-            logger.warning(f"No selected account found. Please select an account first.")
+            logger.warning("No selected account found. Please select an account first.")
             return None
 
     def get_current_position(self, account_id: int, acc_num: int):
@@ -150,5 +150,5 @@ class TradeLockerAccounts(ApiClient):
                 return account
             return account
         except Exception as e:
-            logger.error(f"Failed to refresh account balance: {e}")
+            logger.error("Failed to refresh account balance: {e}")
             return None

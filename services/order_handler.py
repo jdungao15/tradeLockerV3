@@ -319,6 +319,7 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
         logger.error(f"{colored_time}: Error placing orders: {e}", exc_info=True)
         return None
 
+
 async def place_orders_with_risk_check(orders_client, accounts_client, quotes_client, selected_account,
                                        instrument_data, parsed_signal, position_sizes, risk_amount,
                                        max_drawdown_balance, colored_time, message_id=None):

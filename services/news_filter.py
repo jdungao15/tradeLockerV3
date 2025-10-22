@@ -204,7 +204,7 @@ class NewsEventFilter:
         high_impact_events = [
             event for event in self.news_events
             if now <= event['datetime'] <= cutoff and
-               event.get('impact', '').lower() == 'high'
+            event.get('impact', '').lower() == 'high'
         ]
 
         return high_impact_events

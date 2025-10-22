@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 
 logger = logging.getLogger(__name__)
@@ -124,7 +124,7 @@ class SignalValidator:
             # The provider is predicting future price movement, so distance is intentional
             if 'limit' in original_order_type:
                 logger.debug(
-                    f"LIMIT order detected - allowing signal regardless of price distance "
+                    "LIMIT order detected - allowing signal regardless of price distance "
                     f"({price_diff_pips:.1f} pips from current price)"
                 )
                 return {
@@ -166,7 +166,7 @@ class SignalValidator:
                     'order_type': 'market',
                     'adjusted_entry': current_price,
                     'price_diff_pips': price_diff_pips,
-                    'reason': f'Using MARKET - within slippage tolerance'
+                    'reason': 'Using MARKET - within slippage tolerance'
                 }
 
             # Too much slippage -> REJECT
@@ -186,5 +186,5 @@ class SignalValidator:
             return {
                 'valid': True,
                 'order_type': 'limit',
-                'reason': f'Validation error, defaulting to limit order'
+                'reason': 'Validation error, defaulting to limit order'
             }

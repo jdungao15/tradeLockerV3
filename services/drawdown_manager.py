@@ -241,7 +241,7 @@ async def validate_and_fix_drawdown(accounts_client, selected_account):
     Returns:
         bool: True if validation passed or was fixed, False if error
     """
-    global max_drawdown_balance, starting_balance
+    global max_drawdown_balance
 
     try:
         # Get current account balance
@@ -312,7 +312,7 @@ async def validate_and_fix_drawdown(accounts_client, selected_account):
                 logger.info("")
                 logger.info("   🚨 TRADING HALTED - Daily limit reached!")
             elif remaining < correct_drawdown_limit * 0.2:  # Within 20% of limit
-                logger.info(f"   ⚠️  Approaching limit - Trade carefully!")
+                logger.info("   ⚠️  Approaching limit - Trade carefully!")
 
         logger.info("   ═══════════════════════════════════════════════════════════")
         logger.info("")
@@ -324,6 +324,8 @@ async def validate_and_fix_drawdown(accounts_client, selected_account):
         return False
 
 # Synchronous wrapper for reset_daily_drawdown
+
+
 def reset_daily_drawdown(accounts_client, selected_account):
     """
     Synchronous wrapper for reset_daily_drawdown_async.
@@ -500,7 +502,7 @@ def would_exceed_drawdown(account_balance, risk_amount):
             logger.warning(
                 f"Trade would exceed drawdown limits. Current balance: {account_balance}, "
                 f"Risk amount: {risk_amount}, Projected balance: {projected_balance}, "
-                f"Max drawdown balance: {max_drawdown_balance}"
+                "Max drawdown balance: {max_drawdown_balance}"
             )
 
         return exceed

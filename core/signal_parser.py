@@ -6,7 +6,7 @@ import logging
 import asyncio
 import re
 from dotenv import load_dotenv
-from utils.instrument_utils import normalize_instrument_name, find_instrument_in_platform, get_available_instruments
+from utils.instrument_utils import normalize_instrument_name
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -40,7 +40,18 @@ def is_potential_trading_signal(message: str) -> bool:
 
     # Check for trading instruments
     # Common instruments list
-    instruments = ['xauusd', 'gold', 'eurusd', 'gbpusd', 'usdjpy', 'us30', 'dji30', 'nas100', 'ndx100', 'silver', 'xagusd']
+    instruments = [
+        'xauusd',
+        'gold',
+        'eurusd',
+        'gbpusd',
+        'usdjpy',
+        'us30',
+        'dji30',
+        'nas100',
+        'ndx100',
+        'silver',
+        'xagusd']
     has_instrument = any(instrument in message_lower for instrument in instruments)
 
     # Also check for forex pair patterns (e.g., USDCAD, EURJPY, GBPCAD, etc.)
@@ -146,15 +157,13 @@ def parse_signal(message: str):
             api_url,
             headers={
                 "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
+                "Content-Type": "application/json"},
             json={
                 "model": "gpt-4",
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a trading signal parser. Always respond with a valid JSON object and nothing else."
-                    },
+                        "content": "You are a trading signal parser. Always respond with a valid JSON object and nothing else."},
                     {
                         "role": "user",
                         "content": f'''Parse the following trading signal and return a JSON object:
@@ -185,11 +194,7 @@ def parse_signal(message: str):
                         9.Naming convention should be snake case like in python.
 
 
-                        Respond only with the JSON object or null, no additional text.'''
-                    }
-                ]
-            }
-        )
+                        Respond only with the JSON object or null, no additional text.'''}]})
         content = response.json()["choices"][0]["message"]["content"].strip()
         logger.debug(f"Content from signal_parser.py: {content}")
 
@@ -242,7 +247,6 @@ def parse_signal(message: str):
 
             logger.debug(f"Final order_type after post-processing: '{result['order_type']}'")
 
-
             # Ensure take_profits is a list
             if not isinstance(result.get('take_profits', []), list):
                 logger.warning("take_profits is not a list, converting to list")
@@ -262,7 +266,15 @@ def parse_signal(message: str):
                 return None
 
             # Ensure order_type is valid (allow buy, sell, and their modifiers)
-            valid_order_types = ['buy', 'sell', 'buy limit', 'sell limit', 'buy stop', 'sell stop', 'buy market', 'sell market']
+            valid_order_types = [
+                'buy',
+                'sell',
+                'buy limit',
+                'sell limit',
+                'buy stop',
+                'sell stop',
+                'buy market',
+                'sell market']
             if result.get('order_type') not in valid_order_types:
                 logger.warning(f"Invalid order_type: {result.get('order_type')}")
                 parsed_signal_cache[message] = None
@@ -329,16 +341,11 @@ async def parse_signal_async(message: str):
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
-        payload = {
-            "model": "gpt-4",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a trading signal parser. Always respond with a valid JSON object and nothing else."
-                },
-                {
-                    "role": "user",
-                    "content": f'''Parse the following trading signal and return a JSON object:
+        payload = {"model": "gpt-4",
+                   "messages": [{"role": "system",
+                                 "content": "You are a trading signal parser. Always respond with a valid JSON object and nothing else."},
+                                {"role": "user",
+                                 "content": f'''Parse the following trading signal and return a JSON object:
 
                     "{message}"
 
@@ -366,10 +373,7 @@ async def parse_signal_async(message: str):
                     9.Naming convention should be snake case like in python.
 
 
-                    Respond only with the JSON object or null, no additional text.'''
-                }
-            ]
-        }
+                    Respond only with the JSON object or null, no additional text.'''}]}
 
         async with aiohttp.ClientSession() as session:
             async with session.post(api_url, headers=headers, json=payload) as response:
@@ -444,7 +448,15 @@ async def parse_signal_async(message: str):
                         return None
 
                     # Ensure order_type is valid (allow buy, sell, and their modifiers)
-                    valid_order_types = ['buy', 'sell', 'buy limit', 'sell limit', 'buy stop', 'sell stop', 'buy market', 'sell market']
+                    valid_order_types = [
+                        'buy',
+                        'sell',
+                        'buy limit',
+                        'sell limit',
+                        'buy stop',
+                        'sell stop',
+                        'buy market',
+                        'sell market']
                     if result.get('order_type') not in valid_order_types:
                         logger.warning(f"Invalid order_type: {result.get('order_type')}")
                         parsed_signal_cache[message] = None
@@ -750,6 +762,8 @@ def filter_take_profits_by_preference(take_profits, selection_config):
     return take_profits  # Default to all
 
 # Clear signal cache periodically (every 24 hours)
+
+
 async def cache_maintenance_task():
     """Background task to clear signal cache periodically"""
     while True:

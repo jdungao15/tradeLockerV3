@@ -18,7 +18,6 @@ class OrderCache:
     def __init__(self, cache_file='data/order_cache.json'):
         self.cache_file = cache_file
         # Use the global cache for in-memory storage
-        global GLOBAL_ORDER_CACHE
 
         # Load from file only if global cache is empty
         if not GLOBAL_ORDER_CACHE:
@@ -27,8 +26,6 @@ class OrderCache:
 
     def load_cache(self):
         """Load cache from file into global memory"""
-        global GLOBAL_ORDER_CACHE
-
         try:
             if os.path.exists(self.cache_file):
                 with open(self.cache_file, 'r') as f:
@@ -46,8 +43,6 @@ class OrderCache:
 
     def save_cache(self):
         """Save global memory cache to file for persistence"""
-        global GLOBAL_ORDER_CACHE
-
         try:
             # Create backup of existing file if it exists
             if os.path.exists(self.cache_file):
@@ -80,8 +75,6 @@ class OrderCache:
             instrument: Optional instrument name
             entry_price: Entry price for breakeven functionality
         """
-        global GLOBAL_ORDER_CACHE
-
         if not message_id or not order_ids:
             logger.warning(f"Cannot store orders: missing message_id ({message_id}) or order_ids ({order_ids})")
             return False
@@ -102,8 +95,11 @@ class OrderCache:
         }
 
         # Debug logging (only in log files)
-        logger.debug(f"Stored orders for message_id: '{str_message_id}' with {len(order_ids)} orders")
-        logger.debug(f"Verification: message_id {str_message_id} in memory cache: {str_message_id in GLOBAL_ORDER_CACHE}")
+        logger.debug(
+            f"Stored orders for message_id: '{str_message_id}' with {len(order_ids)} orders")
+        logger.debug(
+            f"Verification: message_id {str_message_id} in memory cache: "
+            f"{str_message_id in GLOBAL_ORDER_CACHE}")
         logger.debug(f"Cache updated, current keys: {list(GLOBAL_ORDER_CACHE.keys())}")
 
         # Save to file as backup
@@ -113,8 +109,6 @@ class OrderCache:
         """
         Get orders associated with a message ID directly from global memory
         """
-        global GLOBAL_ORDER_CACHE
-
         # Convert to string for lookup
         str_message_id = str(message_id)
 
@@ -144,15 +138,15 @@ class OrderCache:
         Returns:
             bool: True if order was found and removed, False otherwise
         """
-        global GLOBAL_ORDER_CACHE
-
         # Convert to string for consistency
         str_message_id = str(message_id)
         str_order_id = str(order_id)
 
         # Check if message exists in cache
         if str_message_id not in GLOBAL_ORDER_CACHE:
-            logger.info(f"Message ID {str_message_id} not found in cache when trying to remove order {str_order_id}")
+            logger.info(
+                f"Message ID {str_message_id} not found in cache when trying to "
+                f"remove order {str_order_id}")
             return False
 
         # Get cached data
@@ -192,8 +186,6 @@ class OrderCache:
         Returns:
             bool: True if message was found and removed, False otherwise
         """
-        global GLOBAL_ORDER_CACHE
-
         # Convert to string for consistency
         str_message_id = str(message_id)
 
@@ -214,8 +206,6 @@ class OrderCache:
         """
         Remove entries older than specified days
         """
-        global GLOBAL_ORDER_CACHE
-
         cutoff_date = datetime.now() - timedelta(days=days)
         cutoff_str = cutoff_date.isoformat()
 

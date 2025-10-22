@@ -2,8 +2,6 @@ import asyncio
 import config.risk_config as risk_config
 import requests
 import aiohttp
-import json
-import os
 import logging
 import re
 from functools import lru_cache
@@ -212,6 +210,7 @@ def calculate_stop_loss_pips(stop_loss: float, entry_point: float, instrument: d
         # Safe fallback: Use a default calculation
         return abs(stop_loss - entry_point) * 10000
 
+
 # Determine the risk percentage based on account tiers
 def determine_risk_percentage(account_balance: float, instrument: dict, reduced_risk: bool = False) -> float:
     """
@@ -371,15 +370,18 @@ def calculate_position_size(
             lot_size = micro_lots / 100
 
             logger.debug(
-                f"GOLD calculation: ${risk_per_position} / {sl_distance} = {micro_lots} micro lots = {lot_size:.2f} lots")
+                f"GOLD calculation: ${risk_per_position} / {sl_distance} = "
+                f"{micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For Silver/XAGUSD
         elif is_silver:
             # SILVER CALCULATION with similar scaling to Gold
-            micro_lots = risk_per_position / (sl_distance * 0.5)  # Silver is ~half the value of Gold
+            # Silver is ~half the value of Gold
+            micro_lots = risk_per_position / (sl_distance * 0.5)
             lot_size = micro_lots / 100
             logger.debug(
-                f"SILVER calculation: ${risk_per_position} / ({sl_distance} * 0.5) = {micro_lots} micro lots = {lot_size:.2f} lots")
+                f"SILVER calculation: ${risk_per_position} / ({sl_distance} * 0.5) = "
+                f"{micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For US30/DOW Index
         elif is_us30:
@@ -388,7 +390,8 @@ def calculate_position_size(
             micro_lots = risk_per_position / (sl_distance * 0.05)
             lot_size = micro_lots / 100
             logger.debug(
-                f"US30 calculation: ${risk_per_position} / ({sl_distance} * 0.1) = {micro_lots} micro lots = {lot_size:.2f} lots")
+                f"US30 calculation: ${risk_per_position} / ({sl_distance} * 0.1) = "
+                f"{micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For NASDAQ/NAS100
         elif is_nas100:
@@ -397,7 +400,8 @@ def calculate_position_size(
             micro_lots = risk_per_position / (sl_distance * 0.05)
             lot_size = micro_lots / 100
             logger.debug(
-                f"NAS100 calculation: ${risk_per_position} / ({sl_distance} * 0.2) = {micro_lots} micro lots = {lot_size:.2f} lots")
+                f"NAS100 calculation: ${risk_per_position} / ({sl_distance} * 0.2) = "
+                f"{micro_lots} micro lots = {lot_size:.2f} lots")
 
         # For Forex pairs
         elif is_forex:
@@ -416,7 +420,8 @@ def calculate_position_size(
             micro_lots = risk_per_position / (sl_pips * 0.1)
             lot_size = micro_lots / 100
             logger.debug(
-                f"FOREX calculation: ${risk_per_position} / ({sl_pips} pips * 0.1) = {micro_lots} micro lots = {lot_size:.2f} lots")
+                f"FOREX calculation: ${risk_per_position} / ({sl_pips} pips * 0.1) = "
+                f"{micro_lots} micro lots = {lot_size:.2f} lots")
 
         # Default for other instruments
         else:
@@ -424,7 +429,8 @@ def calculate_position_size(
             micro_lots = risk_per_position / sl_distance
             lot_size = micro_lots / 100
             logger.debug(
-                f"Default calculation: ${risk_per_position} / {sl_distance} = {micro_lots} micro lots = {lot_size:.2f} lots")
+                f"Default calculation: ${risk_per_position} / {sl_distance} = "
+                f"{micro_lots} micro lots = {lot_size:.2f} lots")
 
         # Apply reasonable limits and rounding
         lot_size = min(lot_size, 10.0)  # Cap at 10.0 lots for safety
@@ -446,6 +452,8 @@ def calculate_position_size(
         est_risk = account_balance * 0.005  # 0.5% risk
         logger.warning(f"Using fallback position sizes due to error: {position_sizes}")
         return position_sizes, round(est_risk)
+
+
 # Clear exchange rate cache
 def clear_exchange_rate_cache():
     """Clear the exchange rate cache"""

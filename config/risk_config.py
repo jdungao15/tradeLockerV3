@@ -207,8 +207,6 @@ def update_drawdown_percentage(percentage):
     Returns:
         bool: Success status
     """
-    global risk_config
-
     # Ensure drawdown section exists
     if "drawdown" not in risk_config:
         risk_config["drawdown"] = {}
@@ -232,8 +230,6 @@ def update_risk_percentage(instrument_type, percentage, is_reduced=False):
     Returns:
         bool: Success status
     """
-    global risk_config
-
     # Ensure instrument type exists
     if instrument_type not in risk_config:
         risk_config[instrument_type] = {
@@ -250,6 +246,7 @@ def update_risk_percentage(instrument_type, percentage, is_reduced=False):
 
     logger.info(f"Updated {instrument_type} {risk_type} risk to {percentage * 100:.2f}%")
     return success
+
 
 def get_tp_selection():
     """
@@ -279,8 +276,6 @@ def update_tp_selection(mode, custom_selection=None):
     Returns:
         bool: Success status
     """
-    global risk_config
-
     if "tp_selection" not in risk_config:
         risk_config["tp_selection"] = {}
 
@@ -331,7 +326,6 @@ def display_current_risk_settings():
     print(f"TP Selection: {tp_selection['mode']}")
 
     print("=" * 45)
-
 
 
 # Initialize by loading config at module import

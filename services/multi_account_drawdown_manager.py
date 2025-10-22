@@ -25,7 +25,6 @@ def load_accounts_drawdown():
     Load all accounts' drawdown data from file.
     Returns dict with account_id as key.
     """
-    global _accounts_drawdown_cache
 
     with _drawdown_lock:
         try:
@@ -49,7 +48,6 @@ def load_accounts_drawdown():
 
 def save_accounts_drawdown():
     """Save all accounts' drawdown data to file."""
-    global _accounts_drawdown_cache
 
     with _drawdown_lock:
         try:
@@ -126,7 +124,6 @@ def get_account_drawdown(account_id):
     Returns:
         dict: Account drawdown data or None if not found
     """
-    global _accounts_drawdown_cache
 
     with _drawdown_lock:
         return _accounts_drawdown_cache.get(str(account_id))
@@ -158,7 +155,6 @@ def initialize_account_drawdown(account):
     Returns:
         bool: Success status
     """
-    global _accounts_drawdown_cache
 
     try:
         account_id = str(account['id'])
@@ -271,9 +267,9 @@ async def sync_all_accounts_from_api(accounts_client):
                 # Initialize or update this account's drawdown
                 if initialize_account_drawdown(account):
                     active_accounts.append(account)
-                    logger.info(f"  ✓ Drawdown tracking enabled")
+                    logger.info("  ✓ Drawdown tracking enabled")
             else:
-                logger.info(f"  ⊘ Skipped (not ACTIVE)")
+                logger.info("  ⊘ Skipped (not ACTIVE)")
 
         logger.info("=" * 70)
         logger.info(f"Total accounts tracked: {len(active_accounts)}")
@@ -297,7 +293,6 @@ async def reset_all_accounts_drawdown_async(accounts_client):
     Returns:
         bool: Success status
     """
-    global _accounts_drawdown_cache
 
     try:
         # Get list of currently monitored accounts from cache
@@ -448,7 +443,7 @@ async def validate_account_drawdown(accounts_client, account):
 
         # Check if limit would be exceeded
         if current_balance < max_dd:
-            logger.error(f"⚠️ DRAWDOWN LIMIT REACHED! Trading should be stopped.")
+            logger.error("⚠️ DRAWDOWN LIMIT REACHED! Trading should be stopped.")
 
         logger.info("=" * 60)
         return True
@@ -460,7 +455,6 @@ async def validate_account_drawdown(accounts_client, account):
 
 def display_all_accounts_drawdown():
     """Display drawdown status for all tracked accounts."""
-    global _accounts_drawdown_cache
 
     if not _accounts_drawdown_cache:
         return
@@ -478,10 +472,11 @@ def display_all_accounts_drawdown():
 
         status_emoji = "✅" if status == "ACTIVE" else "⏸️"
 
-        logger.info(f"   {status_emoji} Account #{data.get('accNum')} | {tier_name} Tier | ${starting:,.2f} | {drawdown_pct:.1f}% limit")
+        logger.info(
+            f"   {status_emoji} Account #{data.get('accNum')} | {tier_name} Tier | ${starting:,.2f} | {drawdown_pct:.1f}% limit")
 
     logger.info("   ════════════════════════════════════════════════════════════════")
-    logger.info(f"   🔄 All accounts reset daily at 7:00 PM EST")
+    logger.info("   🔄 All accounts reset daily at 7:00 PM EST")
     logger.info("   ════════════════════════════════════════════════════════════════")
     logger.info("")
 
@@ -492,7 +487,3 @@ def display_all_accounts_drawdown():
 
 # Load accounts data on module import
 load_accounts_drawdown()
-
-
-
-

@@ -9,7 +9,7 @@ import sys
 import asyncio
 from dotenv import load_dotenv
 from telethon import TelegramClient, functions
-from telethon.tl.types import Channel, Chat, User, InputPeerChannel, PeerChannel
+from telethon.tl.types import Channel, Chat, User
 from tabulate import tabulate
 from colorama import init, Fore, Style
 
@@ -104,7 +104,7 @@ async def list_all_chat_formats():
                     if hasattr(full_channel, 'full_chat'):
                         real_api_id = full_channel.full_chat.id
                         id_formats["Real API ID"] = real_api_id
-                except Exception as e:
+                except Exception:
                     pass  # Ignore errors in getting full channel info
 
             # Add to our results

@@ -2,7 +2,6 @@ import asyncio
 import aiohttp
 import logging
 import time
-from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 
@@ -377,6 +376,7 @@ async def get_take_profits_for_position(position_id, instrument_id, selected_acc
     except Exception as e:
         logger.error(f"Error retrieving take profits for position {position_id}: {e}")
         return None
+
 
 def calculate_trailing_offset(instrument_name, price_distance):
     """
