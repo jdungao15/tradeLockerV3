@@ -63,7 +63,7 @@ RISK_PROFILES = {
 DEFAULT_RISK_CONFIG = RISK_PROFILES["balanced"]
 
 # Path to the config file
-CONFIG_FILE = 'risk_settings.json'
+CONFIG_FILE = 'data/risk_settings.json'
 
 # Global risk config that will be loaded from file or defaults
 risk_config = DEFAULT_RISK_CONFIG.copy()

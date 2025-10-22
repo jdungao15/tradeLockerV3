@@ -42,9 +42,9 @@ class NewsEventFilter:
                 with open(self.calendar_cache_path, 'r') as cache_file:
                     await self._parse_calendar(cache_file.read())
                 self.last_update = datetime.fromtimestamp(os.path.getmtime(self.calendar_cache_path))
-                logger.info(f"Loaded economic calendar from cache with {len(self.news_events)} events")
+                # Silent - calendar loaded
             except Exception as e:
-                logger.error(f"Error loading calendar from cache: {e}")
+                logger.error(f"❌ Error loading calendar from cache: {e}")
 
         if not self.news_events or not self.last_update or datetime.now() - self.last_update > self.update_interval:
             await self.update_calendar()

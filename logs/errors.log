@@ -1473,3 +1473,59 @@ client_session: <aiohttp.client.ClientSession object at 0x00000230959EFB80>
 2025-10-19 21:37:58 - trading_bot                    - ERROR    - Account selection failed. Exiting.
 2025-10-19 21:57:34 - asyncio                        - ERROR    - Unclosed client session
 client_session: <aiohttp.client.ClientSession object at 0x000001A76F85E200>
+2025-10-22 04:43:23 - services.drawdown_manager      - ERROR    - 🚨 CRITICAL: Account has reached or exceeded daily drawdown limit!
+2025-10-22 04:43:23 - services.drawdown_manager      - ERROR    -    Current: $49,568.54 | Limit: $51,967.47
+2025-10-22 04:46:19 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000023202CF7110>
+2025-10-22 04:46:25 - services.drawdown_manager      - ERROR    - 🚨 CRITICAL: Account has reached or exceeded daily drawdown limit!
+2025-10-22 04:46:25 - services.drawdown_manager      - ERROR    -    Current: $49,568.54 | Limit: $51,467.47
+2025-10-22 04:49:28 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001D29153F750>
+2025-10-22 04:51:17 - services.drawdown_manager      - ERROR    - 🚨 CRITICAL: Account has reached or exceeded daily drawdown limit!
+2025-10-22 04:51:17 - services.drawdown_manager      - ERROR    -    Current: $49,568.54 | Limit: $51,467.47
+2025-10-22 04:55:12 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000215D6572C10>
+2025-10-22 05:00:44 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001FBE34F2850>
+2025-10-22 05:11:27 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002BF2F59B890>
+2025-10-22 05:16:13 - trading_bot                    - ERROR    - Error selecting account: 
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 458, in select_account
+    )
+    
+EOFError
+2025-10-22 05:16:13 - trading_bot                    - ERROR    - Account selection failed. Exiting.
+2025-10-22 05:16:13 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001657D05A510>
+2025-10-22 05:16:13 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001657D085950>
+2025-10-22 05:21:45 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001B876612990>
+2025-10-22 05:46:21 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000014E8228EC10>
+2025-10-22 05:46:42 - trading_bot                    - ERROR    - [36m[2025-10-22 05:46:38][0m: [31mUnexpected error: name 'logger' is not defined. Skipping this signal.[0m
+Traceback (most recent call last):
+  File "C:\Users\Uncrowned King\Documents\tradeLockerV3\main.py", line 723, in process_message
+    logger.debug(f"Position sizes: {position_sizes}")
+    ^^^^^^
+NameError: name 'logger' is not defined. Did you mean: 'self.logger'?
+2025-10-22 05:47:30 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000294B36EEAD0>
+2025-10-22 05:50:08 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000200F97B6AD0>
+2025-10-22 05:52:25 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000020A5AB1A5D0>
+2025-10-22 05:53:37 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000119E0BFAC10>
+2025-10-22 05:56:20 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000234E6CAAC10>
+2025-10-22 05:57:00 - services.order_handler         - ERROR    - [36m[2025-10-22 05:56:54][0m: [31mOrder failed[0m: SL price is not valid for the order. 
+2025-10-22 06:00:12 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000271E425AC10>
+2025-10-22 06:08:32 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000002381AA0E5D0>
+2025-10-22 06:13:15 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001A4B3586E90>
+2025-10-22 06:25:08 - asyncio                        - ERROR    - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x0000012E660E6850>

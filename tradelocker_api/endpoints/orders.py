@@ -75,7 +75,7 @@ class TradeLockerOrders(ApiClient):
             # Make the request with automatic retry
             response = self.request('POST', endpoint, headers=headers, json=payload)
 
-            logger.info(f"Order placed successfully: {response}")
+            logger.debug(f"Order placed successfully: {response}")
             return response
 
         except Exception as e:
@@ -164,7 +164,7 @@ class TradeLockerOrders(ApiClient):
             # Make the request with automatic retry
             response = await self.request_async('POST', endpoint, headers=headers, json=payload)
 
-            logger.info(f"Order placed successfully: {response}")
+            logger.debug(f"Order placed successfully: {response}")
             return response
 
         except Exception as e:

@@ -15,7 +15,7 @@ class OrderCache:
     and handles order deletion after successful cancellation
     """
 
-    def __init__(self, cache_file='order_cache.json'):
+    def __init__(self, cache_file='data/order_cache.json'):
         self.cache_file = cache_file
         # Use the global cache for in-memory storage
         global GLOBAL_ORDER_CACHE
@@ -23,8 +23,7 @@ class OrderCache:
         # Load from file only if global cache is empty
         if not GLOBAL_ORDER_CACHE:
             self.load_cache()
-        else:
-            logger.info(f"Using existing in-memory cache with {len(GLOBAL_ORDER_CACHE)} entries")
+        # Silent - cache loaded
 
     def load_cache(self):
         """Load cache from file into global memory"""
@@ -37,12 +36,9 @@ class OrderCache:
 
                 # Update global cache
                 GLOBAL_ORDER_CACHE.update(loaded_data)
-
-                logger.info(f"Loaded order cache with {len(GLOBAL_ORDER_CACHE)} entries")
-                logger.info(f"Cache keys: {list(GLOBAL_ORDER_CACHE.keys())}")
+                # Silent - cache loaded
             else:
-                logger.info("No order cache file found. Starting with empty cache.")
-                # Save empty cache to create the file
+                # No cache file - save empty cache to create the file
                 self.save_cache()
         except Exception as e:
             logger.error(f"Error loading order cache: {e}")
@@ -67,7 +63,7 @@ class OrderCache:
             with open(self.cache_file, 'w') as f:
                 json.dump(GLOBAL_ORDER_CACHE, f, indent=2)
 
-            logger.info(f"Saved order cache with {len(GLOBAL_ORDER_CACHE)} entries")
+            # Silent - cache saved
             return True
         except Exception as e:
             logger.error(f"Error saving order cache: {e}")
@@ -93,9 +89,6 @@ class OrderCache:
         # Ensure message_id is a string for consistency
         str_message_id = str(message_id)
 
-        # Log detailed information
-        logger.info(f"Storing orders for message_id: '{str_message_id}' with {len(order_ids)} orders")
-
         # Ensure order_ids are strings
         str_order_ids = [str(order_id) for order_id in order_ids]
 
@@ -108,12 +101,10 @@ class OrderCache:
             'timestamp': datetime.now().isoformat()
         }
 
-        # Verify storage
-        verify = str_message_id in GLOBAL_ORDER_CACHE
-        logger.info(f"Verification: message_id {str_message_id} in memory cache: {verify}")
-
-        # Log current keys
-        logger.info(f"Cache updated, current keys: {list(GLOBAL_ORDER_CACHE.keys())}")
+        # Debug logging (only in log files)
+        logger.debug(f"Stored orders for message_id: '{str_message_id}' with {len(order_ids)} orders")
+        logger.debug(f"Verification: message_id {str_message_id} in memory cache: {str_message_id in GLOBAL_ORDER_CACHE}")
+        logger.debug(f"Cache updated, current keys: {list(GLOBAL_ORDER_CACHE.keys())}")
 
         # Save to file as backup
         return self.save_cache()
@@ -127,18 +118,19 @@ class OrderCache:
         # Convert to string for lookup
         str_message_id = str(message_id)
 
-        logger.info(f"Looking for message ID {str_message_id} in cache")
-        logger.info(f"Available keys in cache: {list(GLOBAL_ORDER_CACHE.keys())}")
+        # Debug logging (only in log files)
+        logger.debug(f"Looking for message ID {str_message_id} in cache")
+        logger.debug(f"Available keys in cache: {list(GLOBAL_ORDER_CACHE.keys())}")
 
         # Direct lookup from global cache
         orders = GLOBAL_ORDER_CACHE.get(str_message_id)
 
-        # Log result
+        # Debug logging
         if orders:
-            logger.info(f"Found orders for message ID {str_message_id}")
+            logger.debug(f"Found orders for message ID {str_message_id}")
             return orders
         else:
-            logger.info(f"No orders found for message ID {str_message_id}")
+            logger.debug(f"No orders found for message ID {str_message_id}")
             return None
 
     def remove_order(self, message_id, order_id):

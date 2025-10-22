@@ -1,0 +1,17 @@
+{
+    "FOREX": {
+        "default": 0.01,
+        "reduced": 0.005
+    },
+    "CFD": {
+        "default": 0.01,
+        "reduced": 0.005
+    },
+    "XAUUSD": {
+        "default": 0.01,
+        "reduced": 0.005
+    },
+    "drawdown": {
+        "daily_percentage": 3.0
+    }
+}

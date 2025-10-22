@@ -39,8 +39,15 @@ def is_potential_trading_signal(message: str) -> bool:
     has_trading_terms = any(term in message_lower for term in trading_terms)
 
     # Check for trading instruments
-    instruments = ['xauusd', 'gold', 'eurusd', 'gbpusd', 'usdjpy', 'us30', 'dji30', 'nas100', 'ndx100']
+    # Common instruments list
+    instruments = ['xauusd', 'gold', 'eurusd', 'gbpusd', 'usdjpy', 'us30', 'dji30', 'nas100', 'ndx100', 'silver', 'xagusd']
     has_instrument = any(instrument in message_lower for instrument in instruments)
+
+    # Also check for forex pair patterns (e.g., USDCAD, EURJPY, GBPCAD, etc.)
+    # Forex pairs are typically 6 letters: 3 letters + 3 letters (e.g., USDCAD)
+    if not has_instrument:
+        forex_pattern = r'\b[A-Z]{3}[A-Z]{3}\b'
+        has_instrument = bool(re.search(forex_pattern, message.upper()))
 
     # Check for price patterns (numbers that might be price points)
     has_prices = bool(re.search(r'\d+\.\d+|\d+', message))
@@ -99,7 +106,8 @@ def adjust_broker_pricing(parsed_signal):
     # Special adjustments for specific instruments (kept from original function)
     if instrument == 'DJI30':
         # Get order direction for potential direction-based adjustments
-        is_buy = parsed_signal.get('order_type', '').lower() == 'buy'
+        # Handle order types with modifiers (e.g., 'buy limit', 'sell stop')
+        is_buy = 'buy' in parsed_signal.get('order_type', '').lower()
 
         # Apply additional 5-pip adjustment for broker spread differences
         # This is in addition to the absolute price level adjustment above
@@ -121,7 +129,7 @@ def parse_signal(message: str):
     """
     # Check cache first
     if message in parsed_signal_cache:
-        logger.info("Using cached parsed signal")
+        logger.debug("Using cached parsed signal")
         return parsed_signal_cache[message]
 
     # Pre-filter to avoid unnecessary API calls
@@ -129,6 +137,9 @@ def parse_signal(message: str):
         logger.info("Message doesn't appear to be a valid trading signal, skipping API call")
         parsed_signal_cache[message] = None  # Cache the negative result
         return None
+
+    # Debug: Log the raw message being parsed
+    logger.debug(f"Parsing new signal from Telegram: {message[:150]}...")
 
     try:
         response = requests.post(
@@ -152,7 +163,12 @@ def parse_signal(message: str):
 
                         Rules:
                         1. The JSON object should have these fields: instrument, order_type, entry_point, stop_loss, and take_profits.
-                        1.1 orderType should only return 'buy' or 'sell'.
+                        1.1 orderType MUST preserve the full order type from the message:
+                            - If the message contains "LIMIT" or "BUY LIMIT" or "SELL LIMIT", use "buy limit" or "sell limit"
+                            - If the message contains "STOP" or "BUY STOP" or "SELL STOP", use "buy stop" or "sell stop"
+                            - If the message contains "MARKET", use "buy market" or "sell market"
+                            - Otherwise, just use "buy" or "sell"
+                            - IMPORTANT: Always check the original message for these keywords and include them in the order_type
                         2. If the entry point is a range, use the first value.
                         3. If the stop loss is a range, use the first value.
                         4. take_profits should always be an array, even if there's only one value.
@@ -185,12 +201,47 @@ def parse_signal(message: str):
         try:
             result = json.loads(content)
 
+            # Debug: Log what was parsed
+            logger.debug(f"OpenAI parsed order_type as: '{result.get('order_type', 'MISSING')}'")
+
             # Validate that required fields are present
             required_fields = ['instrument', 'order_type', 'entry_point', 'stop_loss', 'take_profits']
             if not all(field in result for field in required_fields):
                 logger.warning(f"Parsed signal is missing required fields: {result}")
                 parsed_signal_cache[message] = None
                 return None
+
+            # POST-PROCESSING: Fix order_type if OpenAI missed LIMIT/STOP/MARKET
+            order_type = result.get('order_type', '').lower()
+            message_upper = message.upper()
+
+            # Check if the original message contains order type modifiers that OpenAI missed
+            if 'limit' not in order_type and 'LIMIT' in message_upper:
+                if 'buy' in order_type:
+                    result['order_type'] = 'buy limit'
+                    logger.debug("Corrected order_type to 'buy limit' (OpenAI missed it)")
+                elif 'sell' in order_type:
+                    result['order_type'] = 'sell limit'
+                    logger.debug("Corrected order_type to 'sell limit' (OpenAI missed it)")
+
+            elif 'stop' not in order_type and 'STOP' in message_upper:
+                if 'buy' in order_type:
+                    result['order_type'] = 'buy stop'
+                    logger.debug("Corrected order_type to 'buy stop' (OpenAI missed it)")
+                elif 'sell' in order_type:
+                    result['order_type'] = 'sell stop'
+                    logger.debug("Corrected order_type to 'sell stop' (OpenAI missed it)")
+
+            elif 'market' not in order_type and 'MARKET' in message_upper:
+                if 'buy' in order_type:
+                    result['order_type'] = 'buy market'
+                    logger.debug("Corrected order_type to 'buy market' (OpenAI missed it)")
+                elif 'sell' in order_type:
+                    result['order_type'] = 'sell market'
+                    logger.debug("Corrected order_type to 'sell market' (OpenAI missed it)")
+
+            logger.debug(f"Final order_type after post-processing: '{result['order_type']}'")
+
 
             # Ensure take_profits is a list
             if not isinstance(result.get('take_profits', []), list):
@@ -210,8 +261,9 @@ def parse_signal(message: str):
                 parsed_signal_cache[message] = None
                 return None
 
-            # Ensure order_type is valid
-            if result.get('order_type') not in ['buy', 'sell']:
+            # Ensure order_type is valid (allow buy, sell, and their modifiers)
+            valid_order_types = ['buy', 'sell', 'buy limit', 'sell limit', 'buy stop', 'sell stop', 'buy market', 'sell market']
+            if result.get('order_type') not in valid_order_types:
                 logger.warning(f"Invalid order_type: {result.get('order_type')}")
                 parsed_signal_cache[message] = None
                 return None
@@ -292,7 +344,12 @@ async def parse_signal_async(message: str):
 
                     Rules:
                     1. The JSON object should have these fields: instrument, order_type, entry_point, stop_loss, and take_profits.
-                    1.1 orderType should only return 'buy' or 'sell'.
+                    1.1 orderType MUST preserve the full order type from the message:
+                        - If the message contains "LIMIT" or "BUY LIMIT" or "SELL LIMIT", use "buy limit" or "sell limit"
+                        - If the message contains "STOP" or "BUY STOP" or "SELL STOP", use "buy stop" or "sell stop"
+                        - If the message contains "MARKET", use "buy market" or "sell market"
+                        - Otherwise, just use "buy" or "sell"
+                        - IMPORTANT: Always check the original message for these keywords and include them in the order_type
                     2. If the entry point is a range, use the first value.
                     3. If the stop loss is a range, use the first value.
                     4. take_profits should always be an array, even if there's only one value.
@@ -337,6 +394,37 @@ async def parse_signal_async(message: str):
                         parsed_signal_cache[message] = None
                         return None
 
+                    # POST-PROCESSING: Fix order_type if OpenAI missed LIMIT/STOP/MARKET
+                    order_type = result.get('order_type', '').lower()
+                    message_upper = message.upper()
+
+                    # Check if the original message contains order type modifiers that OpenAI missed
+                    if 'limit' not in order_type and 'LIMIT' in message_upper:
+                        if 'buy' in order_type:
+                            result['order_type'] = 'buy limit'
+                            logger.debug("Corrected order_type to 'buy limit' (OpenAI missed it)")
+                        elif 'sell' in order_type:
+                            result['order_type'] = 'sell limit'
+                            logger.debug("Corrected order_type to 'sell limit' (OpenAI missed it)")
+
+                    elif 'stop' not in order_type and 'STOP' in message_upper:
+                        if 'buy' in order_type:
+                            result['order_type'] = 'buy stop'
+                            logger.debug("Corrected order_type to 'buy stop' (OpenAI missed it)")
+                        elif 'sell' in order_type:
+                            result['order_type'] = 'sell stop'
+                            logger.debug("Corrected order_type to 'sell stop' (OpenAI missed it)")
+
+                    elif 'market' not in order_type and 'MARKET' in message_upper:
+                        if 'buy' in order_type:
+                            result['order_type'] = 'buy market'
+                            logger.debug("Corrected order_type to 'buy market' (OpenAI missed it)")
+                        elif 'sell' in order_type:
+                            result['order_type'] = 'sell market'
+                            logger.debug("Corrected order_type to 'sell market' (OpenAI missed it)")
+
+                    logger.debug(f"Final order_type after post-processing: '{result['order_type']}'")
+
                     # Ensure take_profits is a list
                     if not isinstance(result.get('take_profits', []), list):
                         logger.warning("take_profits is not a list, converting to list")
@@ -355,8 +443,9 @@ async def parse_signal_async(message: str):
                         parsed_signal_cache[message] = None
                         return None
 
-                    # Ensure order_type is valid
-                    if result.get('order_type') not in ['buy', 'sell']:
+                    # Ensure order_type is valid (allow buy, sell, and their modifiers)
+                    valid_order_types = ['buy', 'sell', 'buy limit', 'sell limit', 'buy stop', 'sell stop', 'buy market', 'sell market']
+                    if result.get('order_type') not in valid_order_types:
                         logger.warning(f"Invalid order_type: {result.get('order_type')}")
                         parsed_signal_cache[message] = None
                         return None
@@ -410,27 +499,26 @@ async def find_matching_instrument(instruments_client, account, parsed_signal):
     )
 
     canonical_name = parsed_signal['instrument']
-    logger.info(f"Looking for instrument: {canonical_name}")
+    logger.debug(f"Looking for instrument: {canonical_name}")
 
     # Get all available instruments first to avoid multiple API calls
     available_instruments = await get_available_instruments(instruments_client, account)
     if not available_instruments:
-        logger.warning("Failed to retrieve available instruments")
+        logger.warning("❌ Failed to retrieve available instruments")
         return None
 
     # Display all available instruments to help with debugging
-    if logger.level <= logging.DEBUG:
-        instrument_names = [i.get('name', '') for i in available_instruments]
-        logger.debug(f"Available instruments: {instrument_names}")
+    instrument_names = [i.get('name', '') for i in available_instruments]
+    logger.debug(f"Available instruments: {instrument_names}")
 
     # Identify which instrument group the signal belongs to
     group_name, target_nicknames = identify_instrument_group(canonical_name)
 
     if group_name:
-        logger.info(f"Signal instrument '{canonical_name}' identified as '{group_name}'")
-        logger.info(f"Will try these nicknames for matching: {target_nicknames}")
+        logger.debug(f"Signal instrument '{canonical_name}' identified as '{group_name}'")
+        logger.debug(f"Will try these nicknames for matching: {target_nicknames}")
     else:
-        logger.warning(f"Could not identify a known instrument group for '{canonical_name}'")
+        logger.debug(f"Could not identify a known instrument group for '{canonical_name}'")
         # In this case, target_nicknames will just contain the original name
 
     # Score and sort all available instruments
@@ -446,7 +534,7 @@ async def find_matching_instrument(instruments_client, account, parsed_signal):
 
     # Try each potential match in order of score
     for score, instr_name, _ in scored_instruments:
-        logger.info(f"Trying potential match: {instr_name} (score: {score})")
+        logger.debug(f"Trying potential match: {instr_name} (score: {score})")
 
         instrument_data = await instruments_client.get_instrument_by_name_async(
             account['id'],
@@ -455,7 +543,7 @@ async def find_matching_instrument(instruments_client, account, parsed_signal):
         )
 
         if instrument_data:
-            logger.info(f"Successfully matched {canonical_name} to broker instrument: {instr_name}")
+            logger.debug(f"Successfully matched {canonical_name} to broker instrument: {instr_name}")
             return instrument_data
 
     # If no matches were found via nickname matching, try the fallback approaches
