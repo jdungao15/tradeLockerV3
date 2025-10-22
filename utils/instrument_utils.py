@@ -12,14 +12,41 @@ INSTRUMENT_GROUPS = {
     'DOW_JONES': ['DOW', 'DJI30', 'US30', 'DOWJONES', 'DJ30', 'WALLST', 'DJI', 'DOW.', 'US30.', 'DOWJONES.', 'DJ.'],
     'NASDAQ': ['NDX100', 'NAS100', 'NASDAQ', 'NSDQ', 'TECH100', 'NAS', 'NASDAQ.', 'NAS100.', 'NDX.', 'TECH.'],
     'SP500': ['SP500', 'SPX', 'S&P', 'SP.', 'SPX.', 'S&P500', 'SP-', 'SPX-'],
-    'EURUSD': ['EURUSD', 'EUR/USD', 'EUR'],
-    'GBPUSD': ['GBPUSD', 'GBP/USD', 'GBP'],
-    'USDJPY': ['USDJPY', 'USD/JPY', 'JPY'],
-    'USDCHF': ['USDCHF', 'USD/CHF', 'CHF'],
-    'AUDUSD': ['AUDUSD', 'AUD/USD', 'AUD'],
-    'NZDUSD': ['NZDUSD', 'NZD/USD', 'NZD'],
-    'USDCAD': ['USDCAD', 'USD/CAD', 'CAD'],
-    # Add more as needed
+    # Major USD pairs
+    'EURUSD': ['EURUSD', 'EUR/USD', 'EURUSD.', 'EUR-USD'],
+    'GBPUSD': ['GBPUSD', 'GBP/USD', 'GBPUSD.', 'GBP-USD'],
+    'USDJPY': ['USDJPY', 'USD/JPY', 'USDJPY.', 'USD-JPY'],
+    'USDCHF': ['USDCHF', 'USD/CHF', 'USDCHF.', 'USD-CHF'],
+    'AUDUSD': ['AUDUSD', 'AUD/USD', 'AUDUSD.', 'AUD-USD'],
+    'NZDUSD': ['NZDUSD', 'NZD/USD', 'NZDUSD.', 'NZD-USD'],
+    'USDCAD': ['USDCAD', 'USD/CAD', 'USDCAD.', 'USD-CAD'],
+    # GBP cross pairs
+    'GBPAUD': ['GBPAUD', 'GBP/AUD', 'GBPAUD.', 'GBP-AUD'],
+    'GBPCAD': ['GBPCAD', 'GBP/CAD', 'GBPCAD.', 'GBP-CAD'],
+    'GBPCHF': ['GBPCHF', 'GBP/CHF', 'GBPCHF.', 'GBP-CHF'],
+    'GBPJPY': ['GBPJPY', 'GBP/JPY', 'GBPJPY.', 'GBP-JPY'],
+    'GBPNZD': ['GBPNZD', 'GBP/NZD', 'GBPNZD.', 'GBP-NZD'],
+    'EURGBP': ['EURGBP', 'EUR/GBP', 'EURGBP.', 'EUR-GBP'],
+    # EUR cross pairs
+    'EURAUD': ['EURAUD', 'EUR/AUD', 'EURAUD.', 'EUR-AUD'],
+    'EURCAD': ['EURCAD', 'EUR/CAD', 'EURCAD.', 'EUR-CAD'],
+    'EURCHF': ['EURCHF', 'EUR/CHF', 'EURCHF.', 'EUR-CHF'],
+    'EURJPY': ['EURJPY', 'EUR/JPY', 'EURJPY.', 'EUR-JPY'],
+    'EURNZD': ['EURNZD', 'EUR/NZD', 'EURNZD.', 'EUR-NZD'],
+    # AUD cross pairs
+    'AUDCAD': ['AUDCAD', 'AUD/CAD', 'AUDCAD.', 'AUD-CAD'],
+    'AUDCHF': ['AUDCHF', 'AUD/CHF', 'AUDCHF.', 'AUD-CHF'],
+    'AUDJPY': ['AUDJPY', 'AUD/JPY', 'AUDJPY.', 'AUD-JPY'],
+    'AUDNZD': ['AUDNZD', 'AUD/NZD', 'AUDNZD.', 'AUD-NZD'],
+    # NZD cross pairs
+    'NZDCAD': ['NZDCAD', 'NZD/CAD', 'NZDCAD.', 'NZD-CAD'],
+    'NZDCHF': ['NZDCHF', 'NZD/CHF', 'NZDCHF.', 'NZD-CHF'],
+    'NZDJPY': ['NZDJPY', 'NZD/JPY', 'NZDJPY.', 'NZD-JPY'],
+    # CAD cross pairs
+    'CADCHF': ['CADCHF', 'CAD/CHF', 'CADCHF.', 'CAD-CHF'],
+    'CADJPY': ['CADJPY', 'CAD/JPY', 'CADJPY.', 'CAD-JPY'],
+    # CHF cross pair
+    'CHFJPY': ['CHFJPY', 'CHF/JPY', 'CHFJPY.', 'CHF-JPY'],
 }
 
 # Build reverse lookup dictionary for fast matching
