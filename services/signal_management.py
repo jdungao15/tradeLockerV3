@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 from colorama import Fore, Style
 
-from order_cache import OrderCache
+from config.order_cache import OrderCache
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class SignalManager:
         # Ensure cache is loaded
         self.order_cache.load_cache()
         self._init_complete = True
-        logger.info("Signal manager initialized")
+        # Silent initialization
 
     def log_message(self, message_data):
         """Log message data for debugging"""
@@ -66,7 +66,7 @@ class SignalManager:
         message_lower = message.lower().strip()
 
         # Log the message we're trying to detect
-        logger.info(f"Checking if message is a command: '{message_lower}'")
+        logger.debug(f"Checking if message is a command: '{message_lower}'")
 
         # 1. SIMPLE KEYWORD DETECTION (Most reliable)
         # Check for the presence of simple command keywords at the beginning of the message
@@ -158,7 +158,7 @@ class SignalManager:
         for pattern in generic_tp_patterns:
             if re.search(pattern, message_lower):
                 # If we find a generic TP pattern without a number
-                logger.info(f"Detected generic TP command: '{message_lower}'")
+                logger.debug(f"Detected generic TP command: '{message_lower}'")
                 return 'tp', None
 
         # 5. SUPER SIMPLE WORD MATCHING (FALLBACK)
@@ -354,7 +354,7 @@ class SignalManager:
 
         # Check if we have a reply_to_msg_id to associate with orders
         if not reply_to_msg_id:
-            logger.info(f"{colored_time}: Command detected but no reply-to message ID")
+            logger.debug(f"{colored_time}: Command detected but no reply-to message ID")
             message_log['match_method'] = 'none_no_reply_id'
             self.log_message(message_log)
             return False, None

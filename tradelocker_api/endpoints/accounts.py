@@ -14,7 +14,7 @@ class TradeLockerAccounts(ApiClient):
 
     def __init__(self, auth: TradeLockerAuth):
         super().__init__(auth)
-        self.selected_account_file = 'selected_account.json'
+        self.selected_account_file = 'data/selected_account.json'
 
     # Synchronous methods (for backward compatibility)
 
@@ -59,7 +59,7 @@ class TradeLockerAccounts(ApiClient):
         """
         with open(self.selected_account_file, 'w') as file:
             json.dump(account, file)
-        logger.info(f"Selected account: {account['id']} saved to {self.selected_account_file}")
+        logger.debug(f"Selected account: {account['id']} saved to {self.selected_account_file}")
 
     def get_selected_account(self):
         """
@@ -152,6 +152,3 @@ class TradeLockerAccounts(ApiClient):
         except Exception as e:
             logger.error(f"Failed to refresh account balance: {e}")
             return None
-
-    def request(self, param, param1, cache_ttl):
-        pass

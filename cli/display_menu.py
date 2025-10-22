@@ -1,6 +1,6 @@
 from datetime import datetime
 from colorama import init, Fore, Style
-import risk_config
+import config.risk_config as risk_config
 
 
 def display_menu():

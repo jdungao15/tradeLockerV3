@@ -5,14 +5,14 @@ import asyncio
 import logging
 from datetime import datetime, timedelta
 import pytz
-import risk_config
+import config.risk_config as risk_config
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
 # Global variables
 max_drawdown_balance = 0  # This is the minimum balance the account should not drop below
-drawdown_limit_file = 'daily_drawdown.json'
+drawdown_limit_file = 'data/daily_drawdown.json'
 starting_balance = 0  # Balance at the start of the trading day (total equity)
 _drawdown_lock = threading.RLock()  # Lock for thread-safe operations
 
@@ -23,30 +23,54 @@ def load_drawdown_data(selected_account):
     Load drawdown data from file with improved error handling.
     If file doesn't exist or is corrupted, initialize it properly.
     Does NOT reset the drawdown - only loads existing values.
+
+    IMPORTANT: Validates that the data belongs to the selected account.
+    If switching accounts, reinitializes with the new account's data.
     """
     global max_drawdown_balance, starting_balance
 
     with _drawdown_lock:
         try:
+            account_id = str(selected_account['id'])
+            account_num = selected_account['accNum']
+
             if os.path.exists(drawdown_limit_file):
                 with open(drawdown_limit_file, 'r') as file:
                     data = json.load(file)
-                    max_drawdown_balance = data.get('max_drawdown_balance', 0)
-                    starting_balance = data.get('starting_balance', 0)
 
-                    logger.info(
-                        f"Loaded drawdown data: max_drawdown={max_drawdown_balance}, starting={starting_balance}")
+                    # Check if the data belongs to the currently selected account
+                    stored_account_id = data.get('account_id')
 
-                    # Validate that we have valid data
-                    if starting_balance <= 0 or max_drawdown_balance <= 0:
-                        logger.warning("Invalid drawdown data in file, needs initialization")
-                        # Set flag that we need to initialize, but don't do it here
-                        # Let the validation function handle it
+                    # If account_id is missing (old format) OR doesn't match, reinitialize
+                    if not stored_account_id or stored_account_id != account_id:
+                        if not stored_account_id:
+                            logger.info(f"🔄 Setting up drawdown for Account #{account_num}...")
+                        else:
+                            logger.info(f"🔄 Switching to Account #{account_num}...")
+
+                        # Initialize with new account's data
+                        account_balance = float(selected_account['accountBalance'])
+                        tier_size, _ = get_tier_size(account_balance)
+                        drawdown_percentage = risk_config.get_drawdown_percentage()
+
+                        starting_balance = account_balance
+                        drawdown_limit = tier_size * (drawdown_percentage / 100.0)
+                        max_drawdown_balance = starting_balance - drawdown_limit
+
+                        # Save with the new account_id (silent)
+                        save_drawdown_data(selected_account)
+                    else:
+                        # Data belongs to the correct account, load it (silent)
+                        max_drawdown_balance = data.get('max_drawdown_balance', 0)
+                        starting_balance = data.get('starting_balance', 0)
+
+                        # Validate that we have valid data
+                        if starting_balance <= 0 or max_drawdown_balance <= 0:
+                            # Silent validation - will be fixed by validate_and_fix_drawdown
+                            pass
 
             else:
-                logger.info("No existing drawdown file found.")
-                logger.info("⚠️  Drawdown will be initialized on first daily reset (7 PM EST)")
-                logger.info("⚠️  Or you can manually reset it using the risk management menu")
+                logger.info("🔄 Initializing drawdown tracking...")
 
                 # Set safe temporary values (very conservative)
                 if selected_account:
@@ -59,11 +83,8 @@ def load_drawdown_data(selected_account):
                     drawdown_limit = tier_size * (drawdown_percentage / 100.0)
                     max_drawdown_balance = starting_balance - drawdown_limit
 
-                    logger.info(f"Temporary drawdown set: Starting=${starting_balance}, Max=${max_drawdown_balance}")
-                    logger.info("This will be properly initialized at the next scheduled reset (7 PM EST)")
-
-                    # Save the temporary values
-                    save_drawdown_data()
+                    # Save the temporary values with account_id (silent)
+                    save_drawdown_data(selected_account)
 
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in drawdown file: {e}")
@@ -73,9 +94,12 @@ def load_drawdown_data(selected_account):
 
 
 # Function to save drawdown data
-def save_drawdown_data():
+def save_drawdown_data(selected_account=None):
     """
     Save drawdown data to file with error handling.
+
+    Args:
+        selected_account: Optional account dict to save account_id
     """
     with _drawdown_lock:
         try:
@@ -89,12 +113,20 @@ def save_drawdown_data():
                 except Exception as e:
                     logger.warning(f"Could not create backup of drawdown file: {e}")
 
+            # Prepare data to save
+            data = {
+                'max_drawdown_balance': max_drawdown_balance,
+                'starting_balance': starting_balance
+            }
+
+            # Add account_id if provided to track which account this data belongs to
+            if selected_account:
+                data['account_id'] = str(selected_account['id'])
+                data['account_num'] = selected_account['accNum']
+
             # Save new data
             with open(drawdown_limit_file, 'w') as file:
-                json.dump({
-                    'max_drawdown_balance': max_drawdown_balance,
-                    'starting_balance': starting_balance
-                }, file, indent=2)
+                json.dump(data, file, indent=2)
 
             logger.debug(f"Saved drawdown data: max_drawdown={max_drawdown_balance}, starting={starting_balance}")
 
@@ -187,7 +219,7 @@ async def reset_daily_drawdown_async(accounts_client, selected_account):
                 f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
             )
 
-            save_drawdown_data()
+            save_drawdown_data(selected_account)
             return True
         except Exception as e:
             logger.error(f"Error resetting daily drawdown: {e}", exc_info=True)
@@ -212,46 +244,26 @@ async def validate_and_fix_drawdown(accounts_client, selected_account):
     global max_drawdown_balance, starting_balance
 
     try:
-        logger.info("=" * 60)
-        logger.info("VALIDATING DAILY DRAWDOWN SETTINGS")
-        logger.info("=" * 60)
-
         # Get current account balance
         current_balance = float(selected_account['accountBalance'])
-        logger.info(f"Current Account Balance: ${current_balance:,.2f}")
 
         # Get configured drawdown percentage from risk_config
         drawdown_percentage = risk_config.get_drawdown_percentage()
-        logger.info(f"Configured Drawdown Percentage: {drawdown_percentage}%")
 
         # Load current values from file
         with _drawdown_lock:
             file_max_dd = max_drawdown_balance
             file_starting = starting_balance
 
-        logger.info(f"Saved Starting Balance: ${file_starting:,.2f}")
-        logger.info(f"Saved Max Drawdown Balance: ${file_max_dd:,.2f}")
-
         # Determine tier size based on STARTING balance (not current)
-        # This is important - the tier should be based on where you started the day
         tier_size, _ = get_tier_size(file_starting)
-        logger.info(f"Tier Size (based on starting balance): ${tier_size:,.2f}")
 
         # Calculate what the max_drawdown_balance SHOULD be based on starting balance
         correct_drawdown_limit = tier_size * (drawdown_percentage / 100.0)
         correct_max_drawdown = file_starting - correct_drawdown_limit
 
-        logger.info(f"Correct Drawdown Limit: ${correct_drawdown_limit:,.2f} ({drawdown_percentage}% of tier)")
-        logger.info(f"Correct Max Drawdown Balance: ${correct_max_drawdown:,.2f}")
-
         # Calculate current daily loss/gain
         daily_pnl = current_balance - file_starting
-        if daily_pnl >= 0:
-            logger.info(f"📈 Daily P&L: +${daily_pnl:,.2f} (profit)")
-        else:
-            logger.info(f"📉 Daily P&L: ${daily_pnl:,.2f} (loss)")
-            remaining_drawdown = current_balance - file_max_dd
-            logger.info(f"💰 Remaining before max drawdown: ${remaining_drawdown:,.2f}")
 
         # Check if the saved max_drawdown_balance is correct
         needs_correction = False
@@ -261,55 +273,54 @@ async def validate_and_fix_drawdown(accounts_client, selected_account):
             file_drawdown_amount = file_starting - file_max_dd
             file_drawdown_percentage = (file_drawdown_amount / tier_size) * 100
 
-            logger.info(f"File shows {file_drawdown_percentage:.2f}% drawdown limit")
-
             # Check if percentage is wrong (tolerance of 0.1%)
             if abs(file_drawdown_percentage - drawdown_percentage) > 0.1:
-                logger.warning(
-                    f"⚠️  INCORRECT DRAWDOWN PERCENTAGE! "
-                    f"File has {file_drawdown_percentage:.2f}%, should be {drawdown_percentage}%"
-                )
                 needs_correction = True
         else:
-            logger.warning("⚠️  Invalid starting balance or tier size in file")
             needs_correction = True
 
         # Apply correction ONLY if the calculation is wrong
         if needs_correction:
-            logger.warning("🔧 CORRECTING DRAWDOWN CALCULATION...")
-            logger.warning(f"   Keeping starting balance at: ${file_starting:,.2f}")
-            logger.warning(f"   Fixing max_drawdown_balance to: ${correct_max_drawdown:,.2f}")
+            logger.info("🔧 Correcting drawdown calculation...")
 
             with _drawdown_lock:
-                # Keep the starting balance the same (don't reset it!)
-                # Only fix the max_drawdown_balance calculation
                 max_drawdown_balance = correct_max_drawdown
-                # starting_balance stays the same!
 
-            save_drawdown_data()
+            save_drawdown_data(selected_account)
 
-            logger.info(f"✅ CORRECTED - Max Drawdown Balance: ${max_drawdown_balance:,.2f}")
-            logger.info(f"✅ Starting Balance preserved: ${starting_balance:,.2f}")
-            logger.info(
-                f"✅ You can lose up to ${correct_drawdown_limit:,.2f} ({drawdown_percentage}%) from your starting balance")
+        # Display trader-friendly summary
+        logger.info("")
+        logger.info("💼 ═══════════════════════════════════════════════════════════")
+        logger.info(f"   DAILY RISK LIMITS - Account #{selected_account['accNum']}")
+        logger.info("   ═══════════════════════════════════════════════════════════")
+        logger.info(f"   💰 Current Balance:    ${current_balance:,.2f}")
+        logger.info(f"   📊 Starting Balance:   ${file_starting:,.2f}")
+        logger.info(f"   🎯 Tier Size:          ${tier_size:,.2f}")
+        logger.info(f"   🛡️  Max Loss Allowed:   ${correct_drawdown_limit:,.2f} ({drawdown_percentage}%)")
+        logger.info("")
+
+        # Show P&L status
+        if daily_pnl >= 0:
+            logger.info(f"   📈 Daily P&L:          +${daily_pnl:,.2f} ✨")
         else:
-            logger.info("✅ Drawdown settings are correct - no changes needed")
-            logger.info(
-                f"✅ You can lose up to ${correct_drawdown_limit:,.2f} ({drawdown_percentage}%) from starting balance of ${file_starting:,.2f}")
-
-        # Final check - warn if close to drawdown limit
-        if current_balance <= file_max_dd:
-            logger.error("🚨 CRITICAL: Account has reached or exceeded daily drawdown limit!")
-            logger.error(f"   Current: ${current_balance:,.2f} | Limit: ${file_max_dd:,.2f}")
-        elif current_balance - file_max_dd < correct_drawdown_limit * 0.2:  # Within 20% of limit
             remaining = current_balance - file_max_dd
-            logger.warning(f"⚠️  WARNING: Close to drawdown limit! Only ${remaining:,.2f} remaining")
+            logger.info(f"   📉 Daily P&L:          ${daily_pnl:,.2f}")
+            logger.info(f"   💵 Room to Trade:      ${remaining:,.2f}")
 
-        logger.info("=" * 60)
+            # Check status
+            if current_balance <= file_max_dd:
+                logger.info("")
+                logger.info("   🚨 TRADING HALTED - Daily limit reached!")
+            elif remaining < correct_drawdown_limit * 0.2:  # Within 20% of limit
+                logger.info(f"   ⚠️  Approaching limit - Trade carefully!")
+
+        logger.info("   ═══════════════════════════════════════════════════════════")
+        logger.info("")
+
         return True
 
     except Exception as e:
-        logger.error(f"Error validating drawdown: {e}", exc_info=True)
+        logger.error(f"❌ Error validating drawdown: {e}")
         return False
 
 # Synchronous wrapper for reset_daily_drawdown
@@ -355,7 +366,7 @@ def reset_daily_drawdown(accounts_client, selected_account):
                     f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
                 )
 
-                save_drawdown_data()
+                save_drawdown_data(selected_account)
                 return True
         else:
             # No event loop running, we can create one and run the async function
@@ -388,7 +399,7 @@ def reset_daily_drawdown(accounts_client, selected_account):
                 f"Max Drawdown Balance=${max_drawdown_balance:.2f}"
             )
 
-            save_drawdown_data()
+            save_drawdown_data(selected_account)
             return False
 
 
@@ -410,13 +421,20 @@ async def schedule_daily_reset_async(accounts_client, selected_account):
         # Calculate wait time in seconds
         wait_time = (reset_time - now).total_seconds()
 
-        logger.info(f"Scheduling next drawdown reset at {reset_time.strftime('%Y-%m-%d %H:%M:%S')} EST")
+        logger.info(f"⏰ Next reset at {reset_time.strftime('%I:%M %p')} EST ({reset_time.strftime('%b %d')})")
 
         # Sleep until it's time to reset
         await asyncio.sleep(wait_time)
 
         # Perform the reset directly with the async function
+        logger.info("")
+        logger.info("🔄 ═══════════════════════════════════════════════════════════")
+        logger.info("   DAILY RESET - Refreshing drawdown limits...")
+        logger.info("   ═══════════════════════════════════════════════════════════")
         await reset_daily_drawdown_async(accounts_client, selected_account)
+        logger.info("   ✅ Reset complete - Fresh limits applied!")
+        logger.info("   ═══════════════════════════════════════════════════════════")
+        logger.info("")
 
         # Schedule the next reset
         asyncio.create_task(schedule_daily_reset_async(accounts_client, selected_account))

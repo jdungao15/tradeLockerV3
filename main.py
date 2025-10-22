@@ -8,6 +8,24 @@ import signal
 import sys
 
 
+# Filter to suppress unwanted library messages
+class StdoutFilter:
+    def __init__(self, stream):
+        self.stream = stream
+        self.buffer = ""
+
+    def write(self, text):
+        # Suppress specific unwanted messages
+        if "Got difference for account updates" in text:
+            return
+        self.stream.write(text)
+
+    def flush(self):
+        self.stream.flush()
+
+# Apply stdout filter
+sys.stdout = StdoutFilter(sys.stdout)
+
 from colorama import init, Fore, Style
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
@@ -27,12 +45,14 @@ from services.drawdown_manager import (
     schedule_daily_reset_async,
     max_drawdown_balance
 )
+# Multi-account drawdown management
+from services import multi_account_drawdown_manager
 from cli.display_menu import display_menu, display_risk_menu, get_risk_percentage_input, get_drawdown_percentage_input
 from services.order_handler import place_orders_with_risk_check
 from services.pos_monitor import monitor_existing_position
 from services.news_filter import NewsEventFilter
 from services.signal_management import SignalManager
-import risk_config
+import config.risk_config as risk_config
 from core.signal_parser import find_matching_instrument
 
 
@@ -63,6 +83,9 @@ class TradingBot:
         self.quotes_client = None
         self.selected_account = None
 
+        # Multi-account tracking
+        self.monitored_accounts = []  # List of accounts to monitor for daily drawdown
+
         # Tasks tracking
         self._tasks = set()
         self._shutdown_flag = False
@@ -73,7 +96,7 @@ class TradingBot:
 
     def _setup_logging(self):
         """Configure logging for the application"""
-        from logging_config import setup_logging
+        from config.logging_config import setup_logging
         setup_logging()
         self.logger = logging.getLogger("trading_bot")
 
@@ -110,6 +133,9 @@ class TradingBot:
             self.logger.info("Connecting to Telegram...")
             self.client = TelegramClient('./my_session', int(self.api_id), self.api_hash)
 
+            # Suppress Telethon library debug messages
+            logging.getLogger('telethon').setLevel(logging.WARNING)
+
             # Connect first
             await self.client.connect()
 
@@ -130,7 +156,7 @@ class TradingBot:
                     self.logger.error(f"Authentication error: {e}")
                     return False
             else:
-                self.logger.info("Already authenticated with Telegram")
+                pass  # Silent - already authenticated
 
             # Authenticate with TradeLocker API
             self.auth = TradeLockerAuth()
@@ -146,9 +172,8 @@ class TradingBot:
             self.orders_client = TradeLockerOrders(self.auth)
             self.quotes_client = TradeLockerQuotes(self.auth)
 
-            # Initialize news filter
+            # Initialize news filter (silent)
             if self.enable_news_filter:
-                self.logger.info("Initializing economic calendar for news filtering...")
                 await self.news_filter.initialize()
                 # Schedule regular updates
                 self._schedule_news_calendar_updates()
@@ -163,10 +188,7 @@ class TradingBot:
                 self.auth
             )
 
-            self.logger.info("Signal manager initialized with reply-based command handling")
-
-            # We don't need to configure any settings as the new implementation
-            # handles everything automatically through the reply mechanism
+            # Silent initialization - signal manager ready
 
             return True
         except Exception as e:
@@ -289,19 +311,38 @@ class TradingBot:
 
     async def start_drawdown_monitor(self):
         """Start the drawdown monitoring with proper async handling"""
-        # Load drawdown data
+        # Load drawdown data for the trading account (single account manager)
         load_drawdown_data(self.selected_account)
 
-        # ⭐ ADD THIS - Validate and fix drawdown if needed
+        # Validate and fix drawdown if needed for trading account
         from services.drawdown_manager import validate_and_fix_drawdown
         await validate_and_fix_drawdown(self.accounts_client, self.selected_account)
 
-        # Schedule first reset using async approach
+        # Schedule reset for trading account (single account)
         reset_task = asyncio.create_task(
             schedule_daily_reset_async(self.accounts_client, self.selected_account)
         )
         self._tasks.add(reset_task)
         reset_task.add_done_callback(self._tasks.discard)
+
+        # Initialize multi-account drawdown tracking if we have monitored accounts
+        if self.monitored_accounts and len(self.monitored_accounts) > 0:
+            # Load existing multi-account data (silent)
+            multi_account_drawdown_manager.load_accounts_drawdown()
+
+            # Initialize drawdown for each monitored account (silent)
+            for account in self.monitored_accounts:
+                multi_account_drawdown_manager.initialize_account_drawdown(account)
+
+            # Display current status
+            multi_account_drawdown_manager.display_all_accounts_drawdown()
+
+            # Schedule daily reset for all monitored accounts at 7 PM EST
+            multi_reset_task = asyncio.create_task(
+                multi_account_drawdown_manager.schedule_daily_reset_async(self.accounts_client)
+            )
+            self._tasks.add(multi_reset_task)
+            multi_reset_task.add_done_callback(self._tasks.discard)
 
     async def display_upcoming_news(self):
         """Display upcoming high-impact news events for major currencies"""
@@ -453,6 +494,31 @@ class TradingBot:
             self.logger.error(f"Error selecting account: {e}", exc_info=True)
             return False
 
+    async def setup_multi_account_tracking(self, accounts_data):
+        """Automatically set up drawdown tracking for ALL active accounts"""
+        try:
+            # Get only ACTIVE accounts
+            active_accounts = [acc for acc in accounts_data['accounts'] if acc.get('status') == 'ACTIVE']
+
+            if not active_accounts:
+                self.logger.warning("⚠️  No active accounts available for tracking.")
+                return False
+
+            # Set all active accounts for monitoring
+            self.monitored_accounts = active_accounts
+
+            # Only show if multiple accounts
+            if len(active_accounts) > 1:
+                self.logger.info("")
+                self.logger.info(f"🔔 Tracking {len(active_accounts)} accounts for daily drawdown reset")
+                self.logger.info("")
+
+            return True
+
+        except Exception as e:
+            self.logger.error(f"❌ Error setting up multi-account tracking: {e}")
+            return False
+
     # -------------------------------------------------------------------------
     # Communication Methods (Telegram)
     # -------------------------------------------------------------------------
@@ -511,110 +577,49 @@ class TradingBot:
     async def display_monitored_channels(self):
         """
         Display all Telegram channels being monitored by the bot.
-        Shows channel names, IDs, and verification status.
-        Call this during bot initialization after Telegram client is connected.
+        Shows only channel names and status - clean and simple.
         """
         try:
-            self.logger.info("=" * 70)
-            self.logger.info("TELEGRAM CHANNEL MONITORING STATUS")
-            self.logger.info("=" * 70)
-
             if not self.channel_ids or len(self.channel_ids) == 0:
-                self.logger.warning("No channels configured for monitoring!")
-                self.logger.warning("Add channel IDs to self.channel_ids in your config")
-                self.logger.info("=" * 70)
+                self.logger.warning("⚠️  No channels configured for monitoring!")
                 return
 
-            self.logger.info(f"Configured to monitor {len(self.channel_ids)} channel(s)")
             self.logger.info("")
+            self.logger.info("📡 ══════════════════════════════════════════════════")
+            self.logger.info(f"   MONITORING {len(self.channel_ids)} TELEGRAM CHANNEL(S)")
+            self.logger.info("   ══════════════════════════════════════════════════")
 
             # Track statistics
             accessible_count = 0
             inaccessible_count = 0
 
             # Check each channel
-            for i, channel_id in enumerate(self.channel_ids, 1):
+            for channel_id in self.channel_ids:
                 try:
                     # Try to get entity information
                     entity = await self.client.get_entity(channel_id)
 
                     # Extract channel information
                     channel_name = entity.title if hasattr(entity, 'title') else 'Unknown'
-                    username = entity.username if hasattr(entity, 'username') else None
-
-                    # Determine channel type
-                    from telethon.tl.types import Channel, Chat
-                    if isinstance(entity, Channel):
-                        if entity.broadcast:
-                            channel_type = "[Channel]"
-                        else:
-                            channel_type = "[Supergroup]"
-                    else:
-                        channel_type = "[Group]"
 
                     # Success - channel is accessible
                     accessible_count += 1
-
-                    self.logger.info(f"{i}. OK {channel_type}: {Fore.GREEN}{channel_name}{Style.RESET_ALL}")
-                    self.logger.info(f"   ID: {Fore.CYAN}{channel_id}{Style.RESET_ALL}")
-
-                    if username:
-                        self.logger.info(f"   Username: {Fore.YELLOW}@{username}{Style.RESET_ALL}")
-
-                    self.logger.info(f"   Status: {Fore.GREEN}Accessible - Monitoring active{Style.RESET_ALL}")
-
-                    # Try to get latest message to verify read access
-                    try:
-                        messages = await self.client.get_messages(entity, limit=1)
-                        if messages:
-                            last_msg_date = messages[0].date.strftime('%Y-%m-%d %H:%M:%S')
-                            self.logger.info(f"   Last message: {last_msg_date}")
-                    except:
-                        self.logger.info(
-                            f"   {Fore.YELLOW}WARNING: Can see channel but cannot read messages{Style.RESET_ALL}")
-
-                    self.logger.info("")
-
-                except ValueError as e:
-                    # Channel ID not found or invalid
-                    inaccessible_count += 1
-                    self.logger.error(f"{i}. ERROR Channel ID: {Fore.RED}{channel_id}{Style.RESET_ALL}")
-                    self.logger.error(f"   Error: {Fore.RED}Channel not found or invalid ID{Style.RESET_ALL}")
-                    self.logger.error(f"   Bot cannot access this channel!")
-                    self.logger.info("")
+                    self.logger.info(f"   ✅ {channel_name}")
 
                 except Exception as e:
-                    # Other errors
+                    # Channel not accessible
                     inaccessible_count += 1
-                    self.logger.error(f"{i}. ERROR Channel ID: {Fore.RED}{channel_id}{Style.RESET_ALL}")
-                    self.logger.error(f"   Error: {Fore.RED}{str(e)}{Style.RESET_ALL}")
-                    self.logger.info("")
+                    self.logger.info(f"   ❌ Channel ID {channel_id} - Not accessible")
 
-            # Summary
-            self.logger.info("-" * 70)
-            self.logger.info(f"MONITORING SUMMARY:")
-            self.logger.info(f"   Total configured: {len(self.channel_ids)}")
-            self.logger.info(f"   {Fore.GREEN}Accessible: {accessible_count}{Style.RESET_ALL}")
+            self.logger.info("   ══════════════════════════════════════════════════")
 
             if inaccessible_count > 0:
-                self.logger.warning(f"   {Fore.RED}Inaccessible: {inaccessible_count}{Style.RESET_ALL}")
-                self.logger.warning("")
-                self.logger.warning(
-                    f"   {Fore.YELLOW}WARNING: Bot cannot monitor {inaccessible_count} channel(s)!{Style.RESET_ALL}")
-                self.logger.warning("   Possible reasons:")
-                self.logger.warning("   1. Wrong channel ID format")
-                self.logger.warning("   2. Bot not added to channel")
-                self.logger.warning("   3. Channel was deleted or made private")
-                self.logger.warning("")
-                self.logger.warning("   Run 'python tools/get_telegram_channels.py' to get correct IDs")
-            else:
-                self.logger.info(f"   {Fore.GREEN}All channels accessible!{Style.RESET_ALL}")
+                self.logger.warning(f"   ⚠️  {inaccessible_count} channel(s) not accessible")
 
-            self.logger.info("=" * 70)
             self.logger.info("")
 
         except Exception as e:
-            self.logger.error(f"Error displaying monitored channels: {e}", exc_info=True)
+            self.logger.error(f"❌ Error checking channels: {e}")
     # -------------------------------------------------------------------------
     # Trading Signal Processing Methods
     # -------------------------------------------------------------------------
@@ -659,23 +664,27 @@ class TradingBot:
             # If not a command, parse as a trading signal
             parsed_signal = await parse_signal_async(message_text)
             if parsed_signal is None:
-                self.logger.info(f"{colored_time} Received invalid signal: {message_text}")
+                # Silent - message was not a valid trading signal
                 return
 
             # Check if this is a reduced risk signal
             reduced_risk = parsed_signal.get('reduced_risk', False)
-            if reduced_risk:
-                self.logger.info(f"{colored_time} {Fore.YELLOW}Signal identified as REDUCED RISK.{Style.RESET_ALL}")
+            risk_emoji = "⚠️ REDUCED RISK" if reduced_risk else ""
 
-            self.logger.info(f"{colored_time} {Fore.CYAN}Received trading signal:{Style.RESET_ALL} {message_text}")
-            self.logger.info(
-                f"{Fore.YELLOW}Signal details:{Style.RESET_ALL} Instrument: {Fore.GREEN}{parsed_signal['instrument']}{Style.RESET_ALL}, "
-                f"Type: {Fore.GREEN}{parsed_signal['order_type'].upper()}{Style.RESET_ALL}, "
-                f"Entry: {Fore.CYAN}{parsed_signal['entry_point']}{Style.RESET_ALL}, "
-                f"SL: {Fore.RED}{parsed_signal['stop_loss']}{Style.RESET_ALL}")
-            self.logger.info(
-                f"Take profits: {Fore.GREEN}{', '.join(map(str, parsed_signal['take_profits']))}{Style.RESET_ALL}")
-            self.logger.info(f"Using account ID: {self.selected_account['id']}")
+            # Clean signal notification with timestamp
+            from datetime import datetime
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            direction = parsed_signal['order_type'].upper()
+            instrument = parsed_signal['instrument']
+            entry = parsed_signal['entry_point']
+            sl = parsed_signal['stop_loss']
+            tps = ', '.join(map(str, parsed_signal['take_profits']))
+
+            self.logger.info("")
+            self.logger.info(f"📊 [{timestamp}] NEW SIGNAL {risk_emoji}")
+            self.logger.info(f"   {instrument} {direction} @ {entry}")
+            self.logger.info(f"   🛡️  SL: {sl} | 🎯 TP: {tps}")
+            self.logger.info("")
 
             # Apply TP filtering based on user preferences
             from core.signal_parser import filter_take_profits_by_preference
@@ -688,16 +697,8 @@ class TradingBot:
 
             # Log the TP selection if it's different from original
             if len(filtered_tps) < len(original_tps):
-                # Log which TPs we're using
-                original_tp_str = ', '.join([f"TP{i + 1}: {original_tps[i]}" for i in range(len(original_tps))])
-                filtered_tp_str = ', '.join([f"TP{original_tps.index(tp) + 1}: {tp}" for tp in filtered_tps])
-
-                self.logger.info(
-                    f"{colored_time}: {Fore.CYAN}Using {len(filtered_tps)} of {len(original_tps)} take profits "
-                    f"based on {tp_selection['mode']} configuration{Style.RESET_ALL}"
-                )
-                self.logger.info(f"Original TPs: {original_tp_str}")
-                self.logger.info(f"Selected TPs: {filtered_tp_str}")
+                # Show TP selection briefly
+                self.logger.info(f"   📌 Using {len(filtered_tps)} of {len(original_tps)} TPs ({tp_selection['mode']})")
 
             # Check news restrictions if enabled
             if self.enable_news_filter:
@@ -706,11 +707,10 @@ class TradingBot:
                     can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
 
                     if not can_trade:
-                        self.logger.warning(
-                            f"{colored_time}: {Fore.RED}Cannot place trade for {parsed_signal['instrument']}: {reason}{Style.RESET_ALL}")
+                        self.logger.warning(f"   🚫 Trade blocked: {reason}")
                         return
                 except AttributeError as e:
-                    self.logger.error(f"{colored_time}: Unexpected error: {e}. Skipping this signal.")
+                    self.logger.error(f"   ❌ Error: {e}")
                     return
 
             # Refresh account data to get latest balance
@@ -740,7 +740,8 @@ class TradingBot:
                 reduced_risk  # Pass the reduced risk flag
             )
 
-            self.logger.info(f"{colored_time}: Position sizes: {Fore.YELLOW}{position_sizes}{Style.RESET_ALL}")
+            # Debug only - position sizes calculated
+            self.logger.debug(f"Position sizes: {position_sizes}")
 
             # Display risk information
             risk_percentage = "0.5%" if reduced_risk else "1.0%"  # Approximate values for display
@@ -795,6 +796,11 @@ class TradingBot:
             if not await self.select_account(accounts_data):
                 self.logger.error("Account selection failed. Exiting.")
                 return
+
+            # Automatically set up multi-account tracking for ALL active accounts
+            if not await self.setup_multi_account_tracking(accounts_data):
+                self.logger.warning("Failed to set up multi-account tracking. Continuing with trading account only.")
+                self.monitored_accounts = [self.selected_account]
 
             # Load drawdown data and schedule daily reset
             await self.start_drawdown_monitor()
@@ -879,7 +885,7 @@ async def handle_tp_selection():
     """Handle take profit selection configuration"""
     while True:
         from cli.display_menu import display_tp_selection_menu
-        import risk_config
+        import config.risk_config as risk_config
         from colorama import Fore, Style
 
         tp_choice = display_tp_selection_menu()

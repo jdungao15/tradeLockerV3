@@ -105,5 +105,60 @@
     "instrument": "XAUUSD",
     "entry_price": 4275,
     "timestamp": "2025-10-19T21:38:16.476449"
+  },
+  "584": {
+    "orders": [
+      "7421932185936636816"
+    ],
+    "take_profits": [
+      1.40485
+    ],
+    "instrument": "USDCAD",
+    "entry_price": 1.39983,
+    "timestamp": "2025-10-22T06:00:31.500879"
+  },
+  "586": {
+    "orders": [
+      "7421932185936638288"
+    ],
+    "take_profits": [
+      1.40485
+    ],
+    "instrument": "USDCAD",
+    "entry_price": 1.39983,
+    "timestamp": "2025-10-22T06:14:37.013517"
+  },
+  "587": {
+    "orders": [
+      "7421932185936638291"
+    ],
+    "take_profits": [
+      1.40485
+    ],
+    "instrument": "USDCAD",
+    "entry_price": 1.39983,
+    "timestamp": "2025-10-22T06:14:37.475691"
+  },
+  "588": {
+    "orders": [
+      "7421932185936638374"
+    ],
+    "take_profits": [
+      1.40485
+    ],
+    "instrument": "USDCAD",
+    "entry_price": 1.39984,
+    "timestamp": "2025-10-22T06:15:20.545343"
+  },
+  "589": {
+    "orders": [
+      "7421932185936639212"
+    ],
+    "take_profits": [
+      1.40485
+    ],
+    "instrument": "USDCAD",
+    "entry_price": 1.40112,
+    "timestamp": "2025-10-22T06:25:43.732563"
   }
 }
