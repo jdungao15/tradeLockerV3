@@ -5,6 +5,7 @@ from services.pos_monitor import monitor_existing_position
 from cli.display_menu import (
     display_menu,
     display_risk_menu,
+    display_account_risk_menu,
     get_risk_percentage_input,
     get_drawdown_percentage_input
 )
@@ -880,8 +881,13 @@ async def shutdown(loop):
     logging.info("Shutdown complete.")
 
 
-async def handle_tp_selection():
-    """Handle take profit selection configuration"""
+async def handle_tp_selection(account_id=None):
+    """
+    Handle take profit selection configuration
+
+    Args:
+        account_id: Account number (None for global defaults)
+    """
     while True:
         from cli.display_menu import display_tp_selection_menu
         import config.risk_config as risk_config
@@ -890,27 +896,27 @@ async def handle_tp_selection():
         tp_choice = display_tp_selection_menu()
 
         if tp_choice == '1':
-            risk_config.update_tp_selection("all")
+            risk_config.update_tp_selection("all", account_id=account_id)
             print(f"{Fore.GREEN}Now using all take profits from signals.{Style.RESET_ALL}")
 
         elif tp_choice == '2':
-            risk_config.update_tp_selection("first_only")
+            risk_config.update_tp_selection("first_only", account_id=account_id)
             print(f"{Fore.GREEN}Now using only the first take profit (TP1).{Style.RESET_ALL}")
 
         elif tp_choice == '3':
-            risk_config.update_tp_selection("first_two")
+            risk_config.update_tp_selection("first_two", account_id=account_id)
             print(f"{Fore.GREEN}Now using only the first two take profits.{Style.RESET_ALL}")
 
         elif tp_choice == '4':
-            risk_config.update_tp_selection("last_two")
+            risk_config.update_tp_selection("last_two", account_id=account_id)
             print(f"{Fore.GREEN}Now using only the last two take profits.{Style.RESET_ALL}")
 
         elif tp_choice == '5':
-            risk_config.update_tp_selection("odd")
+            risk_config.update_tp_selection("odd", account_id=account_id)
             print(f"{Fore.GREEN}Now using odd-numbered take profits (TP1, TP3, etc.).{Style.RESET_ALL}")
 
         elif tp_choice == '6':
-            risk_config.update_tp_selection("even")
+            risk_config.update_tp_selection("even", account_id=account_id)
             print(f"{Fore.GREEN}Now using even-numbered take profits (TP2, TP4, etc.).{Style.RESET_ALL}")
 
         elif tp_choice == '7':
@@ -924,7 +930,7 @@ async def handle_tp_selection():
                     print(f"{Fore.RED}Invalid selection. Must include at least one TP.{Style.RESET_ALL}")
                     continue
 
-                risk_config.update_tp_selection("custom", custom_selection)
+                risk_config.update_tp_selection("custom", custom_selection, account_id=account_id)
                 tp_list = ', '.join([f'TP{i}' for i in custom_selection])
                 print(f"{Fore.GREEN}Now using custom selection: {tp_list}{Style.RESET_ALL}")
 
@@ -940,41 +946,46 @@ async def handle_tp_selection():
         input("\nPress Enter to continue...")
 
 
-async def handle_risk_configuration():
-    """Handle risk management configuration menu"""
+async def handle_account_specific_configuration(account_id):
+    """
+    Handle risk configuration for a specific account
+
+    Args:
+        account_id: The account number to configure
+    """
     while True:
-        risk_choice = display_risk_menu()
+        risk_choice = display_account_risk_menu(account_id)
 
         if risk_choice == '1':
             # View current risk settings
-            risk_config.display_current_risk_settings()
+            risk_config.display_current_risk_settings(account_id)
             input("\nPress Enter to continue...")
 
         elif risk_choice == '2':
             # Apply conservative profile
             confirmation = input(f"Apply {Fore.BLUE}Conservative{Style.RESET_ALL} risk profile? (y/n): ").lower()
             if confirmation == 'y':
-                risk_config.apply_risk_profile("conservative")
+                risk_config.apply_risk_profile("conservative", account_id)
                 print(f"{Fore.GREEN}Conservative risk profile applied.{Style.RESET_ALL}")
-                risk_config.display_current_risk_settings()
+                risk_config.display_current_risk_settings(account_id)
                 input("\nPress Enter to continue...")
 
         elif risk_choice == '3':
             # Apply balanced profile
             confirmation = input(f"Apply {Fore.GREEN}Balanced{Style.RESET_ALL} risk profile? (y/n): ").lower()
             if confirmation == 'y':
-                risk_config.apply_risk_profile("balanced")
+                risk_config.apply_risk_profile("balanced", account_id)
                 print(f"{Fore.GREEN}Balanced risk profile applied.{Style.RESET_ALL}")
-                risk_config.display_current_risk_settings()
+                risk_config.display_current_risk_settings(account_id)
                 input("\nPress Enter to continue...")
 
         elif risk_choice == '4':
             # Apply aggressive profile
             confirmation = input(f"Apply {Fore.RED}Aggressive{Style.RESET_ALL} risk profile? (y/n): ").lower()
             if confirmation == 'y':
-                risk_config.apply_risk_profile("aggressive")
+                risk_config.apply_risk_profile("aggressive", account_id)
                 print(f"{Fore.GREEN}Aggressive risk profile applied.{Style.RESET_ALL}")
-                risk_config.display_current_risk_settings()
+                risk_config.display_current_risk_settings(account_id)
                 input("\nPress Enter to continue...")
 
         elif risk_choice == '5':
@@ -984,12 +995,12 @@ async def handle_risk_configuration():
             # Normal risk
             normal_risk = get_risk_percentage_input("Forex", is_reduced=False)
             if normal_risk:
-                risk_config.update_risk_percentage("FOREX", normal_risk, is_reduced=False)
+                risk_config.update_risk_percentage("FOREX", normal_risk, is_reduced=False, account_id=account_id)
 
             # Reduced risk
             reduced_risk = get_risk_percentage_input("Forex", is_reduced=True)
             if reduced_risk:
-                risk_config.update_risk_percentage("FOREX", reduced_risk, is_reduced=True)
+                risk_config.update_risk_percentage("FOREX", reduced_risk, is_reduced=True, account_id=account_id)
 
             print(f"{Fore.GREEN}Forex risk settings updated.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
@@ -1001,12 +1012,12 @@ async def handle_risk_configuration():
             # Normal risk
             normal_risk = get_risk_percentage_input("CFD", is_reduced=False)
             if normal_risk:
-                risk_config.update_risk_percentage("CFD", normal_risk, is_reduced=False)
+                risk_config.update_risk_percentage("CFD", normal_risk, is_reduced=False, account_id=account_id)
 
             # Reduced risk
             reduced_risk = get_risk_percentage_input("CFD", is_reduced=True)
             if reduced_risk:
-                risk_config.update_risk_percentage("CFD", reduced_risk, is_reduced=True)
+                risk_config.update_risk_percentage("CFD", reduced_risk, is_reduced=True, account_id=account_id)
 
             print(f"{Fore.GREEN}CFD risk settings updated.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
@@ -1018,12 +1029,12 @@ async def handle_risk_configuration():
             # Normal risk
             normal_risk = get_risk_percentage_input("XAUUSD", is_reduced=False)
             if normal_risk:
-                risk_config.update_risk_percentage("XAUUSD", normal_risk, is_reduced=False)
+                risk_config.update_risk_percentage("XAUUSD", normal_risk, is_reduced=False, account_id=account_id)
 
             # Reduced risk
             reduced_risk = get_risk_percentage_input("XAUUSD", is_reduced=True)
             if reduced_risk:
-                risk_config.update_risk_percentage("XAUUSD", reduced_risk, is_reduced=True)
+                risk_config.update_risk_percentage("XAUUSD", reduced_risk, is_reduced=True, account_id=account_id)
 
             print(f"{Fore.GREEN}XAUUSD risk settings updated.{Style.RESET_ALL}")
             input("\nPress Enter to continue...")
@@ -1035,7 +1046,7 @@ async def handle_risk_configuration():
             # Get new drawdown percentage
             new_drawdown = get_drawdown_percentage_input()
             if new_drawdown:
-                risk_config.update_drawdown_percentage(new_drawdown)
+                risk_config.update_drawdown_percentage(new_drawdown, account_id)
                 print(f"{Fore.GREEN}Daily drawdown percentage updated to {new_drawdown:.1f}%.{Style.RESET_ALL}")
                 print(f"{Fore.YELLOW}Note: This creates a custom profile based on your current settings.{Style.RESET_ALL}")
                 print(f"{Fore.YELLOW}The new setting will apply after the next daily reset.{Style.RESET_ALL}")
@@ -1045,17 +1056,53 @@ async def handle_risk_configuration():
         elif risk_choice == '9':
             # Reset to defaults
             confirmation = input(
-                f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()
+                f"{Fore.YELLOW}Are you sure you want to reset to default (balanced) risk settings? (y/n): {Style.RESET_ALL}").lower()  # noqa: E501
             if confirmation == 'y':
-                risk_config.apply_risk_profile("balanced")
+                risk_config.apply_risk_profile("balanced", account_id)
                 print(f"{Fore.GREEN}Risk settings reset to defaults (balanced profile).{Style.RESET_ALL}")
                 input("\nPress Enter to continue...")
 
         elif risk_choice == '10':
             # Configure Take Profit Selection
-            await handle_tp_selection()
+            await handle_tp_selection(account_id)
+
+        elif risk_choice == '12' and account_id is not None:
+            # Delete custom settings for this account
+            confirmation = input(
+                f"{Fore.YELLOW}Delete custom settings for account {account_id}? This will revert to global defaults. (y/n): {Style.RESET_ALL}").lower()  # noqa: E501
+            if confirmation == 'y':
+                risk_config.delete_account_settings(account_id)
+                print(f"{Fore.GREEN}Custom settings deleted. Account {account_id} now uses global defaults.{Style.RESET_ALL}")
+                input("\nPress Enter to continue...")
+                return  # Return to previous menu
 
         elif risk_choice == '11':
+            # Return to previous menu
+            return
+
+        else:
+            print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
+
+
+async def handle_risk_configuration():
+    """Handle risk management configuration menu"""
+    while True:
+        risk_choice = display_risk_menu()
+
+        if risk_choice == '1':
+            # Configure global default settings
+            await handle_account_specific_configuration(None)
+
+        elif risk_choice == '2':
+            # Configure per-account settings
+            account_id = input(f"\n{Fore.GREEN}Enter account number to configure: {Style.RESET_ALL}").strip()
+            if account_id:
+                await handle_account_specific_configuration(account_id)
+            else:
+                print(f"{Fore.RED}Invalid account number{Style.RESET_ALL}")
+                input("\nPress Enter to continue...")
+
+        elif risk_choice == '3':
             # Return to main menu
             return
 

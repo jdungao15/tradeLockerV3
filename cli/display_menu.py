@@ -49,14 +49,40 @@ def display_menu():
 
 
 def display_risk_menu():
-    """Display the risk management configuration menu"""
-    # Default drawdown percentage
-    drawdown_percentage = 4.0
-    # Try to get from risk_config if the function exists
-    if hasattr(risk_config, 'get_drawdown_percentage'):
-        drawdown_percentage = risk_config.get_drawdown_percentage()
-
+    """Display the initial risk management menu with account selection"""
     print(f"\n{Fore.CYAN}===== RISK MANAGEMENT CONFIGURATION ====={Style.RESET_ALL}")
+
+    # Get list of accounts with custom settings
+    custom_accounts = risk_config.get_all_account_ids()
+
+    print(f"\n{Fore.CYAN}-- Configure Risk Settings --{Style.RESET_ALL}")
+    print(f"{Fore.YELLOW}1.{Style.RESET_ALL} Configure Global Default Settings")
+    print(f"{Fore.YELLOW}2.{Style.RESET_ALL} Configure Per-Account Settings")
+
+    if custom_accounts:
+        print(f"\n{Fore.CYAN}-- Accounts with Custom Settings --{Style.RESET_ALL}")
+        for idx, account_id in enumerate(custom_accounts, 1):
+            print(f"  • Account {account_id}")
+
+    print(f"\n{Fore.YELLOW}3.{Style.RESET_ALL} Return to Main Menu")
+    print(f"{Fore.CYAN}========================================={Style.RESET_ALL}\n")
+
+    choice = input(f"{Fore.GREEN}Enter your choice (1-3): {Style.RESET_ALL}")
+    return choice
+
+
+def display_account_risk_menu(account_id=None):
+    """
+    Display risk configuration menu for a specific account or global defaults
+
+    Args:
+        account_id: Account number (None for global defaults)
+    """
+    # Default drawdown percentage
+    drawdown_percentage = risk_config.get_drawdown_percentage(account_id)
+
+    account_label = f"Account {account_id}" if account_id else "Global Defaults"
+    print(f"\n{Fore.CYAN}===== RISK CONFIGURATION: {account_label} ====={Style.RESET_ALL}")
     print(f"{Fore.YELLOW}1.{Style.RESET_ALL} View Current Risk Settings")
 
     # Risk profile options
@@ -78,10 +104,16 @@ def display_risk_menu():
     # Additional options
     print(f"{Fore.YELLOW}9.{Style.RESET_ALL} Reset to Default Risk Settings")
     print(f"{Fore.YELLOW}10.{Style.RESET_ALL} Configure Take Profit Selection")
-    print(f"{Fore.YELLOW}11.{Style.RESET_ALL} Return to Main Menu")
-    print(f"{Fore.CYAN}========================================={Style.RESET_ALL}\n")
 
-    choice = input(f"{Fore.GREEN}Enter your choice (1-11): {Style.RESET_ALL}")
+    # Account-specific options
+    if account_id is not None:
+        print(f"\n{Fore.CYAN}-- Account Management --{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}12.{Style.RESET_ALL} Delete Custom Settings (Revert to Global)")
+
+    print(f"\n{Fore.YELLOW}11.{Style.RESET_ALL} Return to Previous Menu")
+    print(f"{Fore.CYAN}================================================{Style.RESET_ALL}\n")
+
+    choice = input(f"{Fore.GREEN}Enter your choice: {Style.RESET_ALL}")
     return choice
 
 
@@ -180,3 +212,60 @@ def display_tp_selection_menu():
 
     choice = input(f"{Fore.GREEN}Enter your choice (1-8): {Style.RESET_ALL}")
     return choice
+
+
+def select_account_for_configuration(accounts_data):
+    """
+    Prompt user to select an account for risk configuration
+
+    Args:
+        accounts_data: Dictionary containing account information from TradeLocker API
+
+    Returns:
+        str: Account number or None if cancelled
+    """
+    print(f"\n{Fore.CYAN}===== SELECT ACCOUNT FOR CONFIGURATION ====={Style.RESET_ALL}")
+
+    if not accounts_data or 'accounts' not in accounts_data:
+        print(f"{Fore.RED}No account data available{Style.RESET_ALL}")
+        return None
+
+    accounts = accounts_data['accounts']
+
+    # Display available accounts
+    print(f"\n{Fore.CYAN}Available Accounts:{Style.RESET_ALL}\n")
+    for idx, account in enumerate(accounts, 1):
+        account_num = account.get('accNum', 'Unknown')
+        balance = account.get('accountBalance', 0)
+        status = account.get('status', 'Unknown')
+
+        # Check if this account has custom risk settings
+        has_custom = account_num in risk_config.get_all_account_ids()
+        custom_indicator = f" {Fore.YELLOW}[Custom]{Style.RESET_ALL}" if has_custom else ""
+
+        # Color code by status
+        status_color = Fore.GREEN if status == 'ACTIVE' else Fore.RED
+
+        print(f"{idx}. Account: {Fore.CYAN}{account_num}{Style.RESET_ALL} | "
+              f"Balance: ${balance:,.2f} | "
+              f"Status: {status_color}{status}{Style.RESET_ALL}{custom_indicator}")
+
+    print(f"\n{Fore.YELLOW}0.{Style.RESET_ALL} Cancel")
+    print(f"{Fore.CYAN}==========================================={Style.RESET_ALL}\n")
+
+    while True:
+        try:
+            choice = input(f"{Fore.GREEN}Select account (1-{len(accounts)}) or 0 to cancel: {Style.RESET_ALL}")
+            choice_num = int(choice)
+
+            if choice_num == 0:
+                return None
+
+            if 1 <= choice_num <= len(accounts):
+                selected_account = accounts[choice_num - 1]
+                return selected_account.get('accNum')
+            else:
+                print(f"{Fore.RED}Invalid selection. Please choose 1-{len(accounts)} or 0 to cancel{Style.RESET_ALL}")
+
+        except ValueError:
+            print(f"{Fore.RED}Please enter a valid number{Style.RESET_ALL}")

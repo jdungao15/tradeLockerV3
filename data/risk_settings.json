@@ -1,17 +1,24 @@
 {
-    "FOREX": {
-        "default": 0.01,
-        "reduced": 0.005
+    "global_default": {
+        "FOREX": {
+            "default": 0.01,
+            "reduced": 0.005
+        },
+        "CFD": {
+            "default": 0.01,
+            "reduced": 0.005
+        },
+        "XAUUSD": {
+            "default": 0.01,
+            "reduced": 0.005
+        },
+        "drawdown": {
+            "daily_percentage": 4.0
+        },
+        "tp_selection": {
+            "mode": "all",
+            "custom_selection": [1, 2, 3, 4]
+        }
     },
-    "CFD": {
-        "default": 0.01,
-        "reduced": 0.005
-    },
-    "XAUUSD": {
-        "default": 0.01,
-        "reduced": 0.005
-    },
-    "drawdown": {
-        "daily_percentage": 3.0
-    }
+    "accounts": {}
 }
