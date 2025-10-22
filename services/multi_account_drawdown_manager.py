@@ -166,7 +166,9 @@ def initialize_account_drawdown(account):
 
         # Calculate drawdown values
         tier_size, tier_name = get_tier_size(account_balance)
-        drawdown_percentage = risk_config.get_drawdown_percentage()
+        # Get account-specific drawdown percentage
+        account_num = account.get('accNum')
+        drawdown_percentage = risk_config.get_drawdown_percentage(account_id=account_num)
         drawdown_limit = tier_size * (drawdown_percentage / 100.0)
         max_drawdown_balance = account_balance - drawdown_limit
 

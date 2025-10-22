@@ -335,7 +335,7 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
         parsed_signal: Parsed signal
         position_sizes: Position sizes
         risk_amount: Risk amount
-        max_drawdown_balance: Max drawdown balance
+        max_drawdown_balance: Max drawdown balance (DEPRECATED - uses multi-account manager)
         colored_time: Formatted time
         message_id: Message ID for caching
 
@@ -386,11 +386,14 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
         # Get latest balance
         latest_balance = float(updated_account['accountBalance'])
 
-        # Check drawdown limits
-        if latest_balance - risk_amount < max_drawdown_balance:
+        # Check drawdown limits using multi-account manager
+        from services import multi_account_drawdown_manager
+
+        account_id = str(selected_account['id'])
+        if multi_account_drawdown_manager.would_exceed_drawdown(account_id, latest_balance, risk_amount):
             logger.warning(
-                f"{colored_time}: Balance {latest_balance} has reached or exceeded "
-                f"max draw down balance {max_drawdown_balance}. Skipping order placement."
+                f"{colored_time}: Trade would exceed drawdown limit for account {account_id}. "
+                f"Skipping order placement."
             )
             return None
 

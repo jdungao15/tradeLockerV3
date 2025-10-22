@@ -51,7 +51,8 @@ def load_drawdown_data(selected_account):
                         # Initialize with new account's data
                         account_balance = float(selected_account['accountBalance'])
                         tier_size, _ = get_tier_size(account_balance)
-                        drawdown_percentage = risk_config.get_drawdown_percentage()
+                        # Get account-specific drawdown percentage
+                        drawdown_percentage = risk_config.get_drawdown_percentage(account_id=account_num)
 
                         starting_balance = account_balance
                         drawdown_limit = tier_size * (drawdown_percentage / 100.0)
@@ -76,7 +77,9 @@ def load_drawdown_data(selected_account):
                 if selected_account:
                     account_balance = float(selected_account['accountBalance'])
                     tier_size, _ = get_tier_size(account_balance)
-                    drawdown_percentage = risk_config.get_drawdown_percentage()
+                    # Get account-specific drawdown percentage
+                    account_num = selected_account.get('accNum')
+                    drawdown_percentage = risk_config.get_drawdown_percentage(account_id=account_num)
 
                     # Use current balance as starting point temporarily
                     starting_balance = account_balance
@@ -200,8 +203,9 @@ async def reset_daily_drawdown_async(accounts_client, selected_account):
             # Determine the correct tier size based on realized balance
             tier_size, upper_limit = get_tier_size(account_balance)
 
-            # Get the configurable drawdown percentage from risk config (as a percentage)
-            drawdown_percentage = risk_config.get_drawdown_percentage()
+            # Get the configurable drawdown percentage from risk config (account-specific)
+            account_num = selected_account.get('accNum')
+            drawdown_percentage = risk_config.get_drawdown_percentage(account_id=account_num)
 
             # Convert percentage to decimal for calculation (e.g., 4.0% -> 0.04)
             drawdown_decimal = drawdown_percentage / 100.0
@@ -247,8 +251,9 @@ async def validate_and_fix_drawdown(accounts_client, selected_account):
         # Get current account balance
         current_balance = float(selected_account['accountBalance'])
 
-        # Get configured drawdown percentage from risk_config
-        drawdown_percentage = risk_config.get_drawdown_percentage()
+        # Get configured drawdown percentage from risk_config (account-specific)
+        account_num = selected_account.get('accNum')
+        drawdown_percentage = risk_config.get_drawdown_percentage(account_id=account_num)
 
         # Load current values from file
         with _drawdown_lock:
@@ -351,8 +356,9 @@ def reset_daily_drawdown(accounts_client, selected_account):
                 account_balance = float(selected_account['accountBalance'])
                 tier_size, _ = get_tier_size(account_balance)
 
-                # Get the configurable drawdown percentage
-                drawdown_percentage = risk_config.get_drawdown_percentage()
+                # Get the configurable drawdown percentage (account-specific)
+                account_num = selected_account.get('accNum')
+                drawdown_percentage = risk_config.get_drawdown_percentage(account_id=account_num)
                 drawdown_decimal = drawdown_percentage / 100.0
 
                 # Calculate using configurable percentage
@@ -384,8 +390,9 @@ def reset_daily_drawdown(accounts_client, selected_account):
             account_balance = float(selected_account['accountBalance'])
             tier_size, _ = get_tier_size(account_balance)
 
-            # Get the configurable drawdown percentage even in fallback
-            drawdown_percentage = risk_config.get_drawdown_percentage()
+            # Get the configurable drawdown percentage even in fallback (account-specific)
+            account_num = selected_account.get('accNum')
+            drawdown_percentage = risk_config.get_drawdown_percentage(account_id=account_num)
             drawdown_decimal = drawdown_percentage / 100.0
 
             # Calculate using configurable percentage
