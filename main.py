@@ -1,3 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Trading Bot Main Module
+Ensures UTF-8 encoding across all platforms (Windows, Linux, macOS)
+"""
+import sys
+import os
+
+# Force UTF-8 encoding for the entire application (must be done before other imports)
+if sys.version_info >= (3, 7):
+    # Python 3.7+ supports reconfigure
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    if hasattr(sys.stderr, 'reconfigure'):
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
+# Set environment variables for UTF-8 (important for Linux)
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+if 'LANG' not in os.environ:
+    os.environ['LANG'] = 'en_US.UTF-8'
+if 'LC_ALL' not in os.environ:
+    os.environ['LC_ALL'] = 'en_US.UTF-8'
+
 from core.signal_parser import find_matching_instrument
 import config.risk_config as risk_config
 from services.news_filter import NewsEventFilter
@@ -26,7 +50,6 @@ from cli.banner import display_banner
 from telethon import TelegramClient, events
 from dotenv import load_dotenv
 from colorama import init, Fore, Style
-import sys
 import signal
 import platform
 import pytz
@@ -544,7 +567,20 @@ class TradingBot:
             if self._shutdown_flag:
                 return
 
+            # Get message text and ensure proper UTF-8 encoding
             message_text = event.message.message
+
+            # Normalize text encoding to handle any platform-specific issues
+            if isinstance(message_text, bytes):
+                message_text = message_text.decode('utf-8', errors='replace')
+            elif isinstance(message_text, str):
+                # Ensure the string is properly encoded/decoded
+                try:
+                    message_text = message_text.encode('utf-8').decode('utf-8')
+                except (UnicodeDecodeError, UnicodeEncodeError):
+                    # If encoding fails, use replace to handle problematic characters
+                    message_text = message_text.encode('utf-8', errors='replace').decode('utf-8', errors='replace')
+
             message_time_utc = event.message.date
 
             # Extract channel information
