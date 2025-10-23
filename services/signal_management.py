@@ -358,12 +358,16 @@ class SignalManager:
             self.log_message(message_log)
             return False, None
 
+        # Create account-aware cache key (same format as when orders were stored)
+        account_id = account['id']
+        cache_key = f"{account_id}_{reply_to_msg_id}" if reply_to_msg_id else str(account_id)
+
         # Log detailed information about the IDs we're working with
         logger.info(
-            f"{colored_time}: Looking for cached orders with reply_to_msg_id: {reply_to_msg_id} (type: {type(reply_to_msg_id).__name__})")
+            f"{colored_time}: Looking for cached orders with cache_key: {cache_key}")
 
         # Try to get orders associated with the original message
-        cached_orders = self.order_cache.get_orders(reply_to_msg_id)
+        cached_orders = self.order_cache.get_orders(cache_key)
 
         if not cached_orders:
             logger.info(f"{colored_time}: No cached orders found for message ID {reply_to_msg_id}")
@@ -407,7 +411,7 @@ class SignalManager:
                     success = await task
                     if success:
                         # Remove the order from cache after successful cancellation
-                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        self.order_cache.remove_order(cache_key, order_id)
                         logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled pending order {order_id}{Style.RESET_ALL}")
                         success_count += 1
                     else:
@@ -417,11 +421,11 @@ class SignalManager:
 
             # If all orders were successfully cancelled, remove the message
             if success_count > 0:
-                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                remaining_orders = await self.get_remaining_orders_count(cache_key)
                 if remaining_orders == 0:
-                    self.order_cache.remove_message(reply_to_msg_id)
+                    self.order_cache.remove_message(cache_key)
                     logger.info(
-                        f"{colored_time}: {Fore.GREEN}All orders cancelled, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+                        f"{colored_time}: {Fore.GREEN}All orders cancelled, removed message from cache{Style.RESET_ALL}")
 
         elif command_type == 'close':
             # Use the same parallel processing logic that works for TP and cancel
@@ -446,7 +450,7 @@ class SignalManager:
                     if success:
                         # Successfully cancelled as pending order
 
-                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        self.order_cache.remove_order(cache_key, order_id)
                         logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled pending order {order_id}{Style.RESET_ALL}")
                         success_count += 1
 
@@ -455,7 +459,7 @@ class SignalManager:
                         close_success = await self.close_position(account, order_id)
 
                         if close_success:
-                            self.order_cache.remove_order(reply_to_msg_id, order_id)
+                            self.order_cache.remove_order(cache_key, order_id)
                             logger.info(
                                 f"{colored_time}: {Fore.GREEN}Closed active position {order_id}{Style.RESET_ALL}")
                             success_count += 1
@@ -467,11 +471,11 @@ class SignalManager:
 
             # If we successfully processed any orders, check if we should remove the message
             if success_count > 0:
-                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                remaining_orders = await self.get_remaining_orders_count(cache_key)
                 if remaining_orders == 0:
-                    self.order_cache.remove_message(reply_to_msg_id)
+                    self.order_cache.remove_message(cache_key)
                     logger.info(
-                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message from cache{Style.RESET_ALL}")
 
         elif command_type == 'cancel':
             # Use the same logic that works for TP command
@@ -493,7 +497,7 @@ class SignalManager:
                     success = await task
                     if success:
                         # Remove the order from cache after successful cancellation
-                        self.order_cache.remove_order(reply_to_msg_id, order_id)
+                        self.order_cache.remove_order(cache_key, order_id)
                         logger.info(f"{colored_time}: {Fore.YELLOW}Cancelled order {order_id}{Style.RESET_ALL}")
                         success_count += 1
 
@@ -501,7 +505,7 @@ class SignalManager:
                         # If cancellation didn't work, try to close as position
                         close_success = await self.close_position(account, order_id)
                         if close_success:
-                            self.order_cache.remove_order(reply_to_msg_id, order_id)
+                            self.order_cache.remove_order(cache_key, order_id)
                             logger.info(f"{colored_time}: {Fore.GREEN}Closed position {order_id}{Style.RESET_ALL}")
                             success_count += 1
                         else:
@@ -511,11 +515,11 @@ class SignalManager:
 
             # If we successfully processed any orders, check if we should remove the message
             if success_count > 0:
-                remaining_orders = await self.get_remaining_orders_count(reply_to_msg_id)
+                remaining_orders = await self.get_remaining_orders_count(cache_key)
                 if remaining_orders == 0:
-                    self.order_cache.remove_message(reply_to_msg_id)
+                    self.order_cache.remove_message(cache_key)
                     logger.info(
-                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message {reply_to_msg_id} from cache{Style.RESET_ALL}")
+                        f"{colored_time}: {Fore.GREEN}All orders processed, removed message from cache{Style.RESET_ALL}")
 
         elif command_type == 'breakeven':
             # For breakeven command, use entry price from cache
@@ -523,7 +527,7 @@ class SignalManager:
             entry_price = cached_orders.get('entry_price')
 
             if not entry_price:
-                logger.warning(f"{colored_time}: No entry price found in cache for message {reply_to_msg_id}")
+                logger.warning(f"{colored_time}: No entry price found in cache")
             # Process each order
             for order_id in order_ids:
                 be_success = await self.set_breakeven(account, order_id, entry_price)

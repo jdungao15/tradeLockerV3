@@ -90,7 +90,7 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
         is_cfd = instrument_type in ['EQUITY_CFD', 'INDEX_CFD', 'COMMODITY_CFD']
 
         if is_cfd:
-            logger.info(f"{colored_time}: Processing CFD instrument with 2-position runner allocation")
+            logger.info(f"{colored_time}: Processing CFD instrument")
 
             # For CFDs, sort TPs based on order direction
             if order_side == 'buy':
@@ -101,33 +101,55 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
             logger.info(
                 f"{colored_time}: Sorted TPs ({'descending' if order_side == 'buy' else 'ascending'}): {sorted_tps}")
 
-            # MODIFIED: Use only 2 positions - TP2 and TP3 (no 500-pip offset)
-            # Ensure we have at least 3 TPs to work with
-            if len(sorted_tps) < 3:
-                logger.error(f"{colored_time}: Need at least 3 take profits for CFD strategy, got {len(sorted_tps)}")
-                return None
+            # TP Selection Logic:
+            # - 1 TP: Use it
+            # - 2 TPs: Use both (TP1, TP2)
+            # - 3+ TPs: Use only TP2 and TP3 (skip first TP)
 
-            # For SELL: sorted_tps is ascending [4240, 4265, 4272], we want 4265 and 4240
-            # For BUY: sorted_tps is descending [4272, 4265, 4240], we want 4265 and 4240
-            # In both cases: index[1] is TP2, index[0] is TP3 (furthest/runner)
-            tp_for_pos1 = sorted_tps[1]  # Second TP (middle one)
-            tp_for_pos2 = sorted_tps[0]  # Third TP (furthest one - runner)
+            if len(sorted_tps) == 1:
+                # Single TP - use it
+                final_tps = [sorted_tps[0]]
+                logger.info(f"{colored_time}: Using single TP: {sorted_tps[0]}")
 
-            # Adjust position_sizes to only use last 2
-            if len(position_sizes) > 2:
-                position_sizes = position_sizes[-2:]  # Take last 2 sizes
-            elif len(position_sizes) == 1:
-                # Split equally if only one size given
-                pos_size = round(float(position_sizes[0]) / 2, 2)
-                position_sizes = [pos_size, pos_size]
+                # Adjust position sizes
+                if len(position_sizes) > 1:
+                    # Use first position size
+                    position_sizes = [position_sizes[0]]
 
-            # Create final TPs list with only 2 positions
-            final_tps = [tp_for_pos1, tp_for_pos2]
+            elif len(sorted_tps) == 2:
+                # Two TPs - use both
+                final_tps = sorted_tps  # Use both TPs
+                logger.info(f"{colored_time}: Using both TPs: TP1={sorted_tps[0]}, TP2={sorted_tps[1]}")
+
+                # Adjust position_sizes
+                if len(position_sizes) > 2:
+                    position_sizes = position_sizes[:2]  # Take first 2 sizes
+                elif len(position_sizes) == 1:
+                    # Split equally if only one size given
+                    pos_size = round(float(position_sizes[0]) / 2, 2)
+                    position_sizes = [pos_size, pos_size]
+
+            else:  # 3+ TPs
+                # Use TP2 and TP3 (skip first TP)
+                # For BUY (descending): [TP3, TP2, TP1] -> take indices [1, 2] = [TP2, TP1]
+                # For SELL (ascending): [TP1, TP2, TP3] -> take indices [1, 2] = [TP2, TP3]
+                final_tps = [sorted_tps[1], sorted_tps[2]]
+                logger.info(f"{colored_time}: Using TP2={sorted_tps[1]} and TP3={sorted_tps[2]} (skipping TP1={sorted_tps[0]})")
+
+                # Adjust position_sizes - use middle two sizes
+                if len(position_sizes) >= 3:
+                    position_sizes = [position_sizes[1], position_sizes[2]]  # Use sizes for TP2 and TP3
+                elif len(position_sizes) == 2:
+                    # Use both sizes as-is
+                    pass
+                elif len(position_sizes) == 1:
+                    # Split equally if only one size given
+                    pos_size = round(float(position_sizes[0]) / 2, 2)
+                    position_sizes = [pos_size, pos_size]
 
             # Log the positions
-            logger.info(f"{colored_time}: Position #1 (size: {position_sizes[0]}) with take profit: {tp_for_pos1}")
-            logger.info(
-                f"{colored_time}: Position #2 (RUNNER) (size: {position_sizes[1]}) with take profit: {tp_for_pos2}")
+            for i, (size, tp) in enumerate(zip(position_sizes, final_tps), 1):
+                logger.info(f"{colored_time}: Position #{i} (size: {size}) with take profit: {tp}")
 
         else:
             # For non-CFD instruments (Forex), use standard approach
@@ -288,9 +310,13 @@ async def place_order_with_caching(orders_client, selected_account, instrument_d
                 from config.order_cache import OrderCache
                 order_cache = OrderCache()
 
+                # Create account-aware cache key for multi-account support
+                # Format: {account_id}_{message_id}
+                cache_key = f"{account_id}_{message_id}" if message_id else str(account_id)
+
                 # Store in cache with explicit call including entry price
                 cached = order_cache.store_orders(
-                    message_id=str(message_id),
+                    message_id=cache_key,
                     order_ids=order_ids,
                     take_profits=take_profits,
                     instrument=instrument_name,
@@ -377,11 +403,19 @@ async def place_orders_with_risk_check(orders_client, accounts_client, quotes_cl
             )
         # ======= END NEW CODE =======
 
-        # Refresh account balance (YOUR EXISTING CODE CONTINUES HERE)
-        updated_account = await accounts_client.refresh_account_balance_async()
-        if not updated_account:
+        # Refresh account balance using the specific account (avoid shared state in multi-account mode)
+        account_state = await accounts_client.get_account_state_async(
+            selected_account['id'],
+            selected_account['accNum']
+        )
+
+        if account_state and 'd' in account_state:
+            # Update with fresh balance
+            updated_account = selected_account.copy()
+            updated_account['accountBalance'] = account_state['d'].get('balance', selected_account['accountBalance'])
+        else:
             logger.error(f"{colored_time}: Failed to refresh account balance")
-            return None
+            updated_account = selected_account
 
         # Get latest balance
         latest_balance = float(updated_account['accountBalance'])

@@ -41,10 +41,11 @@ def display_menu():
     # Menu options
     print(f"\n{Fore.YELLOW}1.{Style.RESET_ALL} Start Trading Bot")
     print(f"{Fore.YELLOW}2.{Style.RESET_ALL} Configure Risk Settings")
-    print(f"{Fore.YELLOW}3.{Style.RESET_ALL} Exit")
+    print(f"{Fore.YELLOW}3.{Style.RESET_ALL} Configure Account-Channel Routing")
+    print(f"{Fore.YELLOW}4.{Style.RESET_ALL} Exit")
     print(f"{Fore.CYAN}=============================={Style.RESET_ALL}\n")
 
-    choice = input(f"{Fore.GREEN}Enter your choice (1-3): {Style.RESET_ALL}")
+    choice = input(f"{Fore.GREEN}Enter your choice (1-4): {Style.RESET_ALL}")
     return choice
 
 

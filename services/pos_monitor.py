@@ -279,22 +279,31 @@ async def process_position_update(position_id, instrument_data, side, entry_pric
         if tp1_hit and not tracking_data.get('trailing_activated', False):
             logger.info(
                 f"Position {position_id} ({instrument_name}): First take profit hit. "
-                f"Current price: {current_price}, TP1: {tp1}. Activating trailing stop."
+                f"Current price: {current_price}, TP1: {tp1}. Moving SL to breakeven and activating trailing stop."
             )
 
-            # Calculate trailing offset as the distance between entry and TP2
-            # This is the exact strategy you specified
-            price_distance = abs(tp2 - entry_price)
+            # Step 1: Move stop loss to entry price (breakeven protection)
+            # Step 2: Enable trailing stop to protect further profits
+
+            # Calculate trailing offset: distance between current price and entry
+            # This will make the SL start at entry and trail from there
+            # For example: Entry=2500, TP1=2550 → trailing offset = 50 pips
+            # So when price is at 2550, SL is at 2500 (entry)
+            # When price goes to 2560, SL trails to 2510 (still 50 pips behind)
+            current_profit_distance = abs(current_price - entry_price)
+
+            # Use the FULL distance from TP1 to entry as trailing offset
+            # This ensures SL starts exactly at entry level when TP1 is hit
+            trailing_distance = current_profit_distance
 
             # Convert to points for the API
-            trailing_offset = calculate_trailing_offset(instrument_name, price_distance)
+            trailing_offset = calculate_trailing_offset(instrument_name, trailing_distance)
 
             logger.info(
-                f"Calculated trailing offset: {trailing_offset} points "
-                f"(from entry-TP2 distance: {price_distance})"
+                f"Moving SL to breakeven (entry: {entry_price}) with trailing offset: {trailing_offset} points"
             )
 
-            # Make the API call to set up trailing stop
+            # Make the API call to set stop loss to entry + enable trailing
             url = f"{base_url}/trade/positions/{position_id}"
             headers = {
                 "Authorization": f"Bearer {auth_token}",
@@ -302,9 +311,10 @@ async def process_position_update(position_id, instrument_data, side, entry_pric
                 "Content-Type": "application/json"
             }
 
-            # Set just the trailingOffset parameter - TradeLocker handles the rest
+            # Update stop loss to entry price AND enable trailing
             body = {
-                "trailingOffset": trailing_offset
+                "stopLoss": entry_price,          # Move SL to entry (breakeven)
+                "trailingOffset": trailing_offset  # Enable trailing from here
             }
 
             # Make the API call
@@ -315,8 +325,8 @@ async def process_position_update(position_id, instrument_data, side, entry_pric
                             tracking_data['trailing_activated'] = True
                             tracking_data['last_update'] = current_time
                             logger.info(
-                                f"Successfully activated trailing stop for position {position_id} "
-                                f"with offset {trailing_offset}"
+                                f"✅ Successfully moved SL to breakeven and activated trailing stop "
+                                f"for position {position_id} (Entry: {entry_price}, Trailing: {trailing_offset} points)"
                             )
                         else:
                             error_text = await response.text()
@@ -382,26 +392,35 @@ def calculate_trailing_offset(instrument_name, price_distance):
     """
     Calculate trailing stop offset value for TradeLocker API.
     Converts price distance to points as expected by the API.
+
+    Supports: Forex, Indices, Metals (Gold/Silver), and Crypto
     """
     instrument_upper = instrument_name.upper()
 
-    # Check for indices which often use different multipliers
+    # For indices (1:1 ratio - price distance = points)
     if any(index_name in instrument_upper for index_name in
-           ["DJI30", "DOW", "US30", "NDX100", "NAS100", "NASDAQ"]):
-        # For indices, the trailing offset is often the same as price distance
+           ["DJI30", "DOW", "US30", "NDX100", "NAS100", "NASDAQ",
+            "SPX500", "SP500", "S&P", "GER30", "DAX",
+            "UK100", "FTSE", "JPN225", "NIKKEI",
+            "AUS200", "HK50", "HANGSENG"]):
         return int(price_distance)
 
-    # For gold and silver
-    elif any(name in instrument_upper for name in ["XAUUSD", "GOLD", "XAU", "XAGUSD", "SILVER", "XAG"]):
-        # Convert gold price distance to points (usually * 100)
+    # For crypto (similar to indices - 1:1 ratio)
+    elif any(crypto in instrument_upper for crypto in
+             ["BTC", "BITCOIN", "ETH", "ETHEREUM", "LTC", "LITECOIN",
+              "XRP", "RIPPLE", "ADA", "CARDANO", "SOL", "SOLANA"]):
+        return int(price_distance)
+
+    # For gold and silver (multiply by 100)
+    elif any(name in instrument_upper for name in
+             ["XAUUSD", "GOLD", "XAU", "XAGUSD", "SILVER", "XAG"]):
         return int(price_distance * 100)
 
-    # For JPY pairs
+    # For JPY pairs (multiply by 100)
     elif instrument_upper.endswith("JPY"):
-        # Convert JPY price distance to points (usually * 100)
         return int(price_distance * 100)
 
-    # For standard forex pairs
+    # For standard forex pairs (multiply by 10000)
     else:
-        # Convert standard forex price distance to points (usually * 10000)
+        # Standard forex (EUR/USD, GBP/USD, etc.)
         return int(price_distance * 10000)

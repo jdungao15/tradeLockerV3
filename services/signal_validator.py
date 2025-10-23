@@ -134,7 +134,8 @@ class SignalValidator:
                     'reason': 'LIMIT order - provider prediction'
                 }
 
-            # Step 5: For MARKET orders or when considering conversion, apply slippage validation
+            # Step 5: Default behavior - Provider predictions should be placed as LIMIT orders
+            # Only execute as MARKET if price is close enough
 
             # Determine if price moved favorably
             favorable_move = False
@@ -143,10 +144,10 @@ class SignalValidator:
             else:
                 favorable_move = current_price > signal_entry  # Can sell higher
 
-            # If price moved favorably OR very close to entry -> MARKET order
+            # Case 1: Price is very close or moved favorably -> Execute as MARKET
             if favorable_move or price_diff_pips <= 10:
                 logger.info(
-                    f"   ✓ Signal valid - Price favorable or close ({price_diff_pips:.1f} pips)"
+                    f"   ✓ Signal valid - Price favorable or close ({price_diff_pips:.1f} pips), using MARKET"
                 )
                 return {
                     'valid': True,
@@ -156,10 +157,10 @@ class SignalValidator:
                     'reason': 'Using MARKET order - favorable price'
                 }
 
-            # If within acceptable slippage range -> MARKET order
+            # Case 2: Within acceptable slippage -> Execute as MARKET with warning
             elif price_diff_pips <= max_slippage:
                 logger.info(
-                    f"   ⚠ Signal valid but slipped {price_diff_pips:.1f} pips (max: {max_slippage}). Using MARKET order."
+                    f"   ⚠ Signal valid but slipped {price_diff_pips:.1f} pips (max: {max_slippage}), using MARKET"
                 )
                 return {
                     'valid': True,
@@ -169,15 +170,16 @@ class SignalValidator:
                     'reason': 'Using MARKET - within slippage tolerance'
                 }
 
-            # Too much slippage -> REJECT
+            # Case 3: Price too far -> Place as LIMIT order (provider prediction)
             else:
-                logger.warning(
-                    f"   🚫 Signal rejected - Price moved {price_diff_pips:.1f} pips (max: {max_slippage} pips)"
+                logger.info(
+                    f"   📋 Price {price_diff_pips:.1f} pips away - placing LIMIT order at {signal_entry}"
                 )
                 return {
-                    'valid': False,
-                    'reason': f'Excessive slippage: {price_diff_pips:.1f} pips (max: {max_slippage})',
-                    'price_diff_pips': price_diff_pips
+                    'valid': True,
+                    'order_type': 'limit',
+                    'price_diff_pips': price_diff_pips,
+                    'reason': f'LIMIT order - price too far ({price_diff_pips:.1f} pips), waiting for predicted level'
                 }
 
         except Exception as e:

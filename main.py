@@ -66,6 +66,11 @@ class TradingBot:
         # Set up logging
         self._setup_logging()
 
+        # Initialize account-channel manager BEFORE loading config
+        # (config loading needs to access it)
+        from config.account_channels import AccountChannelManager
+        self.account_channel_manager = AccountChannelManager()
+
         # Load configuration
         self._load_config()
 
@@ -86,6 +91,7 @@ class TradingBot:
 
         # Multi-account tracking
         self.monitored_accounts = []  # List of accounts to monitor for daily drawdown
+        self.multi_account_mode = False  # Flag for multi-account trading mode
 
         # Tasks tracking
         self._tasks = set()
@@ -117,9 +123,15 @@ class TradingBot:
         self.api_hash = os.getenv('API_HASH')
         self.base_url = os.getenv('TRADELOCKER_API_URL')
 
-        # Configuration that could be moved to a config file
-        # self.channel_ids = [-1002153475473, -1002486712356]
-        self.channel_ids = [-1002153475473, -1002486712356, -1002379218267, 2486712356]
+        # Load monitored channels from AccountChannelManager
+        # This includes all channels from configured accounts + global channels
+        self.channel_ids = self.account_channel_manager.get_all_monitored_channels()
+
+        # Fallback to hardcoded channels if no channels configured
+        if not self.channel_ids:
+            self.logger.warning("No channels configured in account_channels.json, using hardcoded fallback")
+            self.channel_ids = [-1002153475473, -1002486712356, -1002379218267, 2486712356]
+
         self.local_timezone = pytz.timezone('America/New_York')
 
         # Additional configurable parameters
@@ -391,9 +403,17 @@ class TradingBot:
                 self.logger.info("No accounts available.")
                 return None
 
-            # Sort accounts by Account Number (descending)
-            accounts = sorted(accounts_data.get('accounts', []),
-                              key=lambda x: int(x['accNum']), reverse=True)
+            # Filter for only ACTIVE accounts and sort by Account Number (descending)
+            all_accounts = accounts_data.get('accounts', [])
+            accounts = sorted(
+                [acc for acc in all_accounts if acc.get('status') == 'ACTIVE'],
+                key=lambda x: int(x['accNum']),
+                reverse=True
+            )
+
+            if not accounts:
+                self.logger.info("No active accounts available.")
+                return None
 
             # Calculate column widths for proper alignment
             id_width = max(len("ID"), max(len(acc['id']) for acc in accounts)) + 2
@@ -444,19 +464,7 @@ class TradingBot:
                 print(
                     f"{row_color}{account['id']:<{id_width}} │ {account['accNum']:<{acc_width}} │ {account['currency']:<{currency_width}} │ {balance_color}{formatted_balance:>{balance_width}}{Style.RESET_ALL}")
 
-            # Print bottom separator
-            print(
-                f"{Fore.YELLOW}{'─' * id_width}─┼─{'─' * acc_width}─┼─{'─' * currency_width}─┼─{'─' * balance_width}{Style.RESET_ALL}")
-
-            # Print summary row
-            total_accounts = len(accounts)
-            total_balance = sum(float(account['accountBalance']) for account in accounts)
-            formatted_total = f"${total_balance:,.2f}"
-
-            print(
-                f"{Fore.GREEN}{Style.BRIGHT}{'TOTAL':<{id_width}} │ {f'{total_accounts} accounts':<{acc_width}} │ {'':^{currency_width}} │ {formatted_total:>{balance_width}}{Style.RESET_ALL}")
-
-            # Print bottom border with timestamp
+            # Print bottom border
             print(f"{Fore.CYAN}{Style.BRIGHT}{'═' * total_width}{Style.RESET_ALL}")
 
             # Add timestamp
@@ -464,6 +472,8 @@ class TradingBot:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             print(f"{Fore.CYAN}{'Account data as of ' + timestamp:^{total_width}}{Style.RESET_ALL}\n")
 
+            # Return the full accounts_data structure, but replace accounts list with active only
+            accounts_data['accounts'] = accounts
             return accounts_data
         except Exception as e:
             self.logger.error(f"Error fetching accounts: {e}", exc_info=True)
@@ -524,7 +534,7 @@ class TradingBot:
     # -------------------------------------------------------------------------
 
     async def setup_telegram_handler(self):
-        """Set up the Telegram message handler"""
+        """Set up the Telegram message handler with multi-account routing"""
         if not self.enable_signals:
             self.logger.info("Signal processing is disabled. Skipping Telegram handler setup.")
             return
@@ -539,7 +549,7 @@ class TradingBot:
 
             # Extract channel information
             chat = event.chat if hasattr(event, 'chat') else None
-            channel_id = str(chat.id) if chat else None
+            channel_id = int(chat.id) if chat else None
             channel_name = chat.title if chat and hasattr(chat, 'title') else None
 
             # Extract message and reply information
@@ -552,32 +562,77 @@ class TradingBot:
                 self.logger.debug(f"Message is a reply to message ID: {reply_to_msg_id}")
 
             # Log message details for debugging
-            self.logger.debug(f"Received message ID: {message_id}, Reply to: {reply_to_msg_id}, Channel: {channel_id}")
+            self.logger.debug(f"Received message from channel {channel_id} ({channel_name}): {message_text[:50]}...")
 
             # Convert the UTC time to local time zone
             message_time_local = message_time_utc.astimezone(self.local_timezone)
             formatted_time = message_time_local.strftime('%Y-%m-%d %H:%M:%S')
             colored_time = f"{Fore.CYAN}[{formatted_time}]{Style.RESET_ALL}"
 
-            # Process the message in a new task with reply information
-            task = asyncio.create_task(
-                self.process_message(
-                    message_text,
-                    colored_time,
-                    event,
-                    channel_id=channel_id,
-                    channel_name=channel_name,
-                    reply_to_msg_id=reply_to_msg_id,
-                    message_id=message_id
+            # Check trading mode and route accordingly
+            if self.multi_account_mode:
+                # Multi-account mode: Route signals to configured accounts
+                trading_accounts = self.account_channel_manager.get_accounts_for_channel(channel_id)
+
+                if trading_accounts:
+                    # Log which accounts will process this signal
+                    account_names = [f"{acc['name']} (#{acc['accNum']})" for acc in trading_accounts]
+                    self.logger.info(
+                        f"{colored_time}: {Fore.CYAN}📨 Signal from {channel_name or 'Channel ' + str(channel_id)}{Style.RESET_ALL}"
+                    )
+                    self.logger.info(
+                        f"   {Fore.GREEN}→ Processing for: {', '.join(account_names)}{Style.RESET_ALL}"
+                    )
+
+                    tasks = []
+                    for account_config in trading_accounts:
+                        task = asyncio.create_task(
+                            self.process_message_for_account(
+                                message_text,
+                                colored_time,
+                                event,
+                                account_config,
+                                channel_id=channel_id,
+                                channel_name=channel_name,
+                                reply_to_msg_id=reply_to_msg_id,
+                                message_id=message_id
+                            )
+                        )
+                        tasks.append(task)
+                        self._tasks.add(task)
+                        task.add_done_callback(self._tasks.discard)
+
+                    # Wait for all account tasks to complete
+                    await asyncio.gather(*tasks, return_exceptions=True)
+                else:
+                    # No accounts configured for this channel in multi-account mode
+                    self.logger.info(
+                        f"{colored_time}: {Fore.YELLOW}⚠️  Signal from {channel_name or 'Channel ' + str(channel_id)} - No accounts configured for this channel{Style.RESET_ALL}"
+                    )
+            else:
+                # Single-account mode: Use the selected account
+                self.logger.debug(
+                    f"Single-account mode: Processing signal with selected account"
                 )
-            )
-            self._tasks.add(task)
-            task.add_done_callback(self._tasks.discard)
+
+                task = asyncio.create_task(
+                    self.process_message(
+                        message_text,
+                        colored_time,
+                        event,
+                        channel_id=channel_id,
+                        channel_name=channel_name,
+                        reply_to_msg_id=reply_to_msg_id,
+                        message_id=message_id
+                    )
+                )
+                self._tasks.add(task)
+                task.add_done_callback(self._tasks.discard)
 
     async def display_monitored_channels(self):
         """
         Display all Telegram channels being monitored by the bot.
-        Shows only channel names and status - clean and simple.
+        Shows channel names, status, and configured accounts for multi-account mode.
         """
         try:
             if not self.channel_ids or len(self.channel_ids) == 0:
@@ -587,6 +642,13 @@ class TradingBot:
             self.logger.info("")
             self.logger.info("📡 ══════════════════════════════════════════════════")
             self.logger.info(f"   MONITORING {len(self.channel_ids)} TELEGRAM CHANNEL(S)")
+
+            # Show trading mode
+            if self.multi_account_mode:
+                self.logger.info(f"   {Fore.GREEN}Mode: Multi-Account Trading{Style.RESET_ALL}")
+            else:
+                self.logger.info(f"   {Fore.YELLOW}Mode: Single-Account Trading{Style.RESET_ALL}")
+
             self.logger.info("   ══════════════════════════════════════════════════")
 
             # Track statistics
@@ -604,7 +666,22 @@ class TradingBot:
 
                     # Success - channel is accessible
                     accessible_count += 1
-                    self.logger.info(f"   ✅ {channel_name}")
+
+                    if self.multi_account_mode:
+                        # In multi-account mode, show which accounts are configured for this channel
+                        trading_accounts = self.account_channel_manager.get_accounts_for_channel(channel_id)
+
+                        if trading_accounts:
+                            # Show which accounts will trade from this channel with account numbers
+                            account_display = [f"{acc['name']} (#{acc['accNum']})" for acc in trading_accounts]
+                            self.logger.info(f"   ✅ {channel_name}")
+                            self.logger.info(f"      💼 Trading: {', '.join(account_display)}")
+                        else:
+                            # No accounts configured for this channel
+                            self.logger.info(f"   ✅ {channel_name} (no accounts configured)")
+                    else:
+                        # In single-account mode, just show the channel name
+                        self.logger.info(f"   ✅ {channel_name}")
 
                 except Exception as e:
                     # Channel not accessible
@@ -616,6 +693,16 @@ class TradingBot:
             if inaccessible_count > 0:
                 self.logger.warning(f"   ⚠️  {inaccessible_count} channel(s) not accessible")
 
+            # Show account-channel configuration summary (only in multi-account mode)
+            if self.multi_account_mode:
+                enabled_accounts = self.account_channel_manager.get_enabled_accounts()
+                if enabled_accounts:
+                    self.logger.info("")
+                    self.logger.info(f"   📋 Multi-Account Configuration: {len(enabled_accounts)} account(s)")
+                    for account_key, config in enabled_accounts.items():
+                        channels = config.get('monitored_channels', [])
+                        self.logger.info(f"      • {config['name']} (#{config['accNum']}): {len(channels)} channel(s)")
+
             self.logger.info("")
 
         except Exception as e:
@@ -623,6 +710,194 @@ class TradingBot:
     # -------------------------------------------------------------------------
     # Trading Signal Processing Methods
     # -------------------------------------------------------------------------
+
+    async def process_message_for_account(self, message_text, colored_time, event, account_config,
+                                          channel_id=None, channel_name=None, reply_to_msg_id=None,
+                                          message_id=None):
+        """
+        Process a message for a specific account (multi-account mode)
+
+        Args:
+            message_text: The message content
+            colored_time: Formatted timestamp
+            event: Telegram event
+            account_config: Account configuration from AccountChannelManager
+            channel_id: Telegram channel ID
+            channel_name: Channel name
+            reply_to_msg_id: Reply message ID
+            message_id: Message ID
+        """
+        try:
+            # Get the account from TradeLocker
+            account_id = account_config['account_id']
+            account_num = account_config['accNum']
+            account_name = account_config['name']
+
+            # Get the full account object from the accounts client
+            accounts_data = await self.accounts_client.get_accounts_async()
+            trading_account = next(
+                (acc for acc in accounts_data['accounts'] if acc['id'] == account_id),
+                None
+            )
+
+            if not trading_account:
+                self.logger.warning(f"Account {account_name} (ID: {account_id}) not found in TradeLocker")
+                return
+
+            # DO NOT set selected account in multi-account mode to avoid race conditions
+            # Each account processes independently with its own context
+
+            # Log which account is processing this signal
+            self.logger.debug(f"Processing signal for account: {account_name} (#{account_num})")
+
+            # First, check if this is a command message via SignalManager
+            if self.signal_manager:
+                is_handled, result = await self.signal_manager.handle_message(
+                    message_text,
+                    trading_account,
+                    colored_time,
+                    reply_to_msg_id,
+                    message_id
+                )
+
+                if is_handled:
+                    # Log result information
+                    command_type = result.get("command_type", "unknown")
+                    success_count = result.get("success_count", 0)
+                    total_count = result.get("total_count", 0)
+
+                    if success_count > 0:
+                        self.logger.info(
+                            f"{colored_time}: {Fore.GREEN}[{account_name}] Successfully executed {command_type} "
+                            f"command on {success_count}/{total_count} orders{Style.RESET_ALL}"
+                        )
+                    else:
+                        self.logger.warning(
+                            f"{colored_time}: {Fore.YELLOW}[{account_name}] Failed to execute {command_type} command. "
+                            f"No orders were successfully processed.{Style.RESET_ALL}"
+                        )
+                    return
+
+            # If not a command, parse as a trading signal
+            parsed_signal = await parse_signal_async(message_text)
+            if parsed_signal is None:
+                # Silent - message was not a valid trading signal
+                return
+
+            # Check if this is a reduced risk signal
+            reduced_risk = parsed_signal.get('reduced_risk', False)
+            risk_emoji = "⚠️ REDUCED RISK" if reduced_risk else ""
+
+            # Clean signal notification with account name
+            from datetime import datetime
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            direction = parsed_signal['order_type'].upper()
+            instrument = parsed_signal['instrument']
+            entry = parsed_signal['entry_point']
+            sl = parsed_signal['stop_loss']
+            tps = ', '.join(map(str, parsed_signal['take_profits']))
+
+            self.logger.info("")
+            self.logger.info(f"📊 [{timestamp}] NEW SIGNAL for {Fore.CYAN}{account_name}{Style.RESET_ALL} {risk_emoji}")
+            self.logger.info(f"   {instrument} {direction} @ {entry}")
+            self.logger.info(f"   🛡️  SL: {sl} | 🎯 TP: {tps}")
+            self.logger.info("")
+
+            # Apply TP filtering based on user preferences
+            from core.signal_parser import filter_take_profits_by_preference
+            tp_selection = risk_config.get_tp_selection(account_num)
+            filtered_tps = filter_take_profits_by_preference(parsed_signal['take_profits'], tp_selection)
+
+            # Update the parsed signal with filtered TPs
+            original_tps = parsed_signal['take_profits'].copy()
+            parsed_signal['take_profits'] = filtered_tps
+
+            # Log the TP selection if it's different from original
+            if len(filtered_tps) < len(original_tps):
+                self.logger.info(f"   📌 Using {len(filtered_tps)} of {len(original_tps)} TPs ({tp_selection['mode']})")
+
+            # Check news restrictions if enabled
+            if self.enable_news_filter:
+                current_time = datetime.now(pytz.UTC)
+                try:
+                    can_trade, reason = self.news_filter.can_place_order(parsed_signal, current_time)
+
+                    if not can_trade:
+                        self.logger.warning(f"   🚫 [{account_name}] Trade blocked: {reason}")
+                        return
+                except AttributeError as e:
+                    self.logger.error(f"   ❌ [{account_name}] Error: {e}")
+                    return
+
+            # Refresh account data to get latest balance (use direct API call to avoid shared state)
+            account_state = await self.accounts_client.get_account_state_async(trading_account['id'], trading_account['accNum'])
+            if account_state and 'd' in account_state:
+                # Update the account balance with fresh data
+                trading_account['accountBalance'] = account_state['d'].get('balance', trading_account['accountBalance'])
+
+            refreshed_account = trading_account
+            float(refreshed_account['accountBalance'])
+
+            # Get instrument details
+            instrument_data = await find_matching_instrument(
+                self.instruments_client,
+                refreshed_account,
+                parsed_signal
+            )
+
+            if not instrument_data:
+                self.logger.warning(
+                    f"{colored_time}: {Fore.RED}[{account_name}] Instrument {parsed_signal['instrument']} not found. Skipping this signal.{Style.RESET_ALL}"
+                )
+                return
+
+            # Calculate position sizes based on risk management (account-specific)
+            position_sizes, risk_amount = calculate_position_size(
+                instrument_data,
+                parsed_signal['entry_point'],
+                parsed_signal['stop_loss'],
+                parsed_signal['take_profits'],
+                refreshed_account,
+                reduced_risk
+            )
+
+            # Display risk information
+            risk_percentage = risk_config.get_risk_percentage(
+                instrument_data.get('tradableInstrumentType', 'FOREX'),
+                reduced_risk,
+                account_num
+            ) * 100
+            risk_profile = risk_config.detect_current_profile(account_num)
+            self.logger.info(
+                f"{colored_time}: {Fore.CYAN}[{account_name}] Using {risk_profile} risk profile: {risk_percentage:.1f}%{Style.RESET_ALL}"
+            )
+
+            # Place the order with risk checks
+            from services.order_handler import place_orders_with_risk_check
+
+            result = await place_orders_with_risk_check(
+                self.orders_client,
+                self.accounts_client,
+                self.quotes_client,
+                refreshed_account,
+                instrument_data,
+                parsed_signal,
+                position_sizes,
+                risk_amount,
+                max_drawdown_balance,
+                colored_time,
+                message_id=message_id
+            )
+
+        except KeyError as e:
+            self.logger.error(
+                f"{colored_time}: {Fore.RED}[{account_name}] Error processing signal: Missing key {e}. Skipping this signal.{Style.RESET_ALL}"
+            )
+        except Exception as e:
+            self.logger.error(
+                f"{colored_time}: {Fore.RED}[{account_name}] Unexpected error: {e}. Skipping this signal.{Style.RESET_ALL}",
+                exc_info=True
+            )
 
     async def process_message(self, message_text, colored_time, event=None, channel_id=None,
                               channel_name=None, reply_to_msg_id=None, message_id=None):
@@ -793,9 +1068,71 @@ class TradingBot:
                 self.logger.error("No accounts found. Exiting.")
                 return
 
-            if not await self.select_account(accounts_data):
-                self.logger.error("Account selection failed. Exiting.")
-                return
+            # Check if multi-account mode is configured
+            enabled_accounts = self.account_channel_manager.get_enabled_accounts()
+
+            if enabled_accounts:
+                # Multi-account configuration exists, ask user which mode to use
+                print(f"\n{Fore.CYAN}═══════════════════════════════════════════════════{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}Multi-Account Configuration Detected{Style.RESET_ALL}")
+                print(f"{Fore.CYAN}═══════════════════════════════════════════════════{Style.RESET_ALL}")
+                print(f"\n{len(enabled_accounts)} account(s) configured for multi-account trading:")
+                for account_key, config in enabled_accounts.items():
+                    channels = config.get('monitored_channels', [])
+                    print(f"  • {config['name']} (#{config['accNum']}): {len(channels)} channel(s)")
+
+                print(f"\n{Fore.CYAN}Select Trading Mode:{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}1.{Style.RESET_ALL} Multi-Account Mode (route signals to configured accounts)")
+                print(f"{Fore.YELLOW}2.{Style.RESET_ALL} Single-Account Mode (select one account)")
+
+                mode_choice = input(f"\n{Fore.GREEN}Enter your choice (1-2): {Style.RESET_ALL}").strip()
+
+                if mode_choice == '1':
+                    # Multi-account mode
+                    self.multi_account_mode = True
+                    self.logger.info(f"\n{Fore.GREEN}✅ Multi-Account Mode Enabled{Style.RESET_ALL}")
+                    self.logger.info(f"Signals will be routed to configured accounts based on channel")
+
+                    # Show routing configuration
+                    self.logger.info(f"\n{Fore.CYAN}📋 Channel Routing Configuration:{Style.RESET_ALL}")
+                    all_channels = self.account_channel_manager.get_all_monitored_channels()
+                    for ch_id in all_channels:
+                        accounts_for_channel = self.account_channel_manager.get_accounts_for_channel(ch_id)
+                        if accounts_for_channel:
+                            account_names = [f"{acc['name']} (#{acc['accNum']})" for acc in accounts_for_channel]
+                            self.logger.info(f"   Channel {ch_id}: {', '.join(account_names)}")
+                        else:
+                            self.logger.info(f"   Channel {ch_id}: {Fore.YELLOW}No accounts configured{Style.RESET_ALL}")
+                    self.logger.info("")
+
+                    # For multi-account mode, select the first enabled account for monitoring/drawdown
+                    # (this is just for the monitoring system, actual trading uses configured accounts)
+                    first_account_id = list(enabled_accounts.values())[0]['account_id']
+                    self.selected_account = next(
+                        (acc for acc in accounts_data['accounts'] if acc['id'] == first_account_id),
+                        None
+                    )
+
+                    if not self.selected_account:
+                        self.logger.error("Failed to initialize multi-account mode. Falling back to single-account.")
+                        self.multi_account_mode = False
+                        if not await self.select_account(accounts_data):
+                            self.logger.error("Account selection failed. Exiting.")
+                            return
+                else:
+                    # Single-account mode
+                    self.multi_account_mode = False
+                    self.logger.info(f"\n{Fore.YELLOW}Single-Account Mode Selected{Style.RESET_ALL}\n")
+                    if not await self.select_account(accounts_data):
+                        self.logger.error("Account selection failed. Exiting.")
+                        return
+            else:
+                # No multi-account configuration, use single-account mode
+                self.multi_account_mode = False
+                self.logger.info(f"{Fore.YELLOW}No multi-account configuration found. Using single-account mode.{Style.RESET_ALL}\n")
+                if not await self.select_account(accounts_data):
+                    self.logger.error("Account selection failed. Exiting.")
+                    return
 
             # Automatically set up multi-account tracking for ALL active accounts
             if not await self.setup_multi_account_tracking(accounts_data):
@@ -1110,6 +1447,165 @@ async def handle_risk_configuration():
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
 
 
+async def get_tradelocker_accounts():
+    """Get TradeLocker accounts without initializing Telegram client"""
+    try:
+        # Only initialize TradeLocker API clients
+        auth = TradeLockerAuth()
+        await auth.authenticate_async()
+
+        if not await auth.get_access_token_async():
+            print(f"{Fore.RED}Failed to authenticate with TradeLocker API{Style.RESET_ALL}")
+            return None
+
+        # Initialize accounts client
+        accounts_client = TradeLockerAccounts(auth)
+        accounts_data = await accounts_client.get_accounts_async()
+
+        # Cleanup
+        await auth.close()
+        if hasattr(accounts_client, 'close'):
+            await accounts_client.close()
+
+        return accounts_data
+
+    except Exception as e:
+        print(f"{Fore.RED}Error connecting to TradeLocker: {e}{Style.RESET_ALL}")
+        return None
+
+
+async def get_channel_names(channel_ids):
+    """
+    Get channel names from Telegram for the given channel IDs
+
+    Args:
+        channel_ids: List of channel IDs
+
+    Returns:
+        dict: Mapping of channel_id -> channel_name
+    """
+    if not channel_ids:
+        return {}
+
+    channel_names = {}
+    client = None
+
+    try:
+        # Load environment variables
+        load_dotenv()
+        api_id = os.getenv('API_ID')
+        api_hash = os.getenv('API_HASH')
+
+        # Initialize Telegram client
+        client = TelegramClient('./my_session', int(api_id), api_hash)
+
+        # Suppress Telethon library debug messages
+        logging.getLogger('telethon').setLevel(logging.WARNING)
+
+        # Connect
+        await client.connect()
+
+        # Check if authorized
+        if not await client.is_user_authorized():
+            # Can't fetch names without authorization
+            return {}
+
+        # Fetch channel names
+        for channel_id in channel_ids:
+            try:
+                entity = await client.get_entity(channel_id)
+                channel_name = entity.title if hasattr(entity, 'title') else f"Channel {channel_id}"
+                channel_names[channel_id] = channel_name
+            except Exception as e:
+                # If we can't get the channel name, use the ID
+                channel_names[channel_id] = f"Channel {channel_id}"
+
+        return channel_names
+
+    except Exception as e:
+        # If any error occurs, return empty dict (will fall back to IDs)
+        return {}
+
+    finally:
+        # Cleanup
+        if client:
+            await client.disconnect()
+
+
+async def handle_account_channel_configuration():
+    """Handle account-channel routing configuration menu"""
+    from cli.account_channel_menu import (
+        display_account_channel_menu,
+        configure_account_channels,
+        toggle_account_trading,
+        add_channel_to_account,
+        remove_channel_from_account,
+        setup_new_account
+    )
+    from config.account_channels import AccountChannelManager
+
+    # Create account manager instance (no bot needed)
+    account_manager = AccountChannelManager()
+
+    while True:
+        choice = display_account_channel_menu()
+
+        if choice == '1':
+            # View current configuration
+            # Fetch channel names from Telegram for better display
+            all_channels = account_manager.get_all_monitored_channels()
+            channel_names = await get_channel_names(all_channels)
+            print(account_manager.get_summary(channel_names))
+            input("\nPress Enter to continue...")
+
+        elif choice == '2':
+            # Configure account channels
+            configure_account_channels(account_manager)
+
+        elif choice == '3':
+            # Enable/Disable account trading
+            toggle_account_trading(account_manager)
+
+        elif choice == '4':
+            # Add channel to account
+            add_channel_to_account(account_manager)
+
+        elif choice == '5':
+            # Remove channel from account
+            remove_channel_from_account(account_manager)
+
+        elif choice == '6':
+            # Set up new account
+            # Need to get accounts data from TradeLocker (without Telegram)
+            try:
+                print(f"{Fore.CYAN}Connecting to TradeLocker API...{Style.RESET_ALL}")
+                accounts_data = await get_tradelocker_accounts()
+
+                if accounts_data:
+                    setup_new_account(account_manager, accounts_data)
+                else:
+                    print(f"{Fore.RED}Failed to retrieve accounts from TradeLocker{Style.RESET_ALL}")
+                    input("\nPress Enter to continue...")
+
+            except Exception as e:
+                print(f"{Fore.RED}Error setting up account: {e}{Style.RESET_ALL}")
+                input("\nPress Enter to continue...")
+
+        elif choice == '7':
+            # Export configuration
+            config_json = account_manager.export_config()
+            print(f"\n{Fore.CYAN}Configuration JSON:{Style.RESET_ALL}")
+            print(config_json)
+            input("\nPress Enter to continue...")
+
+        elif choice == '8':
+            # Back to main menu
+            return
+
+        else:
+            print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
+
+
 async def main():
     """Main entry point with Windows-compatible signal handling"""
     # Display banner first
@@ -1119,7 +1615,7 @@ async def main():
         # Show menu and get choice
         choice = display_menu()
 
-        if choice == '3':
+        if choice == '4':
             print(f"{Fore.YELLOW}Exiting program. Goodbye!{Style.RESET_ALL}")
             return
 
@@ -1138,6 +1634,9 @@ async def main():
 
         elif choice == '2':
             await handle_risk_configuration()
+
+        elif choice == '3':
+            await handle_account_channel_configuration()
 
         else:
             print(f"{Fore.RED}Invalid choice. Please try again.{Style.RESET_ALL}")
