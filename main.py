@@ -347,7 +347,13 @@ class TradingBot:
     async def start_drawdown_monitor(self):
         """Start the drawdown monitoring with proper async handling"""
         # Load drawdown data for the trading account (single account manager)
-        load_drawdown_data(self.selected_account)
+        needs_reset = load_drawdown_data(self.selected_account)
+
+        # If drawdown is from a previous day, reset it now
+        if needs_reset:
+            from services.drawdown_manager import reset_daily_drawdown_async
+            self.logger.info("🔄 Resetting drawdown to current account balance...")
+            await reset_daily_drawdown_async(self.accounts_client, self.selected_account)
 
         # Validate and fix drawdown if needed for trading account
         from services.drawdown_manager import validate_and_fix_drawdown
@@ -365,9 +371,10 @@ class TradingBot:
             # Load existing multi-account data (silent)
             multi_account_drawdown_manager.load_accounts_drawdown()
 
-            # Initialize drawdown for each monitored account (silent)
+            # Check each account and reset if from previous day
             for account in self.monitored_accounts:
-                multi_account_drawdown_manager.initialize_account_drawdown(account)
+                needs_reset = multi_account_drawdown_manager.check_and_reset_if_needed(account)
+                multi_account_drawdown_manager.initialize_account_drawdown(account, force_reset=needs_reset)
 
             # Display current status
             multi_account_drawdown_manager.display_all_accounts_drawdown()

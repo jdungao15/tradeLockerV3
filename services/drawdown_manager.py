@@ -22,12 +22,17 @@ def load_drawdown_data(selected_account):
     """
     Load drawdown data from file with improved error handling.
     If file doesn't exist or is corrupted, initialize it properly.
-    Does NOT reset the drawdown - only loads existing values.
+    Checks if last_reset is from a previous day and flags for reset if needed.
 
     IMPORTANT: Validates that the data belongs to the selected account.
     If switching accounts, reinitializes with the new account's data.
+
+    Returns:
+        bool: True if drawdown needs to be reset (from previous day), False otherwise
     """
     global max_drawdown_balance, starting_balance
+
+    needs_reset = False
 
     with _drawdown_lock:
         try:
@@ -60,15 +65,32 @@ def load_drawdown_data(selected_account):
 
                         # Save with the new account_id (silent)
                         save_drawdown_data(selected_account)
+                        needs_reset = True
                     else:
-                        # Data belongs to the correct account, load it (silent)
+                        # Data belongs to the correct account, load it
                         max_drawdown_balance = data.get('max_drawdown_balance', 0)
                         starting_balance = data.get('starting_balance', 0)
+
+                        # Check if last_reset was from a previous day
+                        last_reset_str = data.get('last_reset')
+                        if last_reset_str:
+                            try:
+                                # Parse the last reset timestamp
+                                last_reset = datetime.fromisoformat(last_reset_str)
+                                now = datetime.now(pytz.timezone('US/Eastern'))
+
+                                # Check if last reset was on a different day
+                                if last_reset.date() < now.date():
+                                    logger.info(f"⏰ Last reset was on {last_reset.strftime('%Y-%m-%d')} - reset needed for today")
+                                    needs_reset = True
+                            except (ValueError, AttributeError) as e:
+                                logger.warning(f"Could not parse last_reset date: {e}")
+                                needs_reset = True
 
                         # Validate that we have valid data
                         if starting_balance <= 0 or max_drawdown_balance <= 0:
                             # Silent validation - will be fixed by validate_and_fix_drawdown
-                            pass
+                            needs_reset = True
 
             else:
                 logger.info("🔄 Initializing drawdown tracking...")
@@ -88,12 +110,17 @@ def load_drawdown_data(selected_account):
 
                     # Save the temporary values with account_id (silent)
                     save_drawdown_data(selected_account)
+                    needs_reset = True
 
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in drawdown file: {e}")
             logger.info("Corrupted file will be fixed by validation")
+            needs_reset = True
         except Exception as e:
             logger.error(f"Error loading drawdown data: {e}")
+            needs_reset = True
+
+    return needs_reset
 
 
 # Function to save drawdown data
@@ -119,7 +146,8 @@ def save_drawdown_data(selected_account=None):
             # Prepare data to save
             data = {
                 'max_drawdown_balance': max_drawdown_balance,
-                'starting_balance': starting_balance
+                'starting_balance': starting_balance,
+                'last_reset': datetime.now(pytz.timezone('US/Eastern')).isoformat()
             }
 
             # Add account_id if provided to track which account this data belongs to

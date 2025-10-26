@@ -145,12 +145,53 @@ def get_max_drawdown_balance(account_id):
     return 0
 
 
-def initialize_account_drawdown(account):
+def check_and_reset_if_needed(account):
+    """
+    Check if account drawdown needs to be reset (from previous day) and reset if needed.
+
+    Args:
+        account: Account dict from API
+
+    Returns:
+        bool: True if reset was performed, False otherwise
+    """
+    try:
+        account_id = str(account['id'])
+        account_data = get_account_drawdown(account_id)
+
+        if not account_data:
+            # No data exists, needs initialization
+            return True
+
+        # Check if last_reset was from a previous day
+        last_reset_str = account_data.get('last_reset')
+        if last_reset_str:
+            try:
+                last_reset = datetime.fromisoformat(last_reset_str)
+                now = datetime.now(pytz.timezone('US/Eastern'))
+
+                # Check if last reset was on a different day
+                if last_reset.date() < now.date():
+                    logger.info(f"⏰ Account #{account['accNum']}: Last reset was on {last_reset.strftime('%Y-%m-%d')} - resetting for today")
+                    return True
+            except (ValueError, AttributeError) as e:
+                logger.warning(f"Could not parse last_reset date for account {account_id}: {e}")
+                return True
+
+        return False
+
+    except Exception as e:
+        logger.error(f"Error checking reset status for account {account_id}: {e}")
+        return True
+
+
+def initialize_account_drawdown(account, force_reset=False):
     """
     Initialize drawdown tracking for a new account or reset existing one.
 
     Args:
         account: Account dict from API (with 'id', 'accNum', 'accountBalance', 'status')
+        force_reset: If True, reset even if data exists for today
 
     Returns:
         bool: Success status
