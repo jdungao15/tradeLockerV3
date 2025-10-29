@@ -80,9 +80,25 @@ def is_potential_trading_signal(message: str) -> bool:
     # Special case: Check for "PIPS" announcements (often not actionable signals)
     is_pips_announcement = 'pips' in message_lower and any(x in message_lower for x in ['hit', 'reached', 'secured'])
 
+    # Check for hype/announcement patterns that are NOT trading signals
+    hype_patterns = [
+        r"are you ready",
+        r"let'?s? (buy|sell|trade)",
+        r"it'?s? time (for|to)",
+        r"get ready",
+        r"coming up",
+        r"stay tuned",
+        r"watch (for|out)",
+        r"be prepared"
+    ]
+    is_hype_message = any(re.search(pattern, message_lower) for pattern in hype_patterns)
+
+    # Must have entry/stop/tp keywords for structure
+    has_structure_keywords = any(kw in message_lower for kw in ['entry', 'stop', 'sl', 'tp', 'target', 'take profit'])
+
     # Return True if it looks like a signal, False otherwise
-    return (has_trading_terms and has_instrument and has_prices and
-            not too_many_emojis and not too_short and not is_pips_announcement)
+    return (has_trading_terms and has_instrument and has_prices and has_structure_keywords and
+            not too_many_emojis and not too_short and not is_pips_announcement and not is_hype_message)
 
 
 def adjust_broker_pricing(parsed_signal):
@@ -259,16 +275,18 @@ def parse_signal(message: str):
                 logger.warning("take_profits is not a list, converting to list")
                 result['take_profits'] = [result['take_profits']]
 
-            # Ensure numeric values are actually numbers
+            # Ensure numeric values are actually numbers and not None
             for field in ['entry_point', 'stop_loss']:
-                if not isinstance(result.get(field), (int, float)):
-                    logger.warning(f"Field {field} is not numeric: {result.get(field)}")
+                value = result.get(field)
+                if value is None or not isinstance(value, (int, float)):
+                    logger.warning(f"Field {field} is not numeric or is None: {value}")
                     parsed_signal_cache[message] = None
                     return None
 
-            # Ensure take_profits contains numeric values
-            if not all(isinstance(tp, (int, float)) for tp in result.get('take_profits', [])):
-                logger.warning(f"take_profits contains non-numeric values: {result.get('take_profits')}")
+            # Ensure take_profits contains numeric values and no None values
+            take_profits = result.get('take_profits', [])
+            if not take_profits or not all(isinstance(tp, (int, float)) and tp is not None for tp in take_profits):
+                logger.warning(f"take_profits contains non-numeric or None values: {take_profits}")
                 parsed_signal_cache[message] = None
                 return None
 
@@ -441,16 +459,18 @@ async def parse_signal_async(message: str):
                         logger.warning("take_profits is not a list, converting to list")
                         result['take_profits'] = [result['take_profits']]
 
-                    # Ensure numeric values are actually numbers
+                    # Ensure numeric values are actually numbers and not None
                     for field in ['entry_point', 'stop_loss']:
-                        if not isinstance(result.get(field), (int, float)):
-                            logger.warning(f"Field {field} is not numeric: {result.get(field)}")
+                        value = result.get(field)
+                        if value is None or not isinstance(value, (int, float)):
+                            logger.warning(f"Field {field} is not numeric or is None: {value}")
                             parsed_signal_cache[message] = None
                             return None
 
-                    # Ensure take_profits contains numeric values
-                    if not all(isinstance(tp, (int, float)) for tp in result.get('take_profits', [])):
-                        logger.warning(f"take_profits contains non-numeric values: {result.get('take_profits')}")
+                    # Ensure take_profits contains numeric values and no None values
+                    take_profits = result.get('take_profits', [])
+                    if not take_profits or not all(isinstance(tp, (int, float)) and tp is not None for tp in take_profits):
+                        logger.warning(f"take_profits contains non-numeric or None values: {take_profits}")
                         parsed_signal_cache[message] = None
                         return None
 
