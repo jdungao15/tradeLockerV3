@@ -52,8 +52,37 @@ class AccountChannelManager:
         except Exception as e:
             logger.error(f"Error saving account-channel config: {e}")
 
+    def _normalize_channel_id(self, channel_entry):
+        """
+        Normalize channel entry to just the channel ID.
+        Handles both old format (int) and new format ([int, str]).
+
+        Args:
+            channel_entry: Either an int (channel ID) or [int, str] (channel ID + name)
+
+        Returns:
+            int: The channel ID
+        """
+        if isinstance(channel_entry, list) and len(channel_entry) >= 1:
+            return int(channel_entry[0])
+        return int(channel_entry)
+
+    def _get_channel_name(self, channel_entry):
+        """
+        Get channel name from entry if available.
+
+        Args:
+            channel_entry: Either an int (channel ID) or [int, str] (channel ID + name)
+
+        Returns:
+            str: Channel name or None if not available
+        """
+        if isinstance(channel_entry, list) and len(channel_entry) >= 2:
+            return channel_entry[1]
+        return None
+
     def add_account(self, account_id: str, account_num: str, account_name: str,
-                    monitored_channels: List[int] = None, enabled: bool = True):
+                    monitored_channels: List = None, enabled: bool = True):
         """
         Add or update an account configuration
 
@@ -61,7 +90,7 @@ class AccountChannelManager:
             account_id: TradeLocker account ID
             account_num: Account number (for display)
             account_name: Friendly name for the account
-            monitored_channels: List of Telegram channel IDs to monitor
+            monitored_channels: List of channel entries (can be int or [int, str])
             enabled: Whether this account should trade
         """
         if monitored_channels is None:
@@ -88,31 +117,45 @@ class AccountChannelManager:
             return True
         return False
 
-    def set_account_channels(self, account_id: str, channel_ids: List[int]):
+    def set_account_channels(self, account_id: str, channel_entries: List):
         """
         Set which channels an account should monitor for trading
 
         Args:
             account_id: TradeLocker account ID
-            channel_ids: List of Telegram channel IDs
+            channel_entries: List of channel entries (can be int or [int, str])
         """
         account_key = f"account_{account_id}"
         if account_key in self.config['accounts']:
-            self.config['accounts'][account_key]['monitored_channels'] = channel_ids
+            self.config['accounts'][account_key]['monitored_channels'] = channel_entries
             self._save_config()
-            logger.info(f"Updated channels for account {account_id}: {channel_ids}")
+            logger.info(f"Updated channels for account {account_id}: {channel_entries}")
             return True
         else:
             logger.warning(f"Account {account_id} not found in configuration")
             return False
 
-    def add_channel_to_account(self, account_id: str, channel_id: int):
-        """Add a single channel to account's monitored channels"""
+    def add_channel_to_account(self, account_id: str, channel_id: int, channel_name: str = None):
+        """
+        Add a single channel to account's monitored channels
+
+        Args:
+            account_id: TradeLocker account ID
+            channel_id: Telegram channel ID
+            channel_name: Optional channel name for display
+        """
         account_key = f"account_{account_id}"
         if account_key in self.config['accounts']:
             channels = self.config['accounts'][account_key]['monitored_channels']
-            if channel_id not in channels:
-                channels.append(channel_id)
+            # Normalize existing channels to check for duplicates
+            normalized_ids = [self._normalize_channel_id(ch) for ch in channels]
+
+            if channel_id not in normalized_ids:
+                # Add in new format with name if provided
+                if channel_name:
+                    channels.append([channel_id, channel_name])
+                else:
+                    channels.append([channel_id, f"Channel {channel_id}"])
                 self._save_config()
                 logger.info(f"Added channel {channel_id} to account {account_id}")
                 return True
@@ -123,11 +166,13 @@ class AccountChannelManager:
         account_key = f"account_{account_id}"
         if account_key in self.config['accounts']:
             channels = self.config['accounts'][account_key]['monitored_channels']
-            if channel_id in channels:
-                channels.remove(channel_id)
-                self._save_config()
-                logger.info(f"Removed channel {channel_id} from account {account_id}")
-                return True
+            # Find and remove the channel (handles both old and new format)
+            for i, ch_entry in enumerate(channels):
+                if self._normalize_channel_id(ch_entry) == channel_id:
+                    channels.pop(i)
+                    self._save_config()
+                    logger.info(f"Removed channel {channel_id} from account {account_id}")
+                    return True
         return False
 
     def enable_account(self, account_id: str):
@@ -185,7 +230,9 @@ class AccountChannelManager:
             return False
 
         monitored_channels = account_config.get('monitored_channels', [])
-        return channel_id in monitored_channels
+        # Normalize channel entries to just IDs for comparison
+        normalized_channels = [self._normalize_channel_id(ch) for ch in monitored_channels]
+        return channel_id in normalized_channels
 
     def get_accounts_for_channel(self, channel_id: int) -> List[Dict]:
         """
@@ -200,7 +247,10 @@ class AccountChannelManager:
         trading_accounts = []
         for account_key, config in self.config['accounts'].items():
             if config.get('enabled', False):
-                if channel_id in config.get('monitored_channels', []):
+                monitored_channels = config.get('monitored_channels', [])
+                # Normalize channel entries to just IDs for comparison
+                normalized_channels = [self._normalize_channel_id(ch) for ch in monitored_channels]
+                if channel_id in normalized_channels:
                     trading_accounts.append(config)
         return trading_accounts
 
@@ -222,10 +272,16 @@ class AccountChannelManager:
         Returns:
             List of unique channel IDs
         """
-        all_channels = set(self.config.get('global_channels', []))
+        all_channels = set()
 
+        # Add global channels (normalize if needed)
+        for ch in self.config.get('global_channels', []):
+            all_channels.add(self._normalize_channel_id(ch))
+
+        # Add account-specific channels (normalize if needed)
         for account_config in self.config['accounts'].values():
-            all_channels.update(account_config.get('monitored_channels', []))
+            for ch in account_config.get('monitored_channels', []):
+                all_channels.add(self._normalize_channel_id(ch))
 
         return list(all_channels)
 
@@ -273,12 +329,21 @@ class AccountChannelManager:
             summary.append(f"\n  ✅ {config['name']} (#{config['accNum']})")
             channels = config.get('monitored_channels', [])
             if channels:
-                # Display channel names if available, otherwise IDs
-                if channel_names:
-                    channel_display = [channel_names.get(ch_id, str(ch_id)) for ch_id in channels]
-                    summary.append(f"     Channels: {', '.join(channel_display)}")
-                else:
-                    summary.append(f"     Channels: {channels}")
+                # Display channel names from stored data or from channel_names dict
+                channel_display = []
+                for ch_entry in channels:
+                    ch_id = self._normalize_channel_id(ch_entry)
+                    ch_name = self._get_channel_name(ch_entry)
+
+                    # Use stored name if available, otherwise fallback to channel_names dict
+                    if ch_name:
+                        channel_display.append(f"{ch_name} ({ch_id})")
+                    elif channel_names and ch_id in channel_names:
+                        channel_display.append(f"{channel_names[ch_id]} ({ch_id})")
+                    else:
+                        channel_display.append(str(ch_id))
+
+                summary.append(f"     Channels: {', '.join(channel_display)}")
             else:
                 summary.append(f"     Channels: None (won't trade)")
 

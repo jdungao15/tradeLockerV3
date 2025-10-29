@@ -1,0 +1,17 @@
+{
+  "accounts": {
+    "1577324": {
+      "account_id": "1577324",
+      "accNum": "8",
+      "starting_balance": 48576.98,
+      "max_drawdown_balance": 46576.98,
+      "tier_size": 50000,
+      "tier_name": "50k",
+      "drawdown_percentage": 4.0,
+      "drawdown_limit": 2000.0,
+      "last_reset": "2025-10-23T04:24:40.585422-04:00",
+      "status": "ACTIVE"
+    }
+  },
+  "last_updated": "2025-10-23T04:24:40.586138-04:00"
+}

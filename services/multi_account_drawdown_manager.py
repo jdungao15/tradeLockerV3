@@ -497,9 +497,16 @@ async def validate_account_drawdown(accounts_client, account):
 
 
 def display_all_accounts_drawdown():
-    """Display drawdown status for all tracked accounts."""
+    """Display drawdown status for all tracked accounts. Only shows ACTIVE accounts."""
 
     if not _accounts_drawdown_cache:
+        return
+
+    # Filter to only show ACTIVE accounts
+    active_accounts = {acc_id: data for acc_id, data in _accounts_drawdown_cache.items()
+                      if data.get('status') == 'ACTIVE'}
+
+    if not active_accounts:
         return
 
     logger.info("")
@@ -507,16 +514,13 @@ def display_all_accounts_drawdown():
     logger.info("   MULTI-ACCOUNT MONITORING")
     logger.info("   ════════════════════════════════════════════════════════════════")
 
-    for account_id, data in _accounts_drawdown_cache.items():
+    for account_id, data in active_accounts.items():
         tier_name = data.get('tier_name', 'Unknown')
         drawdown_pct = data.get('drawdown_percentage', 0)
         starting = data.get('starting_balance', 0)
-        status = data.get('status', 'UNKNOWN')
-
-        status_emoji = "✅" if status == "ACTIVE" else "⏸️"
 
         logger.info(
-            f"   {status_emoji} Account #{data.get('accNum')} | {tier_name} Tier | ${starting:,.2f} | {drawdown_pct:.1f}% limit")
+            f"   ✅ Account #{data.get('accNum')} | {tier_name} Tier | ${starting:,.2f} | {drawdown_pct:.1f}% limit")
 
     logger.info("   ════════════════════════════════════════════════════════════════")
     logger.info("   🔄 All accounts reset daily at 7:00 PM EST")

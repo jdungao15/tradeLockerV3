@@ -5,7 +5,7 @@
       "accNum": "7",
       "name": "BLUEG",
       "monitored_channels": [
-        2486712356
+        [2486712356, "Channel Name Placeholder"]
       ],
       "enabled": true
     },
@@ -14,8 +14,8 @@
       "accNum": "8",
       "name": "BLUEG #2",
       "monitored_channels": [
-        -1002153475473,
-        2486712356
+        [-1002153475473, "Channel Name Placeholder"],
+        [2486712356, "Channel Name Placeholder"]
       ],
       "enabled": true
     }

@@ -784,7 +784,12 @@ class TradingBot:
             )
 
             if not trading_account:
-                self.logger.warning(f"Account {account_name} (ID: {account_id}) not found in TradeLocker")
+                self.logger.warning(f"⚠️  Account {account_name} (ID: {account_id}) not found in TradeLocker - account may have been deleted")
+                return
+
+            # Check if account is ACTIVE
+            if trading_account.get('status') != 'ACTIVE':
+                self.logger.warning(f"⚠️  Account {account_name} (#{account_num}) is {trading_account.get('status')} - skipping signal")
                 return
 
             # DO NOT set selected account in multi-account mode to avoid race conditions
