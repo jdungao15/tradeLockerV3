@@ -5,7 +5,10 @@
       "accNum": "7",
       "name": "BLUEG",
       "monitored_channels": [
-        [2486712356, "Channel Name Placeholder"]
+        [
+          2486712356,
+          "Cooking Lab"
+        ]
       ],
       "enabled": true
     },
@@ -14,8 +17,14 @@
       "accNum": "8",
       "name": "BLUEG #2",
       "monitored_channels": [
-        [-1002153475473, "Channel Name Placeholder"],
-        [2486712356, "Channel Name Placeholder"]
+        [
+          -1002153475473,
+          "\ud83d\udc51US30 V\u00ce\u00ceP KINGDOM \ud83d\udc51"
+        ],
+        [
+          2486712356,
+          "Cooking Lab"
+        ]
       ],
       "enabled": true
     }
