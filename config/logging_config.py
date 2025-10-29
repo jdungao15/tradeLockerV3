@@ -1,8 +1,32 @@
 import logging
 import os
 import sys
+import codecs
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
+
+
+class UTF8RotatingFileHandler(RotatingFileHandler):
+    """
+    Custom RotatingFileHandler that forces UTF-8 encoding with BOM for maximum compatibility.
+    This ensures box-drawing characters (═, ║) and emojis display correctly on all platforms.
+    """
+    def _open(self):
+        """
+        Open the current base file with UTF-8 encoding and write BOM if new file.
+        BOM (Byte Order Mark) helps Windows Notepad and other editors detect UTF-8.
+        """
+        # Check if file exists before opening
+        is_new_file = not os.path.exists(self.baseFilename)
+
+        # Open with UTF-8 encoding
+        stream = codecs.open(self.baseFilename, self.mode, encoding='utf-8', errors='replace')
+
+        # Write UTF-8 BOM to new files for better Windows compatibility
+        if is_new_file and 'w' in self.mode:
+            stream.write('\ufeff')  # UTF-8 BOM character
+
+        return stream
 
 
 class CleanConsoleFormatter(logging.Formatter):
@@ -52,6 +76,19 @@ class DetailedFileFormatter(logging.Formatter):
 
 def setup_logging():
     """Configure logging for the trading bot application with UTF-8 emoji support"""
+    # Force UTF-8 encoding for the entire Python process
+    # This is critical for VPS environments (Linux/Windows) that may have different default encodings
+    import locale
+    try:
+        # Set environment variables to force UTF-8 (works for subprocesses too)
+        os.environ['PYTHONIOENCODING'] = 'utf-8'
+        os.environ['PYTHONUTF8'] = '1'  # Python 3.7+ forces UTF-8 mode
+
+        # Try to set system locale to UTF-8
+        locale.setlocale(locale.LC_ALL, '')
+    except Exception:
+        pass  # If locale setting fails, continue anyway
+
     # Create logs directory if it doesn't exist
     os.makedirs("logs", exist_ok=True)
 
@@ -79,7 +116,7 @@ def setup_logging():
     root_logger.addHandler(console_handler)
 
     # Create file handler for all logs with DETAILED formatter and UTF-8 encoding
-    main_file_handler = RotatingFileHandler(
+    main_file_handler = UTF8RotatingFileHandler(
         "logs/trading_bot.log",
         maxBytes=10 * 1024 * 1024,  # 10 MB
         backupCount=5,
@@ -90,7 +127,7 @@ def setup_logging():
     root_logger.addHandler(main_file_handler)
 
     # Create separate file handler for errors with UTF-8 encoding
-    error_file_handler = RotatingFileHandler(
+    error_file_handler = UTF8RotatingFileHandler(
         "logs/errors.log",
         maxBytes=5 * 1024 * 1024,  # 5 MB
         backupCount=3,
@@ -101,7 +138,7 @@ def setup_logging():
     root_logger.addHandler(error_file_handler)
 
     # Create debug file handler for more verbose logs with UTF-8 encoding
-    debug_file_handler = RotatingFileHandler(
+    debug_file_handler = UTF8RotatingFileHandler(
         "logs/debug.log",
         maxBytes=20 * 1024 * 1024,  # 20 MB
         backupCount=3,

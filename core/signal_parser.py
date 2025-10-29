@@ -5,6 +5,7 @@ import os
 import logging
 import asyncio
 import re
+import unicodedata
 from dotenv import load_dotenv
 from utils.instrument_utils import normalize_instrument_name
 
@@ -31,8 +32,14 @@ def is_potential_trading_signal(message: str) -> bool:
     Pre-filter to determine if a message might be a trading signal
     before sending to OpenAI API.
     """
+    # Normalize Unicode characters (convert stylized/special Unicode to ASCII equivalents)
+    # This handles messages with fancy formatting like 𝗦𝗘𝗟𝗟 𝗚𝗢𝗟𝗗 𝗡𝗢𝗪
+    normalized_message = unicodedata.normalize('NFKD', message)
+    # Remove combining characters and convert to ASCII, ignoring errors
+    ascii_message = normalized_message.encode('ascii', 'ignore').decode('ascii')
+
     # Normalize message for analysis
-    message_lower = message.lower()
+    message_lower = ascii_message.lower()
 
     # Check for specific trading terms like buy, sell, entry, etc.
     trading_terms = ['buy', 'sell', 'entry', 'stop', 'sl', 'tp', 'target', 'take profit', 'long', 'short']
