@@ -1,29 +1,37 @@
 {
   "accounts": {
-    "account_1560653": {
-      "account_id": "1560653",
-      "accNum": "7",
-      "name": "BLUEG",
+    "account_1599879": {
+      "account_id": "1599879",
+      "accNum": "10",
+      "name": "BlueG 2nd Phase",
       "monitored_channels": [
         [
           2486712356,
           "Cooking Lab"
+        ],
+        [
+          -1002286980914,
+          "Channel -1002286980914"
         ]
       ],
       "enabled": true
     },
-    "account_1577324": {
-      "account_id": "1577324",
-      "accNum": "8",
-      "name": "BLUEG #2",
+    "account_1605169": {
+      "account_id": "1605169",
+      "accNum": "11",
+      "name": "BLUEG 1STPHASE",
       "monitored_channels": [
-        [
-          -1002153475473,
-          "\ud83d\udc51US30 V\u00ce\u00ceP KINGDOM \ud83d\udc51"
-        ],
         [
           2486712356,
           "Cooking Lab"
+        ],
+        [
+          -1002286980914,
+          "Channel -1002286980914"
+        ],
+        [
+          -1002918525969,
+          "Channel -1002918525969"
         ]
       ],
       "enabled": true
