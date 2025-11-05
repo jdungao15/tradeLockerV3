@@ -186,7 +186,7 @@ class ApiClient:
                 # Exponential backoff
                 wait_time = 0.5 * (2 ** attempt)
                 logger.warning(
-                    f"Request failed, retrying in {wait_time}s: {e}")
+                    f"Request failed, retrying in {wait_time:.1f}s: {e}")
                 time.sleep(wait_time)
 
     # Asynchronous request method (for new code)
@@ -301,7 +301,7 @@ class ApiClient:
 
                 # Exponential backoff
                 wait_time = 0.5 * (2 ** attempt)
-                logger.warning("Request failed, retrying in {wait_time}s: {e}")
+                logger.warning(f"Request failed, retrying in {wait_time:.1f}s: {e}")
                 await asyncio.sleep(wait_time)
 
     # Cache management

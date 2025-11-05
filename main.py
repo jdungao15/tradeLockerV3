@@ -652,6 +652,9 @@ class TradingBot:
                     self.logger.info(
                         f"{colored_time}: {Fore.YELLOW}⚠️  Signal from {channel_name or 'Channel ' + str(channel_id)} - No accounts configured for this channel{Style.RESET_ALL}"
                     )
+                    self.logger.info(
+                        f"   {Fore.YELLOW}💡 To configure this channel, use channel ID: {channel_id}{Style.RESET_ALL}"
+                    )
             else:
                 # Single-account mode: Use the selected account
                 self.logger.debug(
