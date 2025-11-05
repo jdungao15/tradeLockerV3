@@ -67,6 +67,67 @@ class AccountChannelManager:
             return int(channel_entry[0])
         return int(channel_entry)
 
+    def _get_channel_id_variants(self, channel_id: int) -> List[int]:
+        """
+        Generate all possible Telegram channel ID format variants.
+
+        Telegram represents the same channel in multiple ID formats:
+        - Positive form (e.g., 1234567890)
+        - Simple negative (e.g., -1234567890)
+        - With -100 prefix (older format)
+        - With -1001 prefix (intermediate format)
+        - With -1002 prefix (newer format)
+
+        This method generates all possible variants to handle cases where
+        Telegram reports the channel ID in a different format than what's stored.
+
+        Args:
+            channel_id: The channel ID to generate variants for
+
+        Returns:
+            List of all possible channel ID variants
+        """
+        variants = set()
+
+        # Get the base ID (absolute value)
+        base_id = abs(channel_id)
+
+        # Add positive and negative forms
+        variants.add(base_id)
+        variants.add(-base_id)
+
+        # Handle -100, -1001, -1002 prefixed IDs
+        # First, check if this is already a prefixed ID and extract the base
+        if channel_id < -1000000000000:  # Has a -100x prefix
+            # Extract the base from prefixed format
+            if str(channel_id).startswith('-1002'):
+                extracted_base = abs(channel_id) - 1002000000000
+            elif str(channel_id).startswith('-1001'):
+                extracted_base = abs(channel_id) - 1001000000000
+            elif str(channel_id).startswith('-100'):
+                extracted_base = abs(channel_id) - 100000000000
+            else:
+                extracted_base = base_id
+
+            # Add all variant forms using the extracted base
+            variants.add(extracted_base)
+            variants.add(-extracted_base)
+            variants.add(-100000000000 - extracted_base)
+            variants.add(-1001000000000 - extracted_base)
+            variants.add(-1002000000000 - extracted_base)
+        else:
+            # Generate prefixed variants from the base ID
+            variants.add(-100000000000 - base_id)
+            variants.add(-1001000000000 - base_id)
+            variants.add(-1002000000000 - base_id)
+
+        # Remove 0 if it somehow got added
+        variants.discard(0)
+
+        # Convert to list and sort for consistent ordering
+        return sorted(list(variants))
+
+
     def _get_channel_name(self, channel_entry):
         """
         Get channel name from entry if available.
@@ -211,7 +272,10 @@ class AccountChannelManager:
 
     def should_account_trade_channel(self, account_id: str, channel_id: int) -> bool:
         """
-        Check if an account should trade signals from a specific channel
+        Check if an account should trade signals from a specific channel.
+
+        Uses channel ID variant matching to handle cases where Telegram reports
+        the channel ID in a different format than what's stored in configuration.
 
         Args:
             account_id: TradeLocker account ID
@@ -230,13 +294,21 @@ class AccountChannelManager:
             return False
 
         monitored_channels = account_config.get('monitored_channels', [])
-        # Normalize channel entries to just IDs for comparison
+        # Normalize channel entries to just IDs
         normalized_channels = [self._normalize_channel_id(ch) for ch in monitored_channels]
-        return channel_id in normalized_channels
+
+        # Generate all possible variants of the incoming channel ID
+        channel_variants = self._get_channel_id_variants(channel_id)
+
+        # Check if any variant matches any configured channel
+        return any(variant in normalized_channels for variant in channel_variants)
 
     def get_accounts_for_channel(self, channel_id: int) -> List[Dict]:
         """
-        Get all enabled accounts that should trade from a specific channel
+        Get all enabled accounts that should trade from a specific channel.
+
+        Uses channel ID variant matching to handle cases where Telegram reports
+        the channel ID in a different format than what's stored in configuration.
 
         Args:
             channel_id: Telegram channel ID
@@ -245,13 +317,20 @@ class AccountChannelManager:
             List of account configurations
         """
         trading_accounts = []
+
+        # Generate all possible variants of the incoming channel ID
+        channel_variants = self._get_channel_id_variants(channel_id)
+
         for account_key, config in self.config['accounts'].items():
             if config.get('enabled', False):
                 monitored_channels = config.get('monitored_channels', [])
-                # Normalize channel entries to just IDs for comparison
+                # Normalize channel entries to just IDs
                 normalized_channels = [self._normalize_channel_id(ch) for ch in monitored_channels]
-                if channel_id in normalized_channels:
+
+                # Check if any variant matches any configured channel
+                if any(variant in normalized_channels for variant in channel_variants):
                     trading_accounts.append(config)
+
         return trading_accounts
 
     def set_global_channels(self, channel_ids: List[int]):
