@@ -38,6 +38,10 @@ def is_potential_trading_signal(message: str) -> bool:
     # Remove combining characters and convert to ASCII, ignoring errors
     ascii_message = normalized_message.encode('ascii', 'ignore').decode('ascii')
 
+    # Log normalized message for debugging (only first 100 chars)
+    if ascii_message != message:
+        logger.debug(f"Normalized message: '{ascii_message[:100]}'")
+
     # Normalize message for analysis
     message_lower = ascii_message.lower()
 
@@ -68,14 +72,15 @@ def is_potential_trading_signal(message: str) -> bool:
         has_instrument = bool(re.search(forex_pattern, message.upper()))
 
     # Check for price patterns (numbers that might be price points)
-    has_prices = bool(re.search(r'\d+\.\d+|\d+', message))
+    has_prices = bool(re.search(r'\d+\.\d+|\d+', ascii_message))
 
     # Check for excess emojis (often in announcement messages, not signals)
-    emoji_count = len(re.findall(r'[\U00010000-\U0010ffff]|[\u2600-\u26FF\u2700-\u27BF]', message))
+    # Use the ASCII-normalized message to avoid counting fancy Unicode as emojis
+    emoji_count = len(re.findall(r'[\U00010000-\U0010ffff]|[\u2600-\u26FF\u2700-\u27BF]', ascii_message))
     too_many_emojis = emoji_count > 10  # Adjust threshold as needed
 
     # Check message length (real signals are typically longer than a few words)
-    too_short = len(message.split()) < 3
+    too_short = len(ascii_message.split()) < 3
 
     # Special case: Check for "PIPS" announcements (often not actionable signals)
     is_pips_announcement = 'pips' in message_lower and any(x in message_lower for x in ['hit', 'reached', 'secured'])
@@ -96,9 +101,33 @@ def is_potential_trading_signal(message: str) -> bool:
     # Must have entry/stop/tp keywords for structure
     has_structure_keywords = any(kw in message_lower for kw in ['entry', 'stop', 'sl', 'tp', 'target', 'take profit'])
 
+    # Debug logging for why messages are rejected
+    is_signal = (has_trading_terms and has_instrument and has_prices and has_structure_keywords and
+                 not too_many_emojis and not too_short and not is_pips_announcement and not is_hype_message)
+
+    if not is_signal:
+        reasons = []
+        if not has_trading_terms:
+            reasons.append("no trading terms")
+        if not has_instrument:
+            reasons.append("no instrument")
+        if not has_prices:
+            reasons.append("no prices")
+        if not has_structure_keywords:
+            reasons.append("no structure keywords (entry/stop/tp)")
+        if too_many_emojis:
+            reasons.append(f"too many emojis ({emoji_count})")
+        if too_short:
+            reasons.append("too short")
+        if is_pips_announcement:
+            reasons.append("pips announcement")
+        if is_hype_message:
+            reasons.append("hype message")
+
+        logger.debug(f"Signal rejected: {', '.join(reasons)}")
+
     # Return True if it looks like a signal, False otherwise
-    return (has_trading_terms and has_instrument and has_prices and has_structure_keywords and
-            not too_many_emojis and not too_short and not is_pips_announcement and not is_hype_message)
+    return is_signal
 
 
 def adjust_broker_pricing(parsed_signal):

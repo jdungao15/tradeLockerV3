@@ -88,13 +88,27 @@ class SignalManager:
 
         # 2. CHECK FOR TP COMMANDS (HIGHEST PRIORITY)
 
-        # Check for specific TP hit/close pattern with number (e.g., "TP1", "close TP2", "Take Profit 3 hit")
-        tp_pattern = r"(?:close|hit|take|tp|target|profit)[\s\-_.]*(?:tp|target|profit)?[\s\-_.]*(\d+)"
-        tp_match = re.search(tp_pattern, message_lower)
-        if tp_match:
-            tp_level = int(tp_match.group(1))
-            logger.info(f"Detected TP command with level {tp_level}: '{message_lower}'")
-            return 'tp', tp_level
+        # Check for specific TP hit/close pattern with number (e.g., "TP1 hit", "close TP2", "Take Profit 3 reached")
+        # IMPORTANT: Only match if it's likely a TP announcement, not a full trading signal
+        # TP announcements are typically SHORT messages (< 30 words) with completion keywords
+        word_count = len(message_lower.split())
+
+        # Only check for TP commands if message is relatively short (likely an announcement)
+        if word_count < 30:
+            # Look for TP patterns with completion keywords
+            tp_completion_patterns = [
+                r"tp[\s\-_.]*(\d+)[\s\-_.]*(?:hit|reached|closed|achieved|secured|done)",  # "TP1 hit"
+                r"(?:hit|reached|closed|achieved|secured)[\s\-_.]*tp[\s\-_.]*(\d+)",  # "hit TP1"
+                r"^tp[\s\-_.]*(\d+)",  # "TP1" at start
+                r"^(?:close|exit)[\s\-_.]*tp[\s\-_.]*(\d+)",  # "close TP1" at start
+            ]
+
+            for pattern in tp_completion_patterns:
+                tp_match = re.search(pattern, message_lower)
+                if tp_match:
+                    tp_level = int(tp_match.group(1))
+                    logger.info(f"Detected TP command with level {tp_level}: '{message_lower}'")
+                    return 'tp', tp_level
 
         # 3. CHECK FOR DETAILED COMMAND PATTERNS
 

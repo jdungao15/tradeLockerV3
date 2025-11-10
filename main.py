@@ -208,6 +208,22 @@ class TradingBot:
             self.orders_client = TradeLockerOrders(self.auth)
             self.quotes_client = TradeLockerQuotes(self.auth)
 
+            # Validate configured accounts in multi-account mode
+            if self.multi_account_mode:
+                try:
+                    accounts_data = await self.accounts_client.get_accounts_async()
+                    if accounts_data:
+                        validation_result = self.account_channel_manager.validate_accounts_against_api(accounts_data)
+
+                        if validation_result['removed']:
+                            self.logger.warning(
+                                f"Removed {len(validation_result['removed'])} invalid account(s) from configuration:"
+                            )
+                            for acc in validation_result['removed_accounts']:
+                                self.logger.warning(f"  • {acc['name']} (#{acc['accNum']}, ID: {acc['id']})")
+                except Exception as e:
+                    self.logger.warning(f"Could not validate accounts: {e}")
+
             # Initialize news filter (silent)
             if self.enable_news_filter:
                 await self.news_filter.initialize()
@@ -1597,6 +1613,28 @@ async def handle_account_channel_configuration():
 
     # Create account manager instance (no bot needed)
     account_manager = AccountChannelManager()
+
+    # Validate accounts against API when entering the menu
+    try:
+        print(f"{Fore.CYAN}Validating configured accounts...{Style.RESET_ALL}")
+        accounts_data = await get_tradelocker_accounts()
+
+        if accounts_data:
+            validation_result = account_manager.validate_accounts_against_api(accounts_data)
+
+            if validation_result['removed']:
+                print(f"\n{Fore.YELLOW}⚠️  Removed {len(validation_result['removed'])} invalid account(s):{Style.RESET_ALL}")
+                for acc in validation_result['removed_accounts']:
+                    print(f"   • {acc['name']} (#{acc['accNum']}, ID: {acc['id']}) - No longer active")
+                input("\nPress Enter to continue...")
+            else:
+                print(f"{Fore.GREEN}✅ All configured accounts are valid{Style.RESET_ALL}")
+        else:
+            print(f"{Fore.YELLOW}⚠️  Could not validate accounts (API connection failed){Style.RESET_ALL}")
+
+    except Exception as e:
+        print(f"{Fore.YELLOW}⚠️  Error validating accounts: {e}{Style.RESET_ALL}")
+        input("\nPress Enter to continue...")
 
     while True:
         choice = display_account_channel_menu()

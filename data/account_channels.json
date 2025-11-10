@@ -1,42 +1,5 @@
 {
-  "accounts": {
-    "account_1599879": {
-      "account_id": "1599879",
-      "accNum": "10",
-      "name": "BlueG 2nd Phase",
-      "monitored_channels": [
-        [
-          2486712356,
-          "Cooking Lab"
-        ],
-        [
-          -1002286980914,
-          "Channel -1002286980914"
-        ]
-      ],
-      "enabled": true
-    },
-    "account_1605169": {
-      "account_id": "1605169",
-      "accNum": "11",
-      "name": "BLUEG 1STPHASE",
-      "monitored_channels": [
-        [
-          2486712356,
-          "Cooking Lab"
-        ],
-        [
-          -1002286980914,
-          "Channel -1002286980914"
-        ],
-        [
-          -1002918525969,
-          "Channel -1002918525969"
-        ]
-      ],
-      "enabled": true
-    }
-  },
+  "accounts": {},
   "global_channels": [],
   "last_updated": null
 }

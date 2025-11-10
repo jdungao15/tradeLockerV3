@@ -388,6 +388,71 @@ class AccountChannelManager:
             logger.error(f"Error importing configuration: {e}")
             return False
 
+    def validate_accounts_against_api(self, api_accounts_data: Dict) -> Dict:
+        """
+        Validate configured accounts against current API account data.
+        Automatically removes accounts that no longer exist or are not ACTIVE.
+
+        Args:
+            api_accounts_data: Response from TradeLocker API get_accounts() call
+                              Expected format: {'accounts': [{'id': ..., 'status': ...}, ...]}
+
+        Returns:
+            Dict with keys:
+                'removed': List of removed account IDs
+                'removed_accounts': List of removed account configs (for logging)
+                'valid': List of valid account IDs still in config
+        """
+        if not api_accounts_data or 'accounts' not in api_accounts_data:
+            logger.warning("No API account data provided for validation")
+            return {'removed': [], 'removed_accounts': [], 'valid': []}
+
+        # Build set of valid (ACTIVE) account IDs from API
+        valid_account_ids = set()
+        for acc in api_accounts_data.get('accounts', []):
+            if acc.get('status') == 'ACTIVE':
+                valid_account_ids.add(str(acc.get('id')))
+
+        # Check configured accounts
+        removed_account_ids = []
+        removed_account_configs = []
+        valid_configured_ids = []
+
+        accounts_to_remove = []
+        for account_key, config in self.config['accounts'].items():
+            account_id = config.get('account_id')
+
+            if account_id not in valid_account_ids:
+                # Account is either deleted or not ACTIVE anymore
+                accounts_to_remove.append(account_key)
+                removed_account_ids.append(account_id)
+                removed_account_configs.append({
+                    'id': account_id,
+                    'name': config.get('name'),
+                    'accNum': config.get('accNum')
+                })
+                logger.warning(
+                    f"Removing invalid account from config: "
+                    f"{config.get('name')} (#{config.get('accNum')}, ID: {account_id})"
+                )
+            else:
+                valid_configured_ids.append(account_id)
+
+        # Remove invalid accounts
+        for account_key in accounts_to_remove:
+            del self.config['accounts'][account_key]
+
+        # Save if any accounts were removed
+        if accounts_to_remove:
+            self._save_config()
+            logger.info(f"Removed {len(accounts_to_remove)} invalid account(s) from configuration")
+
+        return {
+            'removed': removed_account_ids,
+            'removed_accounts': removed_account_configs,
+            'valid': valid_configured_ids
+        }
+
     def get_summary(self, channel_names: dict = None) -> str:
         """
         Get a summary of the current configuration
